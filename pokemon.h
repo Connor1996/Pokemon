@@ -1,9 +1,21 @@
 #ifndef POKEMON_H
 #define POKEMON_H
 
+// 获得对象运行时多态类型
+
+#ifdef __GNUC__
+#define GET_CLASS_TYPE(_OBJECT_)     \
+    string(abi::__cxa_demangle(typeid(_OBJECT_).name(), nullptr, nullptr, nullptr))
+#else
+#define GET_CLASS_TYPE(_OBJECT_)     \
+    string(typeid(_OBJECT_).name())
+#endif
+
+
 #include <iostream>
 #include <ctime>
 #include <typeinfo>
+#include <cxxabi.h>
 
 using namespace std;
 
@@ -15,52 +27,56 @@ enum class Type
     Swift,      //低攻击间隔
 };
 
+typedef struct
+{
+    Type type;
+    unsigned int attackPoint;
+    unsigned int defensePoint;
+    unsigned int healthPoint;
+    unsigned int attackFrequence;
+}Attribute;
+
 const unsigned int LEVEL_EXP_LIST[15] = {0, 100, 250, 500, 800, 1200, 1800, 2500,
                                          3300, 4500, 6000, 7000, 8000, 9000, 10000};
 
 class Pokemon
 {
 public:
-    Pokemon(Type type, string name, unsigned int level, unsigned int exp,
-            unsigned int attackPoint, unsigned int defensePoint, unsigned int healthPoint,
-            unsigned int attackFrequence)
-        : _type(type), _name(name), _level(level), _exp(exp), _attackPoint(attackPoint),
-          _defensePoint(defensePoint), _healthPoint(healthPoint),
-          _attackFrequence(attackFrequence), _hp(healthPoint)
+    Pokemon(string name, unsigned int level, unsigned int exp,
+            Attribute attribute)
+        : _name(name), _level(level), _exp(exp),
+          _attribute(attribute), _hp(attribute.healthPoint)
     {}
 
     ~Pokemon() {}
 
-    Type GetType() const { return _type; }
+    Type GetType() const { return _attribute.type; }
     string GetName() const { return _name; }
     unsigned int GetLevel() const { return _level; }
     unsigned long GetExp() const { return _exp; }
-    unsigned int GetAttackPoint() const { return _attackPoint; }
-    unsigned int GetHealthPoint() const { return _healthPoint; }
-    unsigned int GetDefensePoint() const { return _defensePoint; }
-    unsigned int GetAttackFrequence() const { return _attackFrequence; }
+    unsigned int GetAttackPoint() const { return _attribute.attackPoint; }
+    unsigned int GetHealthPoint() const { return _attribute.healthPoint; }
+    unsigned int GetDefensePoint() const { return _attribute.defensePoint; }
+    unsigned int GetAttackFrequence() const { return _attribute.attackFrequence; }
+    unsigned int GetHp() const { return _hp; }
 
     // 根据受到的伤害更新血量，同时返回是否死亡
     virtual bool Hurt(unsigned int damage);
 
     // 产生一个攻击值
-    virtual unsigned int Attack(Pokemon & opPokemon) = 0;
+    virtual unsigned int Attack(Pokemon * opPokemon) = 0;
 
     // 根据获得的经验增加经验值并自动升级，返回是否升级
     virtual bool Upgrade(unsigned int exp);
 
 protected:
-    Type _type;
     string _name;
     unsigned int _level;
     unsigned long _exp;
 
-    unsigned int _attackPoint;
-    unsigned int _defensePoint;
-    unsigned int _healthPoint;
-    unsigned int _attackFrequence;
+    Attribute _attribute;
 
-    int _hp;
+    unsigned int _hp;
 
     // 小精灵升级时各属性的成长
     virtual void Grow(unsigned int *);
@@ -74,7 +90,12 @@ protected:
 class Fire : public Pokemon
 {
 public:
-    unsigned int Attack(Pokemon & opPokemon) override
+    Fire(string name, unsigned int level, unsigned int exp,
+         Attribute attribute)
+        : Pokemon(name, level, exp, attribute)
+    {}
+
+    unsigned int Attack(Pokemon * opPokemon) override
     {
         string className = typeid(opPokemon).name();
         auto coefficient = 1.0;
@@ -88,15 +109,21 @@ public:
         // 有几率产生暴击
         if (Bonus() > 0.94)
             coefficient += 1;
-        return static_cast<unsigned int>(_attackPoint * coefficient);
+        return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
 };
 
 class Water : public Pokemon
 {
-    unsigned int Attack(Pokemon & opPokemon) override
+    Water(string name, unsigned int level, unsigned int exp,
+          Attribute attribute)
+         : Pokemon(name, level, exp, attribute)
+    {}
+
+    unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = typeid(opPokemon).name();
+        char* className = abi::__cxa_demangle(typeid(*opPokemon).name(), nullptr, nullptr, nullptr);
+        //string className = typeid(opPokemon).name();
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -108,14 +135,19 @@ class Water : public Pokemon
         // 有几率产生暴击
         if (Bonus() > 0.94)
             coefficient += 1;
-        return static_cast<unsigned int>(_attackPoint * coefficient);
+        return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
 };
 
 class Electricity : public Pokemon
 {
 public:
-    unsigned int Attack(Pokemon & opPokemon) override
+    Electricity(string name, unsigned int level, unsigned int exp,
+                Attribute attribute)
+               : Pokemon(name, level, exp, attribute)
+    {}
+
+    unsigned int Attack(Pokemon * opPokemon) override
     {
         string className = typeid(opPokemon).name();
         auto coefficient = 1.0;
@@ -129,14 +161,19 @@ public:
         // 有几率产生暴击
         if (Bonus() > 0.94)
             coefficient += 1;
-        return static_cast<unsigned int>(_attackPoint * coefficient);
+        return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
 };
 
 class Grass : public Pokemon
 {
 public:
-    unsigned int Attack(Pokemon & opPokemon) override
+    Grass(string name, unsigned int level, unsigned int exp,
+          Attribute attribute)
+         : Pokemon(name, level, exp, attribute)
+    {}
+
+    unsigned int Attack(Pokemon * opPokemon) override
     {
         string className = typeid(opPokemon).name();
         auto coefficient = 1.0;
@@ -150,14 +187,19 @@ public:
         // 有几率产生暴击
         if (Bonus() > 0.94)
             coefficient += 1;
-        return static_cast<unsigned int>(_attackPoint * coefficient);
+        return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
 };
 
 class Ice : public Pokemon
 {
 public:
-    unsigned int Attack(Pokemon & opPokemon) override
+    Ice(string name, unsigned int level, unsigned int exp,
+        Attribute attribute)
+       : Pokemon(name, level, exp, attribute)
+    {}
+
+    unsigned int Attack(Pokemon * opPokemon) override
     {
         string className = typeid(opPokemon).name();
         auto coefficient = 1.0;
@@ -171,7 +213,7 @@ public:
         // 有几率产生暴击
         if (Bonus() > 0.94)
             coefficient += 1;
-        return static_cast<unsigned int>(_attackPoint * coefficient);
+        return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
 };
 

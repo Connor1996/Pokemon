@@ -2,10 +2,15 @@
 
 bool Pokemon::Hurt(unsigned int damage)
 {
-    if (damage > _defensePoint)
-        _hp -= damage - _defensePoint;
-    if (_hp <= 0)
-        return true;
+    auto score = damage - _attribute.defensePoint;
+    if (score > 0)
+        if (_hp <= score)
+        {
+            _hp = 0;
+            return true;
+        }
+        else
+            _hp -= score;
     return false;
 }
 
@@ -17,7 +22,7 @@ bool Pokemon::Upgrade(unsigned int exp)
         return false;
 
     // 循环判断当前经验值是否达到升级条件，以适应一次升多级的可能情况
-    bool isUpgraded = false;
+    auto isUpgraded = false;
     while (_exp >= LEVEL_EXP_LIST[_level])
     {
         _level++;
@@ -25,16 +30,16 @@ bool Pokemon::Upgrade(unsigned int exp)
         unsigned int *master = NULL;
         switch (GetType()) {
         case Type::Strength:
-            master = &_attackPoint;
+            master = &_attribute.attackPoint;
             break;
         case Type::Tanker:
-            master = &_healthPoint;
+            master = &_attribute.healthPoint;
             break;
         case Type::Defensive:
-            master = &_defensePoint;
+            master = &_attribute.defensePoint;
             break;
         case Type::Swift:
-            master = &_attackFrequence;
+            master = &_attribute.attackPoint;
             break;
         default:
             break;
@@ -55,7 +60,8 @@ double Pokemon::Bonus()
 
 void Pokemon::Grow(unsigned int * master)
 {
-    unsigned int * values[4] = {&_attackPoint, &_defensePoint, &_healthPoint, &_attackFrequence};
+    unsigned int * values[4] = {&_attribute.attackPoint, &_attribute.defensePoint,
+                                &_attribute.healthPoint, &_attribute.attackPoint};
 
     //遍历变量指针，与master相同的说明为主要属性，升级时增加的幅度更大
     for (auto ptr : values)

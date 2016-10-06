@@ -15,9 +15,17 @@ CONFIG += c++11
 SOURCES += main.cpp\
         widget.cpp \
     pokemon.cpp \
-    unittest.cpp
+    unittest.cpp \
+    pokemonfactory.cpp
 
 HEADERS  += widget.h \
-    pokemon.h
+    pokemon.h \
+    catch.hpp \
+    pokemonfactory.h
 
 FORMS    += widget.ui
+
+debug {
+  DEFINES += __DEBUG__
+}
+
