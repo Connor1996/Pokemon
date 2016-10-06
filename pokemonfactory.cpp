@@ -10,6 +10,8 @@ Pokemon* PokemonFactory::Create(string name)
         return new Fire(name, 1, 0, info);
     else if (property == "Electricity")
         return new Electricity(name, 1, 0, info);
+    else
+        return NULL;
 }
 
 Attribute PokemonFactory::QueryInDateBase(string name, string &property)

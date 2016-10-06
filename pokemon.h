@@ -97,7 +97,7 @@ public:
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = typeid(opPokemon).name();
+        string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -122,8 +122,7 @@ class Water : public Pokemon
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        char* className = abi::__cxa_demangle(typeid(*opPokemon).name(), nullptr, nullptr, nullptr);
-        //string className = typeid(opPokemon).name();
+        string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -149,7 +148,7 @@ public:
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = typeid(opPokemon).name();
+        string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -175,7 +174,7 @@ public:
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = typeid(opPokemon).name();
+        string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -201,7 +200,7 @@ public:
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = typeid(opPokemon).name();
+        string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
