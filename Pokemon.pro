@@ -12,16 +12,22 @@ TARGET = Pokemon
 TEMPLATE = app
 CONFIG += c++11
 
-SOURCES += main.cpp\
-        widget.cpp \
-    pokemon.cpp \
-    unittest.cpp \
-    pokemonfactory.cpp
+SOURCES += src/main.cpp\
+        src/widget.cpp \
+    src/pokemon.cpp \
+    src/unittest.cpp \
+    src/pokemonfactory.cpp \
+    include/sqlite3.c \
+    src/sqlconnector.cpp
 
-HEADERS  += widget.h \
-    pokemon.h \
-    catch.hpp \
-    pokemonfactory.h
+HEADERS  += src/widget.h \
+    src/pokemon.h \
+    src/pokemonfactory.h \
+    include/catch.hpp \
+    include/sqlite3.h \
+    src/sqlconnector.h
+
+
 
 FORMS    += widget.ui
 
