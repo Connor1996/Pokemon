@@ -1,20 +1,21 @@
 #include "pokemonfactory.h"
+#include "pokemon.h"
+#include <algorithm>
+#include <cctype>
 
-Pokemon* PokemonFactory::Create(string name)
+Pokemon* PokemonFactory::Create(std::string name)
 {
-    string property = "";
+    std::string property = "";
 
     Attribute info = QueryInDateBase(name, property);
-    // 后期实现反射机制，减少代码量
-    if (property == "Fire")
-        return new Fire(name, 1, 0, info);
-    else if (property == "Electricity")
-        return new Electricity(name, 1, 0, info);
-    else
-        return NULL;
+    // 获取创建相应种类的回调函数
+    PTRCreateObject callback = Reflector::GetInstance().GetClassByName(property);
+
+    return callback(name, 1, 0, info);
+
 }
 
-Attribute PokemonFactory::QueryInDateBase(string name, string &property)
+Attribute PokemonFactory::QueryInDateBase(std::string name, std::string &property)
 {
     transform(name.begin(), name.end(), name.begin(), ::tolower);
     // 硬编码化，后期加入数据库时更新

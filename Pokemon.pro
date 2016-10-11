@@ -18,14 +18,16 @@ SOURCES += src/main.cpp\
     src/unittest.cpp \
     src/pokemonfactory.cpp \
     include/sqlite3.c \
-    src/sqlconnector.cpp
+    src/sqlconnector.cpp \
+    src/reflector.cpp
 
 HEADERS  += src/widget.h \
     src/pokemon.h \
     src/pokemonfactory.h \
     include/catch.hpp \
     include/sqlite3.h \
-    src/sqlconnector.h
+    src/sqlconnector.h \
+    src/reflector.h
 
 
 

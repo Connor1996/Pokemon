@@ -1,4 +1,8 @@
 #include "sqlconnector.h"
+#include <stdexcept>
+
+// 类的静态成员外部初始化
+SQLConnector::Garbo SQLConnector::garbo;
 
 SQLConnector::SQLConnector()
 {
@@ -8,7 +12,9 @@ SQLConnector::SQLConnector()
                 + sqlite3_errmsg(_database));
 }
 
+// 类的静态成员需要在.c中定义初始化，.h中只是声明
 SQLConnector *SQLConnector::_instance = NULL;
+
 SQLConnector *SQLConnector::GetInstance()
 {
     if (_instance == NULL)

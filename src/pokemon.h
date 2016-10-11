@@ -4,19 +4,14 @@
 // 获得对象运行时多态类型
 #ifdef __GNUC__
 #define GET_CLASS_TYPE(_OBJECT_)     \
-    string(abi::__cxa_demangle(typeid(_OBJECT_).name(), nullptr, nullptr, nullptr))
+    std::string(abi::__cxa_demangle(typeid(_OBJECT_).name(), nullptr, nullptr, nullptr))
 #else
 #define GET_CLASS_TYPE(_OBJECT_)     \
-    string(typeid(_OBJECT_).name())
+    std::string(typeid(_OBJECT_).name())
 #endif
 
-
-#include <iostream>
-#include <ctime>
-#include <typeinfo>
 #include <cxxabi.h>
-
-using namespace std;
+#include "reflector.h"
 
 enum class Type
 {
@@ -26,7 +21,8 @@ enum class Type
     Swift,      //低攻击间隔
 };
 
-typedef struct
+
+typedef struct struct_Attribute
 {
     Type type;
     unsigned int attackPoint;
@@ -35,13 +31,14 @@ typedef struct
     unsigned int attackFrequence;
 }Attribute;
 
+
 const unsigned int LEVEL_EXP_LIST[15] = {0, 100, 250, 500, 800, 1200, 1800, 2500,
                                          3300, 4500, 6000, 7000, 8000, 9000, 10000};
 
 class Pokemon
 {
 public:
-    Pokemon(string name, unsigned int level, unsigned int exp,
+    Pokemon(std::string name, unsigned int level, unsigned int exp,
             Attribute attribute)
         : _name(name), _level(level), _exp(exp),
           _attribute(attribute), _hp(attribute.healthPoint)
@@ -50,7 +47,7 @@ public:
     ~Pokemon() {}
 
     Type GetType() const { return _attribute.type; }
-    string GetName() const { return _name; }
+    std::string GetName() const { return _name; }
     unsigned int GetLevel() const { return _level; }
     unsigned long GetExp() const { return _exp; }
     unsigned int GetAttackPoint() const { return _attribute.attackPoint; }
@@ -69,7 +66,7 @@ public:
     virtual bool Upgrade(unsigned int exp);
 
 protected:
-    string _name;
+    std::string _name;
     unsigned int _level;
     unsigned long _exp;
 
@@ -89,14 +86,14 @@ protected:
 class Fire : public Pokemon
 {
 public:
-    Fire(string name, unsigned int level, unsigned int exp,
+    Fire(std::string name, unsigned int level, unsigned int exp,
          Attribute attribute)
         : Pokemon(name, level, exp, attribute)
     {}
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = GET_CLASS_TYPE(*opPokemon);
+        std::string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -112,16 +109,18 @@ public:
     }
 };
 
+
 class Water : public Pokemon
 {
-    Water(string name, unsigned int level, unsigned int exp,
+public:
+    Water(std::string name, unsigned int level, unsigned int exp,
           Attribute attribute)
          : Pokemon(name, level, exp, attribute)
     {}
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = GET_CLASS_TYPE(*opPokemon);
+        std::string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -137,17 +136,18 @@ class Water : public Pokemon
     }
 };
 
+
 class Electricity : public Pokemon
 {
 public:
-    Electricity(string name, unsigned int level, unsigned int exp,
+    Electricity(std::string name, unsigned int level, unsigned int exp,
                 Attribute attribute)
                : Pokemon(name, level, exp, attribute)
     {}
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = GET_CLASS_TYPE(*opPokemon);
+        std::string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -163,17 +163,18 @@ public:
     }
 };
 
+
 class Grass : public Pokemon
 {
 public:
-    Grass(string name, unsigned int level, unsigned int exp,
+    Grass(std::string name, unsigned int level, unsigned int exp,
           Attribute attribute)
          : Pokemon(name, level, exp, attribute)
     {}
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = GET_CLASS_TYPE(*opPokemon);
+        std::string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -189,17 +190,18 @@ public:
     }
 };
 
+
 class Ice : public Pokemon
 {
 public:
-    Ice(string name, unsigned int level, unsigned int exp,
+    Ice(std::string name, unsigned int level, unsigned int exp,
         Attribute attribute)
        : Pokemon(name, level, exp, attribute)
     {}
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
-        string className = GET_CLASS_TYPE(*opPokemon);
+        std::string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 
         // 不同属性间的效果加成
@@ -214,5 +216,7 @@ public:
         return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
 };
+
+
 
 #endif // POKEMON_H

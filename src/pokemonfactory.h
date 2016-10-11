@@ -1,19 +1,20 @@
 #ifndef POKEMONFACTORY_H
 #define POKEMONFACTORY_H
 
-#include "pokemon.h"
-#include <algorithm>
-#include <cctype>
+#include <string>
+
+class Pokemon;
+typedef struct struct_Attribute Attribute;
 
 class PokemonFactory
 {
 public:
     PokemonFactory() {}
 
-    Pokemon* Create(string name);
+    Pokemon* Create(std::string name);
 
 private:
-    Attribute QueryInDateBase(string name, string &property);
+    Attribute QueryInDateBase(std::string name, std::string &property);
 };
 
 #endif // POKEMONFACTORY_H

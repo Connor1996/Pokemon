@@ -1,4 +1,6 @@
 #include "pokemon.h"
+#include <ctime>
+#include <typeinfo>
 
 bool Pokemon::Hurt(unsigned int damage)
 {
@@ -72,3 +74,9 @@ void Pokemon::Grow(unsigned int * master)
             *ptr = *ptr + static_cast<int>((*ptr / 2 + _level / 2) * Bonus() / 3);
     }
 }
+
+REGISTER(Fire);
+REGISTER(Water);
+REGISTER(Electricity);
+REGISTER(Grass);
+REGISTER(Ice);

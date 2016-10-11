@@ -2,8 +2,6 @@
 #define SQLCONNECTOR_H
 
 #include "include/sqlite3.h"
-#include <iostream>
-#include <stdexcept>
 
 #define FILE_NAME "f"
 
