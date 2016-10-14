@@ -5,8 +5,11 @@
 
 class Pokemon;
 typedef struct struct_Attribute Attribute;
+
+// 可以生成Pokemon对象的函数指针
 typedef Pokemon* (*PTRCreateObject)(std::string, unsigned int, unsigned int, Attribute);
 
+// 新建全局函数以new类对象，模拟反射
 #define REGISTER(_CLASS_NAME_)                                          \
 _CLASS_NAME_* Create##_CLASS_NAME_(std::string name, unsigned int level,\
     unsigned int exp, Attribute attribute)                              \

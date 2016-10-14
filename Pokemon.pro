@@ -27,7 +27,9 @@ HEADERS  += src/widget.h \
     include/catch.hpp \
     include/sqlite3.h \
     src/sqlconnector.h \
-    src/reflector.h
+    src/reflector.h \
+    src/ormlite.h \
+    src/model.h
 
 
 

@@ -2,31 +2,26 @@
 #define SQLCONNECTOR_H
 
 #include "include/sqlite3.h"
+#include <tuple>
 
-#define FILE_NAME "f"
+#define FILE_NAME "pokemon.db"
 
 class SQLConnector
 {
 public:
-    static SQLConnector *GetInstance();
-
+    static SQLConnector& GetInstance();
+    ~SQLConnector();
+   // std::tuple<std::string, Attribute> QueryInformation(std::string name);
 private:
     SQLConnector();
-    static SQLConnector *_instance;
+    // 禁用复制构造函数
+    SQLConnector(const SQLConnector &) = delete;
+    // 禁用赋值操作符
+    SQLConnector& operator=(const SQLConnector &) = delete;
+
     sqlite3 *_database;
 
-    // 垃圾回收类，在析构函数中删除SQLConnector的单例
-    class Garbo
-    {
-    public:
-        ~Garbo()
-        {
-            if(SQLConnector::_instance)
-                delete SQLConnector::_instance;
-        }
-    };
-    // 定义一个静态成员变量，程序结束时，系统会自动调用它的析构函数
-    static Garbo garbo;
+
 };
 
 #endif // SQLCONNECTOR_H

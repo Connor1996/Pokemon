@@ -2,6 +2,14 @@
 #include <ctime>
 #include <typeinfo>
 
+// 注册类到反射MAP
+REGISTER(Fire);
+REGISTER(Water);
+REGISTER(Electricity);
+REGISTER(Grass);
+REGISTER(Ice);
+
+
 bool Pokemon::Hurt(unsigned int damage)
 {
     auto score = damage - _attribute.defensePoint;
@@ -74,9 +82,3 @@ void Pokemon::Grow(unsigned int * master)
             *ptr = *ptr + static_cast<int>((*ptr / 2 + _level / 2) * Bonus() / 3);
     }
 }
-
-REGISTER(Fire);
-REGISTER(Water);
-REGISTER(Electricity);
-REGISTER(Grass);
-REGISTER(Ice);
