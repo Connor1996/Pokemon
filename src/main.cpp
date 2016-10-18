@@ -6,7 +6,18 @@
 
 #include "widget.h"
 #include <QApplication>
+#include "ormlite.h"
 
+using namespace ORMLite;
+
+struct MyClass
+{
+    int id;
+    double score;
+    std::string name;
+
+    ORMAP(MyClass, id, score, name);
+};
 
 int main(int argc, char *argv[])
 {

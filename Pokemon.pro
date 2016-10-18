@@ -29,7 +29,9 @@ HEADERS  += src/widget.h \
     src/sqlconnector.h \
     src/reflector.h \
     src/ormlite.h \
-    src/model.h
+    src/model.h \
+    include/ORMLite.h
+
 
 
 

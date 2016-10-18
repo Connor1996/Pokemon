@@ -41,3 +41,11 @@ TEST_CASE("Test Pokemon Class")
         REQUIRE(pikachu->GetLevel() >= 1);
     }
 }
+
+
+
+TEST_CASE("Test ORMLite")
+{
+
+
+}
