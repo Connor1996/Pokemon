@@ -15,12 +15,13 @@
 private:                                                        \
 friend class ORMLite::ORMapper<_CLASS_NAME_>;                   \
 template <typename VISITOR>                                     \
-void _Accept(const VISITOR& visitor)                            \
+void _Accept(VISITOR& visitor) const                            \
 {                                                               \
-    visitor.visit(__VA_ARGS__);                                 \
+    visitor.Visit(__VA_ARGS__);                                 \
 }                                                               \
 constexpr static const char* _CLASSNAME = #_CLASS_NAME_;  \
 constexpr static const char* _FIELDSNAME = #__VA_ARGS__
+
 
 namespace ORMLite_Impl {
 
@@ -33,8 +34,8 @@ public:
         {
             sqlite3_close(_database);
             throw std::runtime_error(
-                        std::string("Can't open database: %s\n",
-                                    sqlite3_errmsg(_database)));
+                        std::string("Can't open database: %s\n") +
+                                    sqlite3_errmsg(_database));
         }
     }
 
@@ -174,10 +175,11 @@ struct Field_Expr
 class TypeVisitor
 {
 public:
+
     template <typename ...Args>
     inline void Visit(Args&  ...args)
     {
-        return _Visit(args...);
+        _Visit(args...);
     }
 
     std::string GetSerializedStr() const { return _serializedStr; }
@@ -194,7 +196,7 @@ protected:
 
     inline void _Visit(const int& property)
     {
-        _serializedStr += "INT" + SEPARATOR;
+        _serializedStr = "INT" + SEPARATOR;
     }
     inline void _Visit(const double& property)
     {
@@ -296,7 +298,7 @@ class ORMapper
 public:
     ORMapper(const std::string& dbName)
         : _dbName(dbName), _tableName(T::_CLASSNAME),
-          _fieldsName(_Split(T::_FILEDSNAME))
+          _fieldsName(_Split(T::_FIELDSNAME))
     { }
 
     bool CreateTable()
@@ -305,10 +307,10 @@ public:
         {
             // 创建model类，使用访问者访问获得类中元信息
             const T modelObject {};
-            ORMLite_Impl::TypeVisitor vistor;
-            modelObject._Accept(vistor);
+            ORMLite_Impl::TypeVisitor visitor;
+            modelObject._Accept(visitor);
 
-            auto fieldsType = _Split(vistor.GetSerializedStr());
+            auto fieldsType = _Split(visitor.GetSerializedStr());
 
             auto fieldsStr = _fieldsName[0] + " ORMLite_Impl::_Split" +
                     fieldsType[0] + " PRIMARY KEY NOT NULL,";
@@ -479,7 +481,6 @@ private:
             switch (ch)
             {
             case SEPARATOR:
-            case ',':
                 result.push_back(tempStr);
                 tempStr.clear();
                 break;
