@@ -17,7 +17,7 @@ void _Accept(VISITOR& visitor) const                            \
 {                                                               \
     visitor.Visit(__VA_ARGS__);                                 \
 }                                                               \
-constexpr static const char* _CLASSNAME = #_CLASS_NAME_;  \
+constexpr static const char* _CLASSNAME = #_CLASS_NAME_;        \
 constexpr static const char* _FIELDSNAME = #__VA_ARGS__
 
 
@@ -446,8 +446,8 @@ public:
             connector.Execute(sqlStr + ";", [&] (int column, char** columnText, char
                               **columnName)
             {
-               std::cout << "____________________" << std::endl;
-
+               // 每次sqlite查询一行后都会调用一次callback函数
+               // 故callback里面每次只记录一个row
                std::vector<std::string> row;
                for (int i = 0; i < column; i++)
                    row.push_back(columnText[i]);
@@ -521,12 +521,11 @@ inline ORMLite_Impl::Field_Expr<T> Field(T& property)
 template <typename T>
 class QueryMessager
 {
-    //template <typename C>
     friend bool ORMapper<T>::Query(QueryMessager<T>& messager);
 
 public:
-    QueryMessager(const T* pModelObject)
-        : _pModelObject(pModelObject), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
+    QueryMessager()
+        : _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
     { }
 
     QueryMessager& Where(const ORMLite_Impl::Expr& expr)
@@ -566,8 +565,9 @@ public:
 
     std::string GetField(const std::string& key, const void* property)
     {
+        const T modelObject;
         ORMLite_Impl::IndexVisitor visitor(property);
-        _pModelObject->_Accept(visitor);
+        modelObject->_Accept(visitor);
 
         for (auto row : _result)
         {
