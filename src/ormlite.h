@@ -3,13 +3,11 @@
 
 #include "include/sqlite3.h"
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <exception>
 #include <thread>
-
-// 序列化所用的分隔符
-#define SEPARATOR ','
 
 #define ORMAP(_CLASS_NAME_, ...)                                \
 private:                                                        \
@@ -51,7 +49,7 @@ public:
         char *errMsg = 0;
         int result;
 
-        auto callbackWrapper = [] (void* fn, int column,
+        auto callbackWrapper = [&] (void* fn, int column,
                 char** columnText, char** columnName) -> int
         {
             static_cast<std::function<void (int, char**, char**)> *>
@@ -196,15 +194,18 @@ protected:
 
     inline void _Visit(const int& property)
     {
-        _serializedStr = "INT" + SEPARATOR;
+        _serializedStr += "INT";
+        _serializedStr += ",";
     }
     inline void _Visit(const double& property)
     {
-        _serializedStr += "REAL" + SEPARATOR;
+        _serializedStr += "REAL";
+        _serializedStr += ",";
     }
     inline void _Visit(const std::string& property)
     {
-        _serializedStr += "TEXT" + SEPARATOR;
+        _serializedStr += "TEXT";
+        _serializedStr += ",";
     }
 };
 
@@ -232,15 +233,15 @@ protected:
 
     inline void _Visit(const int& property)
     {
-        _serializedStr += std::to_string(property) + SEPARATOR;
+        _serializedStr += std::to_string(property) + ",";
     }
     inline void _Visit(const double& property)
     {
-        _serializedStr += std::to_string(property) + SEPARATOR;
+        _serializedStr += std::to_string(property) + ",";
     }
     inline void _Visit(const std::string& property)
     {
-        _serializedStr += "'" + property + "'" + SEPARATOR;
+        _serializedStr += "'" + property + "'" + ",";
     }
 
 
@@ -312,7 +313,7 @@ public:
 
             auto fieldsType = _Split(visitor.GetSerializedStr());
 
-            auto fieldsStr = _fieldsName[0] + " ORMLite_Impl::_Split" +
+            auto fieldsStr = _fieldsName[0] + " " +
                     fieldsType[0] + " PRIMARY KEY NOT NULL,";
 
             for(auto i = 1; i < _fieldsName.size(); i++)
@@ -320,9 +321,11 @@ public:
                 fieldsStr += _fieldsName[i] + " " +
                         fieldsType[i] + ",";
             }
+            // 去除字符串最后多余的逗号
+            fieldsStr.pop_back();
 
-            connector.Execute("CREATE TABLE " + _tableName +
-                             " IF NOT EXISTS" + "(" + std::move(fieldsStr) + ");");
+            connector.Execute("CREATE TABLE IF NOT EXISTS " + _tableName +
+                              + "(" + std::move(fieldsStr) + ");");
         });
     }
 
@@ -341,10 +344,13 @@ public:
             ORMLite_Impl::ReaderVisitor visitor;
             modelObject._Accept(visitor);
 
+            auto fieldsStr = visitor.GetSerializedStr();
+            fieldsStr.pop_back();
+
             connector.Execute("BEGIN TRANSACTION;" \
-                              "INSERT INTO " + _tableName +
-                              "VAULES (" + visitor.GetSerializedStr() + ");" +
-                              "COMMIT TRANSACTION;");
+                              " INSERT INTO " + _tableName +
+                              " VALUES (" + fieldsStr + ");" +
+                              " COMMIT TRANSACTION;");
         });
     }
 
@@ -357,7 +363,7 @@ public:
             modelObject._Accept(visitor);
 
             // 格式如 "property = value"
-            auto keyValueStr = _fieldsName[0] + "=" + visitor.GetSerializedStr();
+            auto keyValueStr = _fieldsName[0] + "=" + _Split(visitor.GetSerializedStr())[0];
             connector.Execute("DELETE FROM " + _tableName + " " +
                              "WHERE " + std::move(keyValueStr) + ";");
         });
@@ -392,16 +398,17 @@ public:
 
             auto fieldsValue = _Split(visitor.GetSerializedStr());
             auto keyStr = _fieldsName[0] + "=" + fieldsValue[0];
-            auto fieldsStr = "";
+            std::string fieldsStr = "";
             for(auto i = 1; i < _fieldsName.size(); i++)
             {
                 fieldsStr += _fieldsName[i] + "=" +
                         fieldsValue[i] + ",";
             }
+            fieldsStr.pop_back();
 
             connector.Execute("UPDATE " + _tableName +
-                              "SET " + std::move(fieldsStr) +
-                              "WHERE " + std::move(keyStr) + ";");
+                              " SET " + std::move(fieldsStr) +
+                              " WHERE " + std::move(keyStr) + ";");
         });
     }
 
@@ -418,17 +425,17 @@ public:
             auto key = _Split(visitor.GetSerializedStr())[0];
 
             connector.Execute("UPDATE " + _tableName +
-                              "SET " + property + "=" + value +
-                              "WHERE " + std::move(key) + "=" + keyValue + ";");
+                              " SET " + property + "=" + value +
+                              " WHERE " + std::move(key) + "=" + keyValue + ";");
         });
     }
 
     // 查询返回的是由相应数据初始化的类型对象
-    bool Query(const QueryMessager<T>& messager)
+    bool Query(QueryMessager<T>& messager)
     {
         return _HandleException([&] (ORMLite_Impl::SQLConnector& connector)
         {
-            auto sqlStr = "SELECT * FROM " + _tableName + " ";
+            std::string sqlStr = "SELECT * FROM " + _tableName + " ";
             if (!messager._sqlWhere.empty())
                 sqlStr += messager._sqlWhere;
             if (!messager._sqlLimit.empty())
@@ -436,15 +443,23 @@ public:
             if (!messager._sqlOrderBy.empty())
                 sqlStr += messager._sqlLimit;
 
-            connector.Execute(sqlStr + ";", [&] (int column, char** columnText, char columnName)
+            connector.Execute(sqlStr + ";", [&] (int column, char** columnText, char
+                              **columnName)
             {
+               std::cout << "____________________" << std::endl;
+
                std::vector<std::string> row;
                for (int i = 0; i < column; i++)
                    row.push_back(columnText[i]);
 
-               messager.push_back(std::move(row));
+               messager._result.push_back(std::move(row));
             });
         });
+    }
+
+    std::string GetErrorMessage()
+    {
+        return _errorMessage;
     }
 
 
@@ -465,6 +480,7 @@ private:
         catch (const std::exception& e)
         {
             _errorMessage = e.what();
+            std::cout << _errorMessage << std::endl;
             return false;
         }
     }
@@ -480,7 +496,7 @@ private:
         {
             switch (ch)
             {
-            case SEPARATOR:
+            case ',':
                 result.push_back(tempStr);
                 tempStr.clear();
                 break;
@@ -505,7 +521,8 @@ inline ORMLite_Impl::Field_Expr<T> Field(T& property)
 template <typename T>
 class QueryMessager
 {
-    friend std::string ORMapper<T>::Query(const QueryMessager &messager);
+    //template <typename C>
+    friend bool ORMapper<T>::Query(QueryMessager<T>& messager);
 
 public:
     QueryMessager(const T* pModelObject)

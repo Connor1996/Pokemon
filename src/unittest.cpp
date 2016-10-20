@@ -1,6 +1,10 @@
+#include <iostream>
 #include "include/catch.hpp"
 #include "pokemon.h"
 #include "pokemonfactory.h"
+#include "model.h"
+#include <iostream>
+
 
 TEST_CASE("Test Pokemon Class")
 {
@@ -40,12 +44,61 @@ TEST_CASE("Test Pokemon Class")
         REQUIRE(result == true);
         REQUIRE(pikachu->GetLevel() >= 1);
     }
+
+    delete pikachu;
+    delete charmander;
 }
 
 
 
 TEST_CASE("Test ORMLite")
 {
+    ORMapper<MyClass> mapper("test.db");
 
+    REQUIRE(mapper.CreateTable() == true);
 
+    std::vector<MyClass> objects =
+    {
+        {0, 0.2, "John"},
+        {1, 0.4, "Jack"},
+        {2, 0.6, "Jess"}
+    };
+    for (const auto obj : objects)
+    {
+        REQUIRE(mapper.Insert(obj));
+    }
+//    SECTION("insert objects")
+//    {
+//        for (const auto obj : objects)
+//        {
+//            REQUIRE(mapper.Insert(obj));
+//        }
+
+//    }
+
+    SECTION("update object")
+    {
+        objects[1].score = 1.0;
+        REQUIRE(mapper.Update (objects[1]));
+    }
+
+    SECTION("delete object")
+    {
+        REQUIRE(mapper.Delete (objects[2]));
+    }
+
+    SECTION("select all to vector")
+    {
+        QueryMessager<MyClass> qm = QueryMessager<MyClass>(&objects[0]);
+        mapper.Query(qm);
+        auto vec = qm.GetVector();
+        for (auto v : vec)
+        {
+            for (auto str : v)
+                std::cout << str << " ";
+            std::cout << std::endl;
+        }
+    }
+
+    mapper.DropTable();
 }
