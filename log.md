@@ -1,0 +1,27 @@
+# Change LOG
+
+-   2016/9/29
+    -   Initial 
+-   2016/10/6
+    -   Add unittest
+    -   Use conditional compilation to support different complier
+-   2016/10/7
+    -   Update directory
+-   2016/10/11
+    -   Add reflection:GetClassByName support
+-   2016/10/14
+    -   Add ormlite.h
+-   2016/10/15
+    -   Update ormlite.h
+-   2016/10/18
+    -   Complete ormlite.h
+-   2016/10/20
+    -   Adjust the way to init QueryMessager in ormlite.h
+    -   Fix bugs in ormlite.h
+    -   Add unittest for ormlite
+-   2016/11/25
+    -   Add socket
+-   2016/11/26
+    -   Add multi-thread support for server
+    -   Complete basic socket logic
+

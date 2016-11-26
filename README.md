@@ -21,11 +21,11 @@ A turn-based game developed in QT
 
 ## Change Log
 
-2016/11/24	First edition with basic data structure
+To be finished....
 
 
 
-Just list Critical updates.  
+Just list critical updates.  
 
 See more in **log.md** in the root directory 
 
