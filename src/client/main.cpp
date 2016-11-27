@@ -8,29 +8,19 @@
 #include "../socket.h"
 #include "../widget.h"
 #include <QApplication>
-
+#include <thread>
 
 int main(int argc, char *argv[])
 {
 #ifdef __DEBUG__
     Catch::Session().run(argc, argv);
 #endif
-    std::string name = "UNKNOWN";
-    try
-    {
-        Socket::Client client = Socket::Client(name);
-    } catch (std::exception e){
-        std::cout << e.what() << std::endl;
-    }
 
     QApplication a(argc, argv);
     Widget w;
     w.show();
 
-
-
     return a.exec();
-
 }
 
 

@@ -24,4 +24,10 @@
 -   2016/11/26
     -   Add multi-thread support for server
     -   Complete basic socket logic
+-   2016/11/27
+    -   Combine pokemon with socket
+    -   Fix conflicts between winsock2.h and windows.h 
+    -   Initial widget.ui
+    -   Add login logic
+    -   Improve socket for server 
 

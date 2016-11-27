@@ -1,19 +1,23 @@
 #ifndef POKEMON_H
 #define POKEMON_H
 
+#include "reflector.h"
+
 // 获得对象运行时多态类型
 #ifdef __GNUC__
 #include <cxxabi.h>
 #define GET_CLASS_TYPE(_OBJECT_)     \
     std::string(abi::__cxa_demangle(typeid(_OBJECT_).name(), nullptr, nullptr, nullptr))
-#else
+#elif _MSC_VER && !__INTEL_COMPILER
 #include <typeinfo>
-#define GET_CLASS_TYPE(_OBJECT_)     \
+
+#define GET_CLASS_NAME(_OBJECT_) \
     std::string(typeid(_OBJECT_).name())
+#define GET_CLASS_TYPE(_OBJECT_)     \
+    GET_CLASS_NAME(_OBJECT_).substr(GET_CLASS_NAME(_OBJECT_).find("class ") + 6, \
+    GET_CLASS_NAME(_OBJECT_).length() - 6)
+
 #endif
-
-
-#include "reflector.h"
 
 enum class Type
 {

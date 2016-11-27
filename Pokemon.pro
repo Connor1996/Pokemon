@@ -4,29 +4,35 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+Client {
+    QT       += core gui
+    CONFIG += c++11
+}
+
+Server {
+    CONFIG += console c++11
+    CONFIG -= app_bundle
+    CONFIG -= qt
+}
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Pokemon
 TEMPLATE = app
-CONFIG += c++11
+
 
 DEFINES += WIN32_LEAN_AND_MEAN  #排除windows.h与winsock.h的冲突
 
-SOURCES +=\
-        src/widget.cpp \
+SOURCES += \
     src/pokemon.cpp \
-    src/unittest.cpp \
     src/pokemonfactory.cpp \
     include/sqlite3.c \
     src/sqlconnector.cpp \
     src/reflector.cpp
 
-HEADERS  += src/widget.h \
+HEADERS  +=  \
     src/pokemon.h \
     src/pokemonfactory.h \
-    include/catch.hpp \
     include/sqlite3.h \
     src/sqlconnector.h \
     src/reflector.h \
@@ -34,6 +40,7 @@ HEADERS  += src/widget.h \
     src/model.h \
     src/socket.h
 
+UI_DIR = ./ui
 
 FORMS    += \
     widget.ui
@@ -44,12 +51,20 @@ debug {
 
 Client{
     SOURCES += \
-        src/client/main.cpp
+        src/client/main.cpp \
+        src/widget.cpp  \
+        src/unittest.cpp
+
+    HEADERS += \
+        src/widget.h \
+        include/catch.hpp \
 }
 
 Server{
     SOURCES += \
-        src/server/main.cpp
+        src/server/main.cpp \
+
+
 }
 
 

@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include "socket.h"
 
 namespace Ui {
 class Widget;
@@ -15,8 +16,15 @@ public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
+    void InitConnect();
+    void InitUi();
+
+private slots:
+    void Login();
+
 private:
     Ui::Widget *ui;
+    Socket::Client *client;
 };
 
 #endif // WIDGET_H

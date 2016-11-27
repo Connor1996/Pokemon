@@ -1,3 +1,6 @@
+#ifndef SOCKET_H
+#define SOCKET_H
+
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <WS2tcpip.h>
@@ -68,7 +71,7 @@ public:
             closesocket(_connectSocket);
             throw std::runtime_error("Second parrameter does not contain valid ipaddress");
         }
-        // 向服务器发出连接请求
+
         auto trys = 10;
         while(trys--)
         {
@@ -82,8 +85,8 @@ public:
             cout << "Initial success" << endl;
             while(true)
             {
-                getchar();
                 send();
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             }
         }
         closesocket(_connectSocket);
@@ -95,6 +98,8 @@ public:
         shutdown(_connectSocket, SD_BOTH);
         closesocket(_connectSocket);
     }
+
+
 
 protected:
     SOCKET _connectSocket;
@@ -121,7 +126,7 @@ protected:
 class Server : Socket
 {
 public:
-    Server()
+    Server() : _count(0)
     {
         _listeningSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (_listeningSocket == -1)
@@ -147,7 +152,7 @@ public:
         }
         std::cout << "Wait for connection..." << std::endl;
         // 不断等待客户端请求的到来
-        while (1)
+        while (true)
         {
             SOCKET newConnection = accept(_listeningSocket, NULL, NULL);
             _socketThreads.emplace_back(std::thread([this] (SOCKET &&connection)
@@ -159,12 +164,13 @@ public:
                 }
                 else
                 {
-                    cout << "New come, now " << _socketThreads.size() << " connections in total" << endl;
+                    cout << "New come, now " << ++_count << " connections in total" << endl;
 
                     while(true)
                     {
-                        if (recv(connection, recvBuf, 200, 0) == -1)
+                        if (recv(connection, recvBuf, 200, 0) <= 0)
                         {
+                            cout << "Someone offline, now " << --_count << " connections in total" << endl;
                             shutdown(connection, SD_BOTH);
                             closesocket(connection);
                             break;
@@ -173,6 +179,8 @@ public:
                     }
                 }
             }, std::move(newConnection)));
+
+            _socketThreads.back().detach(); //使子线程独立运行
         }
     }
 
@@ -189,5 +197,9 @@ protected:
     SOCKADDR_IN _clientAddr;
 
     std::vector<std::thread> _socketThreads;
+
+    size_t _count;
 };
 }
+
+#endif /* SOCKET_H */
