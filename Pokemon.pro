@@ -12,7 +12,9 @@ TARGET = Pokemon
 TEMPLATE = app
 CONFIG += c++11
 
-SOURCES += src/main.cpp\
+DEFINES += WIN32_LEAN_AND_MEAN  #排除windows.h与winsock.h的冲突
+
+SOURCES +=\
         src/widget.cpp \
     src/pokemon.cpp \
     src/unittest.cpp \
@@ -30,14 +32,24 @@ HEADERS  += src/widget.h \
     src/reflector.h \
     src/ormlite.h \
     src/model.h \
-    include/ORMLite.h
+    src/socket.h
 
 
-
-
-FORMS    += widget.ui
+FORMS    += \
+    widget.ui
 
 debug {
   DEFINES += __DEBUG__
 }
+
+Client{
+    SOURCES += \
+        src/client/main.cpp
+}
+
+Server{
+    SOURCES += \
+        src/server/main.cpp
+}
+
 

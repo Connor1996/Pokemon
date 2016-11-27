@@ -3,14 +3,16 @@
 
 // 获得对象运行时多态类型
 #ifdef __GNUC__
+#include <cxxabi.h>
 #define GET_CLASS_TYPE(_OBJECT_)     \
     std::string(abi::__cxa_demangle(typeid(_OBJECT_).name(), nullptr, nullptr, nullptr))
 #else
+#include <typeinfo>
 #define GET_CLASS_TYPE(_OBJECT_)     \
     std::string(typeid(_OBJECT_).name())
 #endif
 
-#include <cxxabi.h>
+
 #include "reflector.h"
 
 enum class Type
@@ -201,6 +203,7 @@ public:
 
     unsigned int Attack(Pokemon * opPokemon) override
     {
+        std::string name = typeid(*opPokemon).name() ;
         std::string className = GET_CLASS_TYPE(*opPokemon);
         auto coefficient = 1.0;
 

@@ -12,6 +12,7 @@
 #define ORMAP(_CLASS_NAME_, ...)                                \
 private:                                                        \
 friend class ORMLite::ORMapper<_CLASS_NAME_>;                   \
+friend class ORMLite::QueryMessager<_CLASS_NAME_>;              \
 template <typename VISITOR>                                     \
 void _Accept(VISITOR& visitor) const                            \
 {                                                               \
@@ -49,7 +50,7 @@ public:
         char *errMsg = 0;
         int result;
 
-        auto callbackWrapper = [&] (void* fn, int column,
+        auto callbackWrapper = [] (void* fn, int column,
                 char** columnText, char** columnName) -> int
         {
             static_cast<std::function<void (int, char**, char**)> *>
@@ -285,6 +286,33 @@ protected:
 
 };
 
+std::vector<std::string> _Split(std::string str)
+{
+    std::vector<std::string> result;
+    std::string tempStr = "";
+    // 扩展字符串方便操作
+    str += ',';
+
+    for (const auto& ch : str)
+    {
+        switch (ch)
+        {
+        case ',':
+            result.push_back(tempStr);
+            tempStr.clear();
+            break;
+        case ' ':
+        case '_':
+            break;
+        default:
+            tempStr += ch;
+            break;
+        }
+    }
+    return std::move(result);
+}
+
+
 }
 
 
@@ -299,7 +327,7 @@ class ORMapper
 public:
     ORMapper(const std::string& dbName)
         : _dbName(dbName), _tableName(T::_CLASSNAME),
-          _fieldsName(_Split(T::_FIELDSNAME))
+          _fieldsName(ORMLite_Impl::_Split(T::_FIELDSNAME))
     { }
 
     bool CreateTable()
@@ -311,7 +339,7 @@ public:
             ORMLite_Impl::TypeVisitor visitor;
             modelObject._Accept(visitor);
 
-            auto fieldsType = _Split(visitor.GetSerializedStr());
+            auto fieldsType = ORMLite_Impl::_Split(visitor.GetSerializedStr());
 
             auto fieldsStr = _fieldsName[0] + " " +
                     fieldsType[0] + " PRIMARY KEY NOT NULL,";
@@ -363,7 +391,7 @@ public:
             modelObject._Accept(visitor);
 
             // 格式如 "property = value"
-            auto keyValueStr = _fieldsName[0] + "=" + _Split(visitor.GetSerializedStr())[0];
+            auto keyValueStr = _fieldsName[0] + "=" + ORMLite_Impl::_Split(visitor.GetSerializedStr())[0];
             connector.Execute("DELETE FROM " + _tableName + " " +
                              "WHERE " + std::move(keyValueStr) + ";");
         });
@@ -396,7 +424,7 @@ public:
             ORMLite_Impl::ReaderVisitor visitor;
             modelObject._Accept(visitor);
 
-            auto fieldsValue = _Split(visitor.GetSerializedStr());
+            auto fieldsValue = ORMLite_Impl::_Split(visitor.GetSerializedStr());
             auto keyStr = _fieldsName[0] + "=" + fieldsValue[0];
             std::string fieldsStr = "";
             for(auto i = 1; i < _fieldsName.size(); i++)
@@ -422,7 +450,7 @@ public:
             ORMLite_Impl::ReaderVisitor visitor;
             object._Accept(visitor);
 
-            auto key = _Split(visitor.GetSerializedStr())[0];
+            auto key = ORMLite_Impl::_Split(visitor.GetSerializedStr())[0];
 
             connector.Execute("UPDATE " + _tableName +
                               " SET " + property + "=" + value +
@@ -485,31 +513,7 @@ private:
         }
     }
 
-    static std::vector<std::string> _Split(std::string str)
-    {
-        std::vector<std::string> result;
-        std::string tempStr = "";
-        // 扩展字符串方便操作
-        str += ',';
 
-        for (const auto& ch : str)
-        {
-            switch (ch)
-            {
-            case ',':
-                result.push_back(tempStr);
-                tempStr.clear();
-                break;
-            case ' ':
-            case '_':
-                break;
-            default:
-                tempStr += ch;
-                break;
-            }
-        }
-        return std::move(result);
-    }
 };
 
 template <typename T>
@@ -524,12 +528,13 @@ class QueryMessager
     friend bool ORMapper<T>::Query(QueryMessager<T>& messager);
 
 public:
-    QueryMessager()
-        : _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
+    QueryMessager(const T* pModelObject)
+        : _pModelObject(pModelObject), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
     { }
 
     QueryMessager& Where(const ORMLite_Impl::Expr& expr)
     {
+        _sqlWhere = "WHERE ";
         for (const auto exprPair : expr.expr)
         {
             // first为nullptr说明为括号
@@ -565,9 +570,8 @@ public:
 
     std::string GetField(const std::string& key, const void* property)
     {
-        const T modelObject;
         ORMLite_Impl::IndexVisitor visitor(property);
-        modelObject->_Accept(visitor);
+        _pModelObject->_Accept(visitor);
 
         for (auto row : _result)
         {
@@ -588,15 +592,17 @@ private:
 
     std::string _GetFieldName(const void* property)
     {
-        ORMLite_Impl::IndexVisitor visitor;
+        ORMLite_Impl::IndexVisitor visitor(_pModelObject);
         _pModelObject->_Accept(visitor);
 
         if (!visitor.isFound)
             throw std::runtime_error("No such field in the Table");
 
-        return _Split(T::_FILEDSNAME)[visitor.index];
+        return ORMLite_Impl::_Split(T::_FIELDSNAME)[visitor.index];
     }
 };
+
+
 }
 
 

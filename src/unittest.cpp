@@ -59,10 +59,11 @@ TEST_CASE("Test ORMLite")
 
     std::vector<MyClass> objects =
     {
-        {0, 0.2, "John"},
-        {1, 0.4, "Jack"},
-        {2, 0.6, "Jess"}
+        {3, 0.2, "John"},
+        {4, 0.4, "Jack"},
+        {5, 0.6, "Jess"}
     };
+
     for (const auto obj : objects)
     {
         REQUIRE(mapper.Insert(obj));
@@ -89,7 +90,7 @@ TEST_CASE("Test ORMLite")
 
     SECTION("select all to vector")
     {
-        QueryMessager<MyClass> qm = QueryMessager<MyClass>();
+        QueryMessager<MyClass> qm = QueryMessager<MyClass>(&objects[0]).Where(Field(objects[0].id) == 3);
         mapper.Query(qm);
         auto vec = qm.GetVector();
         for (auto v : vec)
