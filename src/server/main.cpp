@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../socket.h"
+#include "server.h"
 
 
 int main(int argc, char *argv[])
@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     std::cout << "this is server" << std::endl;
     try
     {
-        Socket::Server server;
+        Connor_Socket::Server server;
     }
     catch (std::exception e)
     {

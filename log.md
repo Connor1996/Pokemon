@@ -30,4 +30,6 @@
     -   Initial widget.ui
     -   Add login logic
     -   Improve socket for server 
+-   2016/11/28
+    -   Apart client.h and server.h from socket.h
 

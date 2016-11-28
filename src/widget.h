@@ -2,7 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
-#include "socket.h"
+#include "client/client.h"
 
 namespace Ui {
 class Widget;
@@ -24,7 +24,7 @@ private slots:
 
 private:
     Ui::Widget *ui;
-    Socket::Client *client;
+    Connor_Socket::Client *client;
 };
 
 #endif // WIDGET_H

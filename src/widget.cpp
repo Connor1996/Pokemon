@@ -1,11 +1,14 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include <QMessageBox>
+#include <QTextCodec>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
     InitConnect();
 }
 
@@ -27,9 +30,15 @@ void Widget::Login()
 
     try
     {
-       Socket::Client client = Socket::Client(username);
-
+       client = new Connor_Socket::Client(username);
+       if (client->Connect(password))
+       {
+           QMessageBox::information(this, "Error", QString::fromWCharArray(L"登陆成功"));
+       }
+       else
+           QMessageBox::information(this, "Error", QString::fromWCharArray(L"登陆失败"));
     } catch (std::exception e){
+        delete client;
         std::cout << e.what() << std::endl;
     }
 }
