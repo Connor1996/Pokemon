@@ -36,9 +36,9 @@ HEADERS  +=  \
     include/sqlite3.h \
     src/sqlconnector.h \
     src/reflector.h \
-    src/ormlite.h \
     src/model.h \
-    src/socket.h
+    src/socket.h \
+    src/model/userinfo.h
 
 
 UI_DIR = ./ui
@@ -51,6 +51,8 @@ debug {
 }
 
 Client{
+    DEFINES += __CLIENT__
+
     SOURCES += \
         src/client/main.cpp \
         src/widget.cpp  \
@@ -66,11 +68,14 @@ Client{
 }
 
 Server{
+    DEFINES += __SERVER__
+
     SOURCES += \
         src/server/main.cpp \
         src/server/server.cpp
     HEADERS += \
-        src/server/server.h
+        src/server/server.h \
+        src/server/ormlite.h
 
 }
 

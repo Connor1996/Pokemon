@@ -90,9 +90,9 @@ TEST_CASE("Test ORMLite")
 
     SECTION("select all to vector")
     {
-        QueryMessager<MyClass> qm = QueryMessager<MyClass>(&objects[0]).Where(Field(objects[0].id) == 3);
-        mapper.Query(qm);
-        auto vec = qm.GetVector();
+        QueryMessager<MyClass> query;
+        mapper.Query(query.Where(Field(objects[0].id) == 3));
+        auto vec = query.GetVector();
         for (auto v : vec)
         {
             for (auto str : v)

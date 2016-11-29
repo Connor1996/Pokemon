@@ -45,7 +45,7 @@ bool Client::Connect(std::string password)
                     sizeof(_serverAddr))== -1)
         {
              cout << "Unable to connect to server... " << std::to_string(5 - trys) << " trys" << endl;
-             std::this_thread::sleep_for(std::chrono::milliseconds(100));
+             std::this_thread::sleep_for(std::chrono::milliseconds(10));
              continue;
         }
         cout << "Connect success" << endl;

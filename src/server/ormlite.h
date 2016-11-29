@@ -528,8 +528,8 @@ class QueryMessager
     friend bool ORMapper<T>::Query(QueryMessager<T>& messager);
 
 public:
-    QueryMessager(const T* pModelObject)
-        : _pModelObject(pModelObject), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
+    QueryMessager()
+        : _pModelObject(&T{}), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
     { }
 
     QueryMessager& Where(const ORMLite_Impl::Expr& expr)

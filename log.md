@@ -32,4 +32,6 @@
     -   Improve socket for server 
 -   2016/11/28
     -   Apart client.h and server.h from socket.h
+-   2016/11/29
+    -   Simplify QueryMessager
 
