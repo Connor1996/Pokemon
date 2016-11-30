@@ -1,6 +1,12 @@
 #include "server.h"
+#include "ormlite.h"
+#include "dispatch.h"
+#include "../model/userinfo.h"
+#include "include/json.hpp"
 
 using namespace Connor_Socket;
+using json = nlohmann::json;
+
 
 Server::Server() : _count(0)
 {
@@ -37,6 +43,7 @@ Server::Server() : _count(0)
         {
             char recvBuf[DEFAULT_BUFLEN];
             int recvBufLen = DEFAULT_BUFLEN;
+            Dispatcher dispatcher;
 
             if (connection < 0)
             {
@@ -61,10 +68,10 @@ Server::Server() : _count(0)
                     }
                     cout << "message: " << recvBuf << endl;
 
-                    char sendBuf[DEFAULT_BUFLEN] = "1";
-                    int sendBufLen = DEFAULT_BUFLEN;
+                    std::string responseStr = dispatcher.Dispatch(std::move(json::parse(recvBuf)));
 
-                    send(connection, sendBuf, sendBufLen, 0);
+                    send(connection, responseStr.c_str(), responseStr.length(), 0);
+
                 }
             }
         }, std::move(newConnection)));

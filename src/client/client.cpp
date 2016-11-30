@@ -1,6 +1,8 @@
 #include "client.h"
+#include "include/json.hpp"
 
 using namespace Connor_Socket;
+using json = nlohmann::json;
 
 Client::Client(string name) : _username(name)
 {
@@ -57,14 +59,25 @@ bool Client::Connect(std::string password)
         closesocket(_connectSocket);
         throw std::runtime_error("Unable to connect to server, Please try later");
     }
-    auto receive = Request("$" + _username + "$" + password + "$");
-    cout << "receive: " << receive << endl;
-    if (receive == "1")
-        return true;
-    else if (receive == "0")
+
+    json SendInfo = {
+        {"type", LOG_IN},
+        {"username", _username},
+        {"password", password}
+    };
+
+    // 获得返回信息，并将其解析成json
+    json receiveInfo = json::parse(Request(SendInfo.dump()));
+    cout << "receive: " << receiveInfo << endl;
+
+    if (receiveInfo["type"] == LOG_IN_FAIL)
     {
         closesocket(_connectSocket);
         return false;
+    }
+    else if (receiveInfo["type"] == LOG_IN_SUCCESS)
+    {
+        return true;
     }
     else
     {

@@ -43,6 +43,8 @@ public:
         sqlite3_close(_database);
     }
 
+
+
     void Execute(const std::string &sqlStr,
                  std::function<void (int, char**, char**)> callback = _callback)
     {
@@ -319,7 +321,94 @@ std::vector<std::string> _Split(std::string str)
 namespace ORMLite {
 
 template <typename T>
-class QueryMessager;
+class ORMapper;
+
+template <typename T>
+class QueryMessager
+{
+    friend bool ORMapper<T>::Query(QueryMessager<T>& messager);
+
+public:
+    QueryMessager()
+        : _pModelObject(&T{}), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
+    { }
+
+    QueryMessager& Where(const ORMLite_Impl::Expr& expr)
+    {
+        _sqlWhere = "WHERE ";
+        for (const auto exprPair : expr.expr)
+        {
+            // first为nullptr说明为括号
+            if (exprPair.first != nullptr)
+                _sqlWhere += _GetFieldName(exprPair.first);
+            _sqlWhere += exprPair.second;
+        }
+
+        return *this;
+    }
+
+    QueryMessager& OrderBy(const T& property, bool isDecreasing = false)
+    {
+        _sqlOrderBy = " ORDER BY " + _GetFieldName(property);
+        if (isDecreasing)
+            _sqlOrderBy += " DESC";
+
+        return *this;
+    }
+
+    QueryMessager& Limit(size_t count, size_t offest)
+    {
+        _sqlLimit = " LIMIT " + std::to_string(count) +
+                " OFFEST " + std::to_string(offest);
+
+        return *this;
+    }
+
+    std::vector<std::vector<std::string>>& GetVector()
+    {
+        return _result;
+    }
+
+    bool IsNone()
+    {
+        return _result.size() == 0;
+    }
+
+    std::string GetField(const std::string& key, const void* property)
+    {
+        ORMLite_Impl::IndexVisitor visitor(property);
+        _pModelObject->_Accept(visitor);
+
+        for (auto row : _result)
+        {
+            if (row[0] == key)
+                return row[visitor.index];
+        }
+
+        return "";
+    }
+
+private:
+    const T* _pModelObject;
+    std::string _sqlWhere;
+    std::string _sqlOrderBy;
+    std::string _sqlLimit;
+
+    std::vector<std::vector<std::string>> _result;
+
+    std::string _GetFieldName(const void* property)
+    {
+        ORMLite_Impl::IndexVisitor visitor(_pModelObject);
+        _pModelObject->_Accept(visitor);
+
+        if (!visitor.isFound)
+            throw std::runtime_error("No such field in the Table");
+
+        return ORMLite_Impl::_Split(T::_FIELDSNAME)[visitor.index];
+    }
+};
+
+
 
 template <typename T>
 class ORMapper
@@ -458,6 +547,7 @@ public:
         });
     }
 
+
     // 查询返回的是由相应数据初始化的类型对象
     bool Query(QueryMessager<T>& messager)
     {
@@ -508,100 +598,18 @@ private:
         catch (const std::exception& e)
         {
             _errorMessage = e.what();
-            std::cout << _errorMessage << std::endl;
+            //std::cout << _errorMessage << std::endl;
             return false;
         }
     }
-
-
 };
 
+
 template <typename T>
-inline ORMLite_Impl::Field_Expr<T> Field(T& property)
+inline ORMLite_Impl::Field_Expr<T> Field(T&& property)
 {
     return ORMLite_Impl::Field_Expr<T>(property);
 }
-
-template <typename T>
-class QueryMessager
-{
-    friend bool ORMapper<T>::Query(QueryMessager<T>& messager);
-
-public:
-    QueryMessager()
-        : _pModelObject(&T{}), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
-    { }
-
-    QueryMessager& Where(const ORMLite_Impl::Expr& expr)
-    {
-        _sqlWhere = "WHERE ";
-        for (const auto exprPair : expr.expr)
-        {
-            // first为nullptr说明为括号
-            if (exprPair.first != nullptr)
-                _sqlWhere += _GetFieldName(exprPair.first);
-            _sqlWhere += exprPair.second;
-        }
-
-        return *this;
-    }
-
-    QueryMessager& OrderBy(const T& property, bool isDecreasing = false)
-    {
-        _sqlOrderBy = " ORDER BY " + _GetFieldName(property);
-        if (isDecreasing)
-            _sqlOrderBy += " DESC";
-
-        return *this;
-    }
-
-    QueryMessager& Limit(size_t count, size_t offest)
-    {
-        _sqlLimit = " LIMIT " + std::to_string(count) +
-                " OFFEST " + std::to_string(offest);
-
-        return *this;
-    }
-
-    std::vector<std::vector<std::string>> GetVector()
-    {
-        return _result;
-    }
-
-    std::string GetField(const std::string& key, const void* property)
-    {
-        ORMLite_Impl::IndexVisitor visitor(property);
-        _pModelObject->_Accept(visitor);
-
-        for (auto row : _result)
-        {
-            if (row[0] == key)
-                return row[visitor.index];
-        }
-
-        return "";
-    }
-
-private:
-    const T* _pModelObject;
-    std::string _sqlWhere;
-    std::string _sqlOrderBy;
-    std::string _sqlLimit;
-
-    std::vector<std::vector<std::string>> _result;
-
-    std::string _GetFieldName(const void* property)
-    {
-        ORMLite_Impl::IndexVisitor visitor(_pModelObject);
-        _pModelObject->_Accept(visitor);
-
-        if (!visitor.isFound)
-            throw std::runtime_error("No such field in the Table");
-
-        return ORMLite_Impl::_Split(T::_FIELDSNAME)[visitor.index];
-    }
-};
-
 
 }
 

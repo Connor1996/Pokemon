@@ -27,7 +27,8 @@ SOURCES += \
     src/pokemonfactory.cpp \
     include/sqlite3.c \
     src/sqlconnector.cpp \
-    src/reflector.cpp
+    src/reflector.cpp \
+    src/server/dispatch.cpp
 
 
 HEADERS  +=  \
@@ -38,7 +39,10 @@ HEADERS  +=  \
     src/reflector.h \
     src/model.h \
     src/socket.h \
-    src/model/userinfo.h
+    src/model/userinfo.h \
+    include/json.hpp \
+    src/server/dispatch.h \
+    src/define.h
 
 
 UI_DIR = ./ui

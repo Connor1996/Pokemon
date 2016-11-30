@@ -34,4 +34,7 @@
     -   Apart client.h and server.h from socket.h
 -   2016/11/29
     -   Simplify QueryMessager
+-   2016/11/30
+    -   Add json support 
+    -   Add dispatcher
 

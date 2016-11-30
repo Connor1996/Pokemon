@@ -33,7 +33,7 @@ void Widget::Login()
        client = new Connor_Socket::Client(username);
        if (client->Connect(password))
        {
-           QMessageBox::information(this, "Error", QString::fromWCharArray(L"登陆成功"));
+           QMessageBox::information(this, "Message", QString::fromWCharArray(L"登陆成功"));
        }
        else
            QMessageBox::information(this, "Error", QString::fromWCharArray(L"登陆失败"));

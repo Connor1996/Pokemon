@@ -91,7 +91,7 @@ TEST_CASE("Test ORMLite")
     SECTION("select all to vector")
     {
         QueryMessager<MyClass> query;
-        mapper.Query(query.Where(Field(objects[0].id) == 3));
+        mapper.Query(query.Where(Field(MyClass{}.id) == 3));
         auto vec = query.GetVector();
         for (auto v : vec)
         {
