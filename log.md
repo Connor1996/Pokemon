@@ -40,4 +40,5 @@
 -   2016/12/1
     -   Fix link bugs
     -   Add signup logic
+    -   Fix ormlite bug caused by Simplification of QueryMessager
 

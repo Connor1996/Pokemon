@@ -95,14 +95,17 @@ struct Expr
 {
     std::vector<std::pair<const void *, std::string>> expr;
 
-    Expr (const std::string& property, const std::string& op,
-         const std::string& value)
-        : expr{ std::make_pair(&property, op + "'" + value + "'") }
-    { }
+
 
     template <typename T>
     Expr (const T& property, const std::string& op, const T& value)
         : expr{ std::make_pair(&property, op + std::to_string(value)) }
+    { }
+
+    template <>
+    Expr (const std::string& property, const std::string& op,
+         const std::string& value)
+        : expr{ std::make_pair(&property, op + "'" + value + "'") }
     { }
 
     inline Expr operator &&(const Expr& rhs)
@@ -304,8 +307,8 @@ class QueryMessager
     friend bool ORMapper<T>::Query(QueryMessager<T>& messager);
 
 public:
-    QueryMessager()
-        : _pModelObject(&T{}), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
+    QueryMessager(const T& ModelObject)
+        : _pModelObject(&ModelObject), _sqlWhere(""), _sqlOrderBy(""), _sqlLimit("")
     { }
 
     QueryMessager& Where(const ORMLite_Impl::Expr& expr)
@@ -381,7 +384,7 @@ private:
 
     std::string _GetFieldName(const void* property)
     {
-        ORMLite_Impl::IndexVisitor visitor(_pModelObject);
+        ORMLite_Impl::IndexVisitor visitor(property);
         _pModelObject->_Accept(visitor);
 
         if (!visitor.isFound)
@@ -644,6 +647,12 @@ private:
 
 };
 
+
+template <typename T>
+inline ORMLite_Impl::Field_Expr<T> Field(T& property)
+{
+    return ORMLite_Impl::Field_Expr<T>(property);
+}
 
 template <typename T>
 inline ORMLite_Impl::Field_Expr<T> Field(T&& property)

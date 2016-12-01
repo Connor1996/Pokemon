@@ -28,14 +28,15 @@ std::string Dispatcher::Dispatch(json requestInfo)
 json Dispatcher::LoginHandle(json &requestInfo)
 {
     ORMapper<UserInfo> mapper("data.db");
-    QueryMessager<UserInfo> messager;
+    UserInfo helper;
+    QueryMessager<UserInfo> messager(helper);
     json responseInfo;
 
     std::cout << "[INFO] Login request comes" << std::endl;
 
     auto result = mapper.Query(messager
-                 .Where(Field(UserInfo{}.username) == requestInfo["username"].get<std::string>()
-                        && Field(UserInfo{}.password) == requestInfo["password"].get<std::string>()));
+                 .Where(Field(helper.username) == requestInfo["username"].get<std::string>()
+                        && Field(helper.password) == requestInfo["password"].get<std::string>()));
     //std::cout << "[INFO] Query finish" << std::endl;
 
     if (result)
@@ -57,13 +58,14 @@ json Dispatcher::LoginHandle(json &requestInfo)
 json Dispatcher::SignupHandle(json &requestInfo)
 {
     ORMapper<UserInfo> mapper("data.db");
-    QueryMessager<UserInfo> messager;
+    UserInfo helper;
+    QueryMessager<UserInfo> messager(helper);
     json responseInfo;
 
     std::cout << "[INFO] Signup request comes" << std::endl;
 
     auto result = mapper.Query(messager
-                 .Where(Field(UserInfo{}.username) == requestInfo["username"].get<std::string>()));
+                 .Where(Field(helper.username) == requestInfo["username"].get<std::string>()));
     //std::cout << "[INFO] Query finish" << std::endl;
 
     if (result)
