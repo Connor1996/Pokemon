@@ -20,11 +20,15 @@ public:
     void InitUi();
 
 private slots:
+    // 登陆
     void Login();
+
+    // 注册
+    void Signup();
 
 private:
     Ui::Widget *ui;
-    Connor_Socket::Client *client;
+    Connor_Socket::Client *_client;
 };
 
 #endif // WIDGET_H

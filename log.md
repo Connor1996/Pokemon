@@ -39,4 +39,5 @@
     -   Add dispatcher
 -   2016/12/1
     -   Fix link bugs
+    -   Add signup logic
 

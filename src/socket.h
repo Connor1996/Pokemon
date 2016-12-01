@@ -44,8 +44,10 @@ public:
     {
         WSACleanup();
     }
+
 protected:
     WSADATA wsaData;
+
 };
 
 }

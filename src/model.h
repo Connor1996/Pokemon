@@ -1,11 +1,11 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-//#ifdef __SERVER__
+#ifdef __SERVER__
 #include "server/ormlite.h"
 
 using namespace ORMLite;
-//#endif
+#endif
 
 
 struct MyClass
@@ -13,9 +13,9 @@ struct MyClass
     int id;
     double score;
     std::string name;
-//#ifdef __SERVER__
+#ifdef __SERVER__
     ORMAP(MyClass, id, score, name);
-//#endif
+#endif
 };
 
 #endif // MODEL_H

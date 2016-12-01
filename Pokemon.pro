@@ -26,26 +26,20 @@ SOURCES += \
     src/pokemon.cpp \
     src/pokemonfactory.cpp \
     include/sqlite3.c \
-    src/sqlconnector.cpp \
-    src/reflector.cpp \
-    src/server/dispatch.cpp
+    src/reflector.cpp
 
 
 HEADERS  +=  \
     src/pokemon.h \
     src/pokemonfactory.h \
     include/sqlite3.h \
-    src/sqlconnector.h \
     src/reflector.h \
     src/model.h \
     src/socket.h \
     src/model/userinfo.h \
     include/json.hpp \
-    src/server/dispatch.h \
     src/define.h
 
-
-UI_DIR = ./ui
 
 FORMS    += \
     widget.ui
@@ -55,18 +49,19 @@ debug {
 }
 
 Client{
+    UI_DIR = ./ui
+
     DEFINES += __CLIENT__
 
     SOURCES += \
         src/client/main.cpp \
         src/widget.cpp  \
-        src/unittest.cpp \
         src/client/client.cpp
 
 
     HEADERS += \
         src/widget.h \
-        include/catch.hpp \
+
         src/client/client.h
 
 }
@@ -76,10 +71,15 @@ Server{
 
     SOURCES += \
         src/server/main.cpp \
-        src/server/server.cpp
+        src/server/server.cpp \
+        src/server/dispatch.cpp \
+        src/unittest.cpp
+
     HEADERS += \
+        include/catch.hpp \
         src/server/server.h \
-        src/server/ormlite.h
+        src/server/ormlite.h \
+        src/server/dispatch.h
 
 }
 

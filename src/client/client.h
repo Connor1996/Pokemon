@@ -7,7 +7,7 @@ namespace Connor_Socket {
 
 class Client : Socket{
 public:
-    Client() { }
+    Client() : Client("UNKNOWN") { }
 
     Client(string name);
 
@@ -18,7 +18,9 @@ public:
     //      password 用户输入的密码
     // @return:
     //      连接是否成功
-    bool Connect(std::string password);
+    std::string Send(std::string requestInfo);
+
+    void Close();
 
 protected:
     // 与服务器通信的socket
@@ -35,7 +37,7 @@ protected:
     //      sendBuf 需要发送的内容
     // @return:
     //      从服务端传回的响应信息
-    std::string Request(string sendBuf);
+    //std::string Request(string sendBuf);
 
 };
 

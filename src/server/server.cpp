@@ -47,11 +47,11 @@ Server::Server() : _count(0), _mapper("data.db")
 
             if (connection < 0)
             {
-                cout << "Failed at accept" << endl;
+                cout << "[ERROR] Failed at accept" << endl;
             }
             else
             {
-                cout << "New come, now " << ++_count << " connections in total" << endl;
+                cout << "[INFO] New come, now " << ++_count << " connections in total" << endl;
 
                 while(true)
                 {
@@ -59,17 +59,28 @@ Server::Server() : _count(0), _mapper("data.db")
                     {
                         // 保证cout完整执行而不被其他线程打断
                         mtx.lock();
-                        cout << "Someone offline, now " << --_count << " connections in total" << endl;
+                        cout << "[INFO] Someone offline, now " << --_count << " connections in total" << endl;
                         mtx.unlock();
 
                         shutdown(connection, SD_BOTH);
                         closesocket(connection);
                         break;
                     }
-                    cout << "message: " << recvBuf << endl;
+                    cout << "[INFO] message: " << recvBuf << endl;
 
-                    std::string responseStr = dispatcher.Dispatch(std::move(json::parse(recvBuf)));
+                    std::string responseStr;
+                    try
+                    {
+                        responseStr = dispatcher.Dispatch(std::move(json::parse(recvBuf)));
+                    }
+                    catch (std::exception e)
+                    {
+                        shutdown(connection, SD_BOTH);
+                        closesocket(connection);
+                        cout << "[ERROR] " << e.what() << endl;
+                    }
 
+                    //cout << "[INFO] parse done" << endl;
                     send(connection, responseStr.c_str(), responseStr.length(), 0);
 
                 }

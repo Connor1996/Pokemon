@@ -3,7 +3,6 @@
 #include "../define.h"
 
 using namespace Connor_Socket;
-using json = nlohmann::json;
 
 Client::Client(string name) : _username(name)
 {
@@ -37,7 +36,12 @@ Client::~Client()
     closesocket(_connectSocket);
 }
 
-bool Client::Connect(std::string password)
+void Client::Close()
+{
+    closesocket(_connectSocket);
+}
+
+std::string Client::Send(std::string requestInfo)
 {
     auto trys = 5;
     auto success = false;
@@ -61,55 +65,25 @@ bool Client::Connect(std::string password)
         throw std::runtime_error("Unable to connect to server, Please try later");
     }
 
-    json SendInfo = {
-        {"type", LOG_IN},
-        {"username", _username},
-        {"password", password}
-    };
-
-    // 获得返回信息，并将其解析成json
-    json receiveInfo = json::parse(Request(SendInfo.dump()));
-    cout << "receive: " << receiveInfo << endl;
-
-    if (receiveInfo["type"].get<int>() == LOG_IN_FAIL)
-    {
-        closesocket(_connectSocket);
-        return false;
-    }
-    else if (receiveInfo["type"].get<int>() == LOG_IN_SUCCESS)
-    {
-        return true;
-    }
-    else if (receiveInfo["type"].get<int>() == SERVER_ERROR)
-    {
-        closesocket(_connectSocket);
-        throw std::runtime_error("Server occurs fatal error");
-    }
-    else
-    {
-        closesocket(_connectSocket);
-        throw std::runtime_error("Wrong return value for request");
-    }
-}
-
-
-std::string Client::Request(string sendBuf)
-{
     int recvBufLen = DEFAULT_BUFLEN;
     char recvBuf[DEFAULT_BUFLEN];
 
-
-    if (send(_connectSocket, sendBuf.c_str(), sendBuf.length(), 0) == SOCKET_ERROR)
+    cout << "[INFO] request: " << requestInfo << endl;
+    if (send(_connectSocket, requestInfo.c_str(), DEFAULT_BUFLEN, 0) == SOCKET_ERROR)
     {
         closesocket(_connectSocket);
         throw std::runtime_error("Failed at send message");
     }
-    cout << "send complete" << endl;
+    //cout << "send complete" << endl;
     if (recv(_connectSocket, recvBuf, recvBufLen, 0) <= 0)
     {
         closesocket(_connectSocket);
         throw std::runtime_error("Failed at receive message");
     }
 
+    cout << "receive: " << recvBuf << endl;
+
     return std::move(std::string(recvBuf));
 }
+
+

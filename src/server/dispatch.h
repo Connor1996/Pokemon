@@ -13,6 +13,8 @@ public:
     // 根据请求信息，分发到相应的函数处理请求
     std::string Dispatch(json requestInfo);
 
+    json LoginHandle(json&);
+    json SignupHandle(json&);
 private:
     int _state;
 };

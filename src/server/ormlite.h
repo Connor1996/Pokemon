@@ -349,6 +349,14 @@ public:
         return _result.size() == 0;
     }
 
+    void Clear()
+    {
+        _sqlWhere.erase();
+        _sqlOrderBy.erase();
+        _sqlLimit.erase();
+        _result.clear();
+    }
+
     std::string GetField(const std::string& key, const void* property)
     {
         ORMLite_Impl::IndexVisitor visitor(property);
