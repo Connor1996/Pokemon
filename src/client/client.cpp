@@ -1,5 +1,6 @@
 #include "client.h"
 #include "include/json.hpp"
+#include "../define.h"
 
 using namespace Connor_Socket;
 using json = nlohmann::json;
@@ -70,14 +71,19 @@ bool Client::Connect(std::string password)
     json receiveInfo = json::parse(Request(SendInfo.dump()));
     cout << "receive: " << receiveInfo << endl;
 
-    if (receiveInfo["type"] == LOG_IN_FAIL)
+    if (receiveInfo["type"].get<int>() == LOG_IN_FAIL)
     {
         closesocket(_connectSocket);
         return false;
     }
-    else if (receiveInfo["type"] == LOG_IN_SUCCESS)
+    else if (receiveInfo["type"].get<int>() == LOG_IN_SUCCESS)
     {
         return true;
+    }
+    else if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    {
+        closesocket(_connectSocket);
+        throw std::runtime_error("Server occurs fatal error");
     }
     else
     {

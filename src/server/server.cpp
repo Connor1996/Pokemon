@@ -1,14 +1,14 @@
 #include "server.h"
-#include "ormlite.h"
+
 #include "dispatch.h"
-#include "../model/userinfo.h"
 #include "include/json.hpp"
+
 
 using namespace Connor_Socket;
 using json = nlohmann::json;
 
 
-Server::Server() : _count(0)
+Server::Server() : _count(0), _mapper("data.db")
 {
     _listeningSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (_listeningSocket == -1)

@@ -37,4 +37,6 @@
 -   2016/11/30
     -   Add json support 
     -   Add dispatcher
+-   2016/12/1
+    -   Fix link bugs
 

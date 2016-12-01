@@ -1,8 +1,7 @@
 #include "dispatch.h"
 #include "ormlite.h"
-#include "../model/userinfo.h"
-#include "include/json.hpp"
 #include "../define.h"
+#include "../model/userinfo.h"
 
 using namespace ORMLite;
 
@@ -19,8 +18,8 @@ std::string Dispatcher::Dispatch(json requestInfo)
                      .Where(Field(UserInfo{}.username) == requestInfo["username"].get<std::string>()
                             && Field(UserInfo{}.password) == requestInfo["password"].get<std::string>()));
 
-
-        if (result = true)
+        std::cout << "[INFO] Login request comes" << std::endl;
+        if (result)
         {
             if (messager.IsNone())
                 responseInfo["type"] = LOG_IN_FAIL;

@@ -288,31 +288,6 @@ protected:
 
 };
 
-std::vector<std::string> _Split(std::string str)
-{
-    std::vector<std::string> result;
-    std::string tempStr = "";
-    // 扩展字符串方便操作
-    str += ',';
-
-    for (const auto& ch : str)
-    {
-        switch (ch)
-        {
-        case ',':
-            result.push_back(tempStr);
-            tempStr.clear();
-            break;
-        case ' ':
-        case '_':
-            break;
-        default:
-            tempStr += ch;
-            break;
-        }
-    }
-    return std::move(result);
-}
 
 
 }
@@ -404,8 +379,35 @@ private:
         if (!visitor.isFound)
             throw std::runtime_error("No such field in the Table");
 
-        return ORMLite_Impl::_Split(T::_FIELDSNAME)[visitor.index];
+        return _Split(T::_FIELDSNAME)[visitor.index];
     }
+
+    std::vector<std::string> _Split(std::string str)
+    {
+        std::vector<std::string> result;
+        std::string tempStr = "";
+        // 扩展字符串方便操作
+        str += ',';
+
+        for (const auto& ch : str)
+        {
+            switch (ch)
+            {
+            case ',':
+                result.push_back(tempStr);
+                tempStr.clear();
+                break;
+            case ' ':
+            case '_':
+                break;
+            default:
+                tempStr += ch;
+                break;
+            }
+        }
+        return std::move(result);
+    }
+
 };
 
 
@@ -416,8 +418,11 @@ class ORMapper
 public:
     ORMapper(const std::string& dbName)
         : _dbName(dbName), _tableName(T::_CLASSNAME),
-          _fieldsName(ORMLite_Impl::_Split(T::_FIELDSNAME))
-    { }
+          _fieldsName(_Split(T::_FIELDSNAME))
+    {
+        CreateTable();
+
+    }
 
     bool CreateTable()
     {
@@ -428,7 +433,7 @@ public:
             ORMLite_Impl::TypeVisitor visitor;
             modelObject._Accept(visitor);
 
-            auto fieldsType = ORMLite_Impl::_Split(visitor.GetSerializedStr());
+            auto fieldsType = _Split(visitor.GetSerializedStr());
 
             auto fieldsStr = _fieldsName[0] + " " +
                     fieldsType[0] + " PRIMARY KEY NOT NULL,";
@@ -480,7 +485,7 @@ public:
             modelObject._Accept(visitor);
 
             // 格式如 "property = value"
-            auto keyValueStr = _fieldsName[0] + "=" + ORMLite_Impl::_Split(visitor.GetSerializedStr())[0];
+            auto keyValueStr = _fieldsName[0] + "=" + _Split(visitor.GetSerializedStr())[0];
             connector.Execute("DELETE FROM " + _tableName + " " +
                              "WHERE " + std::move(keyValueStr) + ";");
         });
@@ -513,7 +518,7 @@ public:
             ORMLite_Impl::ReaderVisitor visitor;
             modelObject._Accept(visitor);
 
-            auto fieldsValue = ORMLite_Impl::_Split(visitor.GetSerializedStr());
+            auto fieldsValue = _Split(visitor.GetSerializedStr());
             auto keyStr = _fieldsName[0] + "=" + fieldsValue[0];
             std::string fieldsStr = "";
             for(auto i = 1; i < _fieldsName.size(); i++)
@@ -539,7 +544,7 @@ public:
             ORMLite_Impl::ReaderVisitor visitor;
             object._Accept(visitor);
 
-            auto key = ORMLite_Impl::_Split(visitor.GetSerializedStr())[0];
+            auto key = _Split(visitor.GetSerializedStr())[0];
 
             connector.Execute("UPDATE " + _tableName +
                               " SET " + property + "=" + value +
@@ -602,6 +607,33 @@ private:
             return false;
         }
     }
+
+    std::vector<std::string> _Split(std::string str)
+    {
+        std::vector<std::string> result;
+        std::string tempStr = "";
+        // 扩展字符串方便操作
+        str += ',';
+
+        for (const auto& ch : str)
+        {
+            switch (ch)
+            {
+            case ',':
+                result.push_back(tempStr);
+                tempStr.clear();
+                break;
+            case ' ':
+            case '_':
+                break;
+            default:
+                tempStr += ch;
+                break;
+            }
+        }
+        return std::move(result);
+    }
+
 };
 
 

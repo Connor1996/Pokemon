@@ -2,6 +2,7 @@
 #define DISPATCH_H
 
 #include "include/json.hpp"
+
 using json = nlohmann::json;
 
 class Dispatcher
