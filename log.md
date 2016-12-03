@@ -42,3 +42,9 @@
     -   Add signup logic
     -   Fix ormlite bug caused by Simplification of QueryMessager
 
+-   2016/12/2
+    -   Add unittest for fight
+-   2016/12/3
+    -   Add gamelobby.ui
+    -   Support query online list
+

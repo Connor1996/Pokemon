@@ -42,7 +42,8 @@ HEADERS  +=  \
 
 
 FORMS    += \
-    widget.ui
+    widget.ui \
+    gamelobby.ui
 
 debug {
   DEFINES += __DEBUG__
@@ -55,15 +56,15 @@ Client{
 
     SOURCES += \
         src/client/main.cpp \
-        src/widget.cpp  \
-        src/client/client.cpp
+        src/client/widget.cpp  \
+        src/client/client.cpp \
+        src/client/gamelobby.cpp
 
 
     HEADERS += \
-        src/widget.h \
-
-        src/client/client.h
-
+        src/client/widget.h \
+        src/client/client.h \
+        src/client/gamelobby.h
 }
 
 Server{

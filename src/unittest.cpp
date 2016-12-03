@@ -3,6 +3,7 @@
 #include "pokemon.h"
 #include "pokemonfactory.h"
 #include "model.h"
+#include "server/ormlite.h"
 #include <iostream>
 
 
@@ -45,6 +46,53 @@ TEST_CASE("Test Pokemon Class")
         REQUIRE(pikachu->GetLevel() >= 1);
     }
 
+    SECTION("simulate a fight")
+    {
+        auto speed_p = pikachu->GetAttackFrequence();
+        auto speed_c = charmander->GetAttackFrequence();
+        std::cout << "[INFO] the speed of " << pikachu->GetName() << " is " << speed_p;
+        std::cout << "[INFO] the speed of " << charmander->GetName() << " is " << speed_c;
+        std::cout << "[INFO] Fight begin" << std::endl;
+        // 时间轴
+        size_t time_p = 0;
+        size_t time_c = 0;
+
+        while (time_p++, time_c++)
+        {
+            if (time_p == speed_p)
+            {
+                std::cout << "[INFO] " << pikachu->GetName() <<
+                             "attack" << charmander->GetName() << std::endl;
+                auto damage = pikachu->Attack(charmander);
+                std::cout << "[INFO] " << charmander->GetName() << " get hurt by "
+                          << damage << std::endl;
+                if (charmander->Hurt(damage))
+                {
+                    std::cout << "[INFO] " << charmander->GetName() << " is died" << std::endl;
+                    break;
+                }
+                time_p = 0;
+            }
+
+            if (time_c == speed_c)
+            {
+                std::cout << "[INFO] " << charmander->GetName() <<
+                             "attack" << pikachu->GetName() << std::endl;
+                auto damage = charmander->Attack(pikachu);
+                std::cout << "[INFO] " << pikachu->GetName() << " get hurt by "
+                          << damage << std::endl;
+                if (pikachu->Hurt(damage))
+                {
+                    std::cout << "[INFO] " << pikachu->GetName() << " is died" << std::endl;
+                    break;
+                }
+                time_c = 0;
+            }
+
+        }
+        std:: cout << "[INFO] Fight over" << std::endl;
+    }
+
     delete pikachu;
     delete charmander;
 }
@@ -55,8 +103,6 @@ TEST_CASE("Test ORMLite")
 {
     ORMapper<MyClass> mapper("test.db");
 
-    REQUIRE(mapper.CreateTable() == true);
-
     std::vector<MyClass> objects =
     {
         {3, 0.2, "John"},
@@ -66,32 +112,40 @@ TEST_CASE("Test ORMLite")
 
     for (const auto obj : objects)
     {
-        REQUIRE(mapper.Insert(obj));
+        if (mapper.Insert(obj) == false)
+            std::cout << mapper.GetErrorMessage() << std::endl;
     }
-//    SECTION("insert objects")
-//    {
-//        for (const auto obj : objects)
-//        {
-//            REQUIRE(mapper.Insert(obj));
-//        }
 
-//    }
+//    objects[1].score = 1.1;
+//    REQUIRE(mapper.Update(objects[1]));
+
+//    QueryMessager<MyClass> query;
+//    mapper.Query(query);
+//    auto vec = query.GetVector();
+//    for (auto item : vec)
+//        for (auto str : item)
+//                     std::cout << str << " ";
+//                   std::cout << std::endl;
+
+//    REQUIRE(query.IsNone() == false);
 
     SECTION("update object")
     {
-        objects[1].score = 1.0;
-        REQUIRE(mapper.Update (objects[1]));
+
+
+
     }
 
-    SECTION("delete object")
-    {
-        REQUIRE(mapper.Delete (objects[2]));
-    }
+//    SECTION("delete object")
+//    {
+//        REQUIRE(mapper.Delete(objects[2]));
+//    }
 
     SECTION("select all to vector")
     {
-        QueryMessager<MyClass> query;
-        mapper.Query(query.Where(Field(MyClass{}.id) == 3));
+        MyClass helper;
+        QueryMessager<MyClass> query(helper);
+        mapper.Query(query.Where(Field(helper.id) == 3 && Field(helper.name) == "John"));
         auto vec = query.GetVector();
         for (auto v : vec)
         {
@@ -101,5 +155,6 @@ TEST_CASE("Test ORMLite")
         }
     }
 
-    mapper.DropTable();
+   REQUIRE(mapper.DropTable());
+
 }

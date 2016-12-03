@@ -18,6 +18,8 @@ public:
     //      password 用户输入的密码
     // @return:
     //      连接是否成功
+    std::string Connect(std::string requestInfo);
+
     std::string Send(std::string requestInfo);
 
     void Close();

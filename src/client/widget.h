@@ -2,7 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
-#include "client/client.h"
+#include "client.h"
 
 namespace Ui {
 class Widget;
@@ -16,9 +16,6 @@ public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
-    void InitConnect();
-    void InitUi();
-
 private slots:
     // 登陆
     void Login();
@@ -27,6 +24,9 @@ private slots:
     void Signup();
 
 private:
+    void InitConnect();
+    void InitUi();
+
     Ui::Widget *ui;
     Connor_Socket::Client *_client;
 };

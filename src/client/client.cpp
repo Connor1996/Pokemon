@@ -4,7 +4,8 @@
 
 using namespace Connor_Socket;
 
-Client::Client(string name) : _username(name)
+Client::Client(string name)
+    : _username(name)
 {
     std::cout << "begin..." << std::endl;
     _connectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -41,7 +42,7 @@ void Client::Close()
     closesocket(_connectSocket);
 }
 
-std::string Client::Send(std::string requestInfo)
+std::string Client::Connect(std::string requestInfo)
 {
     auto trys = 5;
     auto success = false;
@@ -64,6 +65,12 @@ std::string Client::Send(std::string requestInfo)
         closesocket(_connectSocket);
         throw std::runtime_error("Unable to connect to server, Please try later");
     }
+
+    return std::move(Send(requestInfo));
+}
+
+std::string Client::Send(std::string requestInfo)
+{
 
     int recvBufLen = DEFAULT_BUFLEN;
     char recvBuf[DEFAULT_BUFLEN];

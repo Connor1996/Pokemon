@@ -1,7 +1,9 @@
-#include <iostream>
-#include "../widget.h"
+#include "widget.h"
 #include <QApplication>
 #include <QTextCodec>
+
+#include <iostream>
+
 
 int main(int argc, char *argv[])
 {

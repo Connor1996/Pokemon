@@ -2,8 +2,8 @@
 #define SERVER_H
 
 #include <unordered_map>
+
 #include "../socket.h"
-//#include "ormlite.h"
 #include "../model/userinfo.h"
 
 namespace Connor_Socket {
@@ -15,6 +15,11 @@ public:
 
     ~Server();
 
+    bool Online(std::string username, SOCKET connection);
+
+    void Offline(std::string username);
+
+    std::list<std::string> GetOnlineList();
 protected:
     // 监听客户端访问的socket
     SOCKET _listeningSocket;
@@ -27,7 +32,7 @@ protected:
     std::vector<std::thread> _socketThreads;
 
     // 持有用户名相对应的socket链接
-    std::unordered_map<std::string, SOCKET*> _sockets;
+    std::unordered_map<std::string, SOCKET> _sockets;
 
     // 连接到服务器的客户端数
     size_t _count;

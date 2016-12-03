@@ -19,7 +19,7 @@
 namespace Connor_Socket
 {
 
-#define DEFAULT_BUFLEN 200
+#define DEFAULT_BUFLEN 500
 
 #define CLIENT_PORT 5150
 #define SERVER_PORT 2222

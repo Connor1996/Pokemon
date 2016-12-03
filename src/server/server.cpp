@@ -43,7 +43,7 @@ Server::Server() : _count(0), _mapper("data.db")
         {
             char recvBuf[DEFAULT_BUFLEN];
             int recvBufLen = DEFAULT_BUFLEN;
-            Dispatcher dispatcher;
+            Dispatcher dispatcher(connection, this);
 
             if (connection < 0)
             {
@@ -59,6 +59,7 @@ Server::Server() : _count(0), _mapper("data.db")
                     {
                         // 保证cout完整执行而不被其他线程打断
                         mtx.lock();
+                        dispatcher.Logout();
                         cout << "[INFO] Someone offline, now " << --_count << " connections in total" << endl;
                         mtx.unlock();
 
@@ -81,7 +82,7 @@ Server::Server() : _count(0), _mapper("data.db")
                     }
 
                     //cout << "[INFO] parse done" << endl;
-                    send(connection, responseStr.c_str(), responseStr.length(), 0);
+                    send(connection, responseStr.c_str(), DEFAULT_BUFLEN, 0);
 
                 }
             }
@@ -95,4 +96,26 @@ Server::~Server()
 {
     shutdown(_listeningSocket, SD_BOTH);
     closesocket(_listeningSocket);
+}
+
+bool Server::Online(std::string username, SOCKET connection)
+{
+    // emplace返回一个pair，第二个元素为是否成功插入
+    // 若map中已经有一个同插入相同的key，则不进行插入
+    auto result = _sockets.emplace(std::make_pair(username, connection));
+    return result.second;
+}
+
+void Server::Offline(std::string username)
+{
+    _sockets.erase(username);
+}
+
+std::list<std::string> Server::GetOnlineList()
+{
+    std::list<std::string> onlineList;
+    for (const auto& pair : _sockets)
+        onlineList.push_back(pair.first);
+
+    return std::move(onlineList);
 }

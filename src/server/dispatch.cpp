@@ -16,6 +16,9 @@ std::string Dispatcher::Dispatch(json requestInfo)
     case SIGN_UP:
         responseInfo = SignupHandle(requestInfo);
         break;
+    case GET_ONLINE_LIST:
+        responseInfo = OnlineListHandle(requestInfo);
+        break;
     default:
         responseInfo["type"] = SERVER_ERROR;
         std::cout << "[ERROR] Bad request" << std::endl;
@@ -42,11 +45,15 @@ json Dispatcher::LoginHandle(json &requestInfo)
     if (result)
     {
         if (messager.IsNone())
-            responseInfo["type"] = LOG_IN_FAIL;
+            responseInfo["type"] = LOG_IN_FAIL_WP;
         else
         {
-            // 将username加入
-            responseInfo["type"] = LOG_IN_SUCCESS;
+            // 将username加入在线列表
+            _username = requestInfo["username"].get<std::string>();
+            if (_parent->Online(_username, _connection))
+                responseInfo["type"] = LOG_IN_SUCCESS;
+            else
+                responseInfo["type"] = LOG_IN_FAIL_AO;
         }
     }
     else
@@ -93,4 +100,14 @@ json Dispatcher::SignupHandle(json &requestInfo)
     }
 
     return std::move(responseInfo);
+}
+
+json Dispatcher::OnlineListHandle(json &requestInfo)
+{
+    return std::move(json(_parent->GetOnlineList()));
+}
+
+void Dispatcher::Logout()
+{
+    _parent->Offline(_username);
 }

@@ -2,9 +2,10 @@
 #include "ui_widget.h"
 #include <QMessageBox>
 
-
+#include "gamelobby.h"
 #include "include/json.hpp"
-#include "define.h"
+#include "../define.h"
+
 using Connor_Socket::Client;
 using json = nlohmann::json;
 
@@ -43,9 +44,15 @@ void Widget::Login()
            {"username", username},
            {"password", password}
        };
-       json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+       json receiveInfo = json::parse(_client->Connect(sendInfo.dump()));
 
-       if (receiveInfo["type"].get<int>() == LOG_IN_FAIL)
+       if (receiveInfo["type"].get<int>() == LOG_IN_FAIL_WP)
+       {
+           _client->Close();
+           delete _client;
+           QMessageBox::information(this, "Error", QString::fromWCharArray(L"登陆失败"));
+       }
+       else if (receiveInfo["type"].get<int>() == LOG_IN_FAIL_AO)
        {
            _client->Close();
            delete _client;
@@ -53,7 +60,9 @@ void Widget::Login()
        }
        else if (receiveInfo["type"].get<int>() == LOG_IN_SUCCESS)
        {
-           QMessageBox::information(this, "Message", QString::fromWCharArray(L"登陆成功"));
+           this->close();
+           GameLobby* lobby = new GameLobby(_client);
+           lobby->show();
        }
        else if (receiveInfo["type"].get<int>() == SERVER_ERROR)
        {
@@ -84,7 +93,7 @@ void Widget::Signup()
             {"username", username},
             {"password", password}
         };
-        json receiveInfo = json::parse(tempConnection.Send(sendInfo.dump()));
+        json receiveInfo = json::parse(tempConnection.Connect(sendInfo.dump()));
 
         if (receiveInfo["type"].get<int>() == SIGN_UP_FAIL)
         {
