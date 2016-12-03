@@ -1,6 +1,8 @@
-#include "widget.h"
+﻿#include "widget.h"
 #include "ui_widget.h"
 #include <QMessageBox>
+#include <QPainter>
+#include <QBrush>
 
 #include "gamelobby.h"
 #include "include/json.hpp"
@@ -15,6 +17,27 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
     InitConnect();
+    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::WindowCloseButtonHint); //只要关闭按钮
+
+    setFixedSize(1024, 605);
+
+    setAutoFillBackground(true);
+    QPalette palette;
+    QPixmap pixmap(":/background");
+
+    palette.setBrush(QPalette::Window, QBrush(pixmap.scaled(width(), height())));
+    setPalette(palette);
+}
+
+void Widget::paintEvent(QPaintEvent *)
+{
+//    QPainter painter(this);
+//    QBrush brush;
+//    brush.setTextureImage(QImage(":background")); //背景图片
+//    painter.setBrush(brush);
+//    painter.setPen(Qt::black);  //边框色
+//    painter.drawRoundedRect(this->rect(), 5, 5); //圆角5像素
 }
 
 void Widget::InitConnect()
@@ -50,13 +73,13 @@ void Widget::Login()
        {
            _client->Close();
            delete _client;
-           QMessageBox::information(this, "Error", QString::fromWCharArray(L"登陆失败"));
+           QMessageBox::information(this, "Error", QString::fromLocal8Bit("登陆失败"));
        }
        else if (receiveInfo["type"].get<int>() == LOG_IN_FAIL_AO)
        {
            _client->Close();
            delete _client;
-           QMessageBox::information(this, "Error", QString::fromWCharArray(L"登陆失败"));
+           QMessageBox::information(this, "Error", QString::fromLocal8Bit("登陆失败"));
        }
        else if (receiveInfo["type"].get<int>() == LOG_IN_SUCCESS)
        {
@@ -75,7 +98,7 @@ void Widget::Login()
     } catch (std::exception e){
         _client->Close();
         delete _client;
-        std::cout << "[ERROR] " << e.what() << std::endl;
+        QMessageBox::information(this, "Error", QString(e.what()));
     }
 }
 
@@ -98,11 +121,11 @@ void Widget::Signup()
         if (receiveInfo["type"].get<int>() == SIGN_UP_FAIL)
         {
             tempConnection.Close();
-            QMessageBox::information(this, "Error", QString::fromWCharArray(L"注册失败，用户名已被注册"));
+            QMessageBox::information(this, "Error", QString::fromLocal8Bit("注册失败，用户名已被注册"));
         }
         else if (receiveInfo["type"].get<int>() == SIGN_UP_SUCCESS)
         {
-            QMessageBox::information(this, "Message", QString::fromWCharArray(L"注册成功"));
+            QMessageBox::information(this, "Message", QString::fromLocal8Bit("注册成功"));
         }
         else if (receiveInfo["type"].get<int>() == SERVER_ERROR)
         {
@@ -116,6 +139,6 @@ void Widget::Signup()
     catch (std::exception e)
     {
          tempConnection.Close();
-         std::cout << "[ERROR] " << e.what() << std::endl;
+         QMessageBox::information(this, "Error", QString(e.what()));
     }
 }

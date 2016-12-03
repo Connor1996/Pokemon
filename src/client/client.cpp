@@ -44,7 +44,7 @@ void Client::Close()
 
 std::string Client::Connect(std::string requestInfo)
 {
-    auto trys = 5;
+    auto trys = 2;
     auto success = false;
 
     while(trys--)

@@ -24,6 +24,8 @@ private slots:
     void Signup();
 
 private:
+    virtual void paintEvent( QPaintEvent * e);
+
     void InitConnect();
     void InitUi();
 

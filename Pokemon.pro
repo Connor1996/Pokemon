@@ -45,6 +45,10 @@ FORMS    += \
     widget.ui \
     gamelobby.ui
 
+RESOURCES += \
+    images.qrc
+
+
 debug {
   DEFINES += __DEBUG__
 }
@@ -83,5 +87,6 @@ Server{
         src/server/dispatch.h
 
 }
+
 
 
