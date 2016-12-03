@@ -4,6 +4,7 @@
 #include "reflector.h"
 
 // 获得对象运行时多态类型
+// 多编译器支持
 #ifdef __GNUC__
 #include <cxxabi.h>
 #define GET_CLASS_TYPE(_OBJECT_)     \
@@ -16,6 +17,10 @@
 #define GET_CLASS_TYPE(_OBJECT_)     \
     GET_CLASS_NAME(_OBJECT_).substr(GET_CLASS_NAME(_OBJECT_).find("class ") + 6, \
     GET_CLASS_NAME(_OBJECT_).length() - 6)
+
+#else
+#define GET_CLASS_TYPE(_OBJECT_) \
+    std::string(typeid(_OBJECT_).name())
 
 #endif
 

@@ -655,10 +655,7 @@ inline ORMLite_Impl::Field_Expr<T> Field(T& property)
 }
 
 template <typename T>
-inline ORMLite_Impl::Field_Expr<T> Field(T&& property)
-{
-    return ORMLite_Impl::Field_Expr<T>(property);
-}
+inline ORMLite_Impl::Field_Expr<T> Field(T&& property) = delete;
 
 }
 

@@ -44,7 +44,10 @@ json Dispatcher::LoginHandle(json &requestInfo)
         if (messager.IsNone())
             responseInfo["type"] = LOG_IN_FAIL;
         else
+        {
+            // 将username加入
             responseInfo["type"] = LOG_IN_SUCCESS;
+        }
     }
     else
     {

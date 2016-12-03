@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <unordered_map>
 #include "../socket.h"
 //#include "ormlite.h"
 #include "../model/userinfo.h"
@@ -24,6 +25,9 @@ protected:
 
     // 持有与各个客户端保持通信的线程
     std::vector<std::thread> _socketThreads;
+
+    // 持有用户名相对应的socket链接
+    std::unordered_map<std::string, SOCKET*> _sockets;
 
     // 连接到服务器的客户端数
     size_t _count;
