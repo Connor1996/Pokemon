@@ -1,4 +1,4 @@
-#ifndef ORMLITE_H
+﻿#ifndef ORMLITE_H
 #define ORMLITE_H
 
 #include "include/sqlite3.h"
@@ -253,6 +253,40 @@ protected:
 
 };
 
+class WriterVisitor
+{
+public:
+    WriterVisitor (std::string serializedValues)
+        : _serializedValues (serializedValues)
+    {}
+
+    template <typename ...Args>
+    inline void Visit(Args& ...args)
+    {
+        return _Visit(args...);
+    }
+
+private:
+    std::string _serializedValues;
+
+protected:
+    template <typename First, typename ...Args>
+    inline void _Visit(First& property, Args& ...args)
+    {
+        _Visit(property);
+        _Visit(args...);
+    }
+
+    template <typename T>
+    inline void _Visit (T &property)
+    {
+        // Remarks:
+        // GCC Hell: explicit specialization in non-namespace scope
+        // So, unable to Write Impl Here
+        DeserializeValue (property, SplitStr (_serializedValues));
+    }
+};
+
 class IndexVisitor
 {
 public:
@@ -342,9 +376,14 @@ public:
         return *this;
     }
 
-    std::vector<std::vector<std::string>>& GetVector()
+    std::vector<std::vector<std::string>> GetVector()
     {
         return _result;
+    }
+
+    std::vector<T> GetObjects()
+    {
+        // To do
     }
 
     bool IsNone()
@@ -430,10 +469,7 @@ public:
     ORMapper(const std::string& dbName)
         : _dbName(dbName), _tableName(T::_CLASSNAME),
           _fieldsName(_Split(T::_FIELDSNAME))
-    {
-        CreateTable();
-
-    }
+    { }
 
     bool CreateTable()
     {

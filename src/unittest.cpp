@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "include/catch.hpp"
 #include "pokemon.h"
 #include "pokemonfactory.h"
@@ -98,63 +98,61 @@ TEST_CASE("Test Pokemon Class")
 }
 
 
-
 TEST_CASE("Test ORMLite")
 {
-    ORMapper<MyClass> mapper("test.db");
 
-    std::vector<MyClass> objects =
-    {
-        {3, 0.2, "John"},
-        {4, 0.4, "Jack"},
-        {5, 0.6, "Jess"}
-    };
-
-    for (const auto obj : objects)
-    {
-        if (mapper.Insert(obj) == false)
-            std::cout << mapper.GetErrorMessage() << std::endl;
-    }
-
-//    objects[1].score = 1.1;
-//    REQUIRE(mapper.Update(objects[1]));
-
-//    QueryMessager<MyClass> query;
-//    mapper.Query(query);
-//    auto vec = query.GetVector();
-//    for (auto item : vec)
-//        for (auto str : item)
-//                     std::cout << str << " ";
-//                   std::cout << std::endl;
-
-//    REQUIRE(query.IsNone() == false);
-
-    SECTION("update object")
-    {
-
-
-
-    }
-
-//    SECTION("delete object")
+//    std::vector<MyClass> objects =
 //    {
-//        REQUIRE(mapper.Delete(objects[2]));
+//        {3, 0.2, "John"},
+//        {4, 0.4, "Jack"},
+//        {5, 0.6, "Jess"}
+//    };
+
+//    for (const auto obj : objects)
+//    {
+//        if (mapper.Insert(obj) == false)
+//            std::cout << mapper.GetErrorMessage() << std::endl;
 //    }
 
-    SECTION("select all to vector")
-    {
-        MyClass helper;
-        QueryMessager<MyClass> query(helper);
-        mapper.Query(query.Where(Field(helper.id) == 3 && Field(helper.name) == "John"));
-        auto vec = query.GetVector();
-        for (auto v : vec)
-        {
-            for (auto str : v)
-                std::cout << str << " ";
-            std::cout << std::endl;
-        }
-    }
+////    objects[1].score = 1.1;
+////    REQUIRE(mapper.Update(objects[1]));
 
-   REQUIRE(mapper.DropTable());
+////    QueryMessager<MyClass> query;
+////    mapper.Query(query);
+////    auto vec = query.GetVector();
+////    for (auto item : vec)
+////        for (auto str : item)
+////                     std::cout << str << " ";
+////                   std::cout << std::endl;
+
+////    REQUIRE(query.IsNone() == false);
+
+//    SECTION("update object")
+//    {
+
+
+
+//    }
+
+////    SECTION("delete object")
+////    {
+////        REQUIRE(mapper.Delete(objects[2]));
+////    }
+
+//    SECTION("select all to vector")
+//    {
+//        MyClass helper;
+//        QueryMessager<MyClass> query(helper);
+//        mapper.Query(query.Where(Field(helper.id) == 3 && Field(helper.name) == "John"));
+//        auto vec = query.GetVector();
+//        for (auto v : vec)
+//        {
+//            for (auto str : v)
+//                std::cout << str << " ";
+//            std::cout << std::endl;
+//        }
+//    }
+
+//   REQUIRE(mapper.DropTable());
 
 }

@@ -1,9 +1,14 @@
-#include "dispatch.h"
+﻿#include "dispatch.h"
 #include "ormlite.h"
 #include "../define.h"
 #include "../model/userinfo.h"
+#include "../model/userbag.h"
+#include "../model/pokemoninfo.h"
 
 using namespace ORMLite;
+
+// 数据库中小精灵的种类数
+#define N 4
 
 std::string Dispatcher::Dispatch(json requestInfo)
 {
@@ -67,7 +72,7 @@ json Dispatcher::LoginHandle(json &requestInfo)
 
 json Dispatcher::SignupHandle(json &requestInfo)
 {
-    ORMapper<UserInfo> mapper("data.db");
+    ORMapper<UserInfo> mapper(DATABASE_NAME);
     UserInfo helper;
     QueryMessager<UserInfo> messager(helper);
     json responseInfo;
@@ -86,7 +91,46 @@ json Dispatcher::SignupHandle(json &requestInfo)
                         requestInfo["password"].get<std::string>() };
             auto result = mapper.Insert(userinfo);
             if (result)
+            {
+                //产生0-num中的整数
+                auto random = [](int num) {
+                    srand(static_cast<int>(time(NULL)));
+                    return rand() % (num + 1);
+                };
+
+                // 随机分发三个小精灵
+                auto InitialBag = [&]() {
+                    ORMapper<PokemonInfo> infoMapper(DATABASE_NAME);
+                    PokemonInfo helper;
+                    QueryMessager<PokemonInfo> infoMessager(helper);
+
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        infoMessager.Clear();
+
+                        infoMapper.Query(infoMessager.Where(Field(helper.id) == random(N)));
+                        if (infoMessager.IsNone())
+                            throw std::runtime_error("Unknown id for pokemon");
+                        else
+                        {
+                            auto vec = infoMessager.GetVector()[0];
+                            ORMapper<UserBag> userMapper(DATABASE_NAME);
+                            // Bad code style, wait for ormlite to support for GetObjects()
+                            UserBag userBag = { requestInfo["username"].get<std::string>(), vec[1],
+                                                1, 0, std::stoi(vec[2]), std::stoi(vec[3]), std::stoi(vec[4]),
+                                                std::stoi(vec[5]), std::stoi(vec[6]) };
+                            if (!userMapper.Insert(userBag))
+                            {
+                                throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
+                            }
+                        }
+                    }
+                };
+
                 responseInfo["type"] = SIGN_UP_SUCCESS;
+                InitialBag();
+            }
             else
                 responseInfo["type"] = SIGN_UP_FAIL;
         }

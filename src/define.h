@@ -1,5 +1,7 @@
-#ifndef DEFINE_H
+﻿#ifndef DEFINE_H
 #define DEFINE_H
+
+#define DATABASE_NAME "data.db"
 
 /*--------------------请求类型------------------------*/
 #define LOG_IN          1

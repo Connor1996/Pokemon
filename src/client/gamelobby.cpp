@@ -1,5 +1,7 @@
 #include "gamelobby.h"
 #include "ui_gamelobby.h"
+#include <QMovie>
+#include <QPropertyAnimation>
 
 #include "include/json.hpp"
 #include "../define.h"
@@ -12,6 +14,15 @@ GameLobby::GameLobby(Connor_Socket::Client *client, QWidget *parent) :
 {
     ui->setupUi(this);
     InitConnect();
+
+    QMovie *pikachu = new QMovie(":/pikachu");
+    ui->label->setMovie(pikachu);
+    pikachu->start();
+    QPropertyAnimation animation(ui->label, "geometry");
+    animation.setDuration(1000);
+    animation.setStartValue(QRect(0, 0, 0, 0));
+    animation.setEndValue(QRect(250, 250, 100, 30));
+    animation.start();
 }
 
 GameLobby::~GameLobby()

@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file alias="background">images/VGN94976413.jpg</file>
+        <file alias="pikachu">images/pikachu.gif</file>
+        <file>images/pikachu-2.gif</file>
+        <file>images/pikachu-3.gif</file>
+        <file>images/pikachu-4.gif</file>
+        <file>images/pikachu-5.gif</file>
     </qresource>
 </RCC>

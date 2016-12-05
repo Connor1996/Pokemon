@@ -38,7 +38,9 @@ HEADERS  +=  \
     src/socket.h \
     src/model/userinfo.h \
     include/json.hpp \
-    src/define.h
+    src/define.h \
+    src/model/userbag.h \
+    src/model/pokemoninfo.h
 
 
 FORMS    += \
