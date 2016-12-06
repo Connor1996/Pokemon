@@ -86,6 +86,8 @@ void Widget::Login()
            this->close();
            GameLobby* lobby = new GameLobby(_client);
            lobby->show();
+           //lobby->exec();
+           //this->show();
        }
        else if (receiveInfo["type"].get<int>() == SERVER_ERROR)
        {

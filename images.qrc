@@ -6,5 +6,9 @@
         <file>images/pikachu-3.gif</file>
         <file>images/pikachu-4.gif</file>
         <file>images/pikachu-5.gif</file>
+        <file alias="lobby">images/lobby.jpg</file>
+        <file alias="close">images/cancel_524px_1205790_easyicon.net.png</file>
+        <file>images/d058ccbf6c81800a3dd7c3d3b93533fa828b4738.jpg</file>
+        <file alias="userlist">images/userlist.jpg</file>
     </qresource>
 </RCC>

@@ -5,6 +5,14 @@
   <property name="enabled">
    <bool>true</bool>
   </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1238</width>
+    <height>322</height>
+   </rect>
+  </property>
   <property name="baseSize">
    <size>
     <width>1024</width>
@@ -241,8 +249,14 @@
           </item>
           <item>
            <widget class="QPushButton" name="signupButtion">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="text">
              <string>注册</string>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
             </property>
            </widget>
           </item>

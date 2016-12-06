@@ -26,7 +26,9 @@ SOURCES += \
     src/pokemon.cpp \
     src/pokemonfactory.cpp \
     include/sqlite3.c \
-    src/reflector.cpp
+    src/reflector.cpp \
+    src/client/userlistwidget.cpp \
+    src/client/stackwidget.cpp
 
 
 HEADERS  +=  \
@@ -40,12 +42,16 @@ HEADERS  +=  \
     include/json.hpp \
     src/define.h \
     src/model/userbag.h \
-    src/model/pokemoninfo.h
+    src/model/pokemoninfo.h \
+    src/client/userlistwidget.h \
+    src/client/stackwidget.h
 
 
 FORMS    += \
     widget.ui \
-    gamelobby.ui
+    gamelobby.ui \
+    src/client/userlistwidget.ui \
+    src/client/stackwidget.ui
 
 RESOURCES += \
     images.qrc
