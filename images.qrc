@@ -10,5 +10,7 @@
         <file alias="close">images/cancel_524px_1205790_easyicon.net.png</file>
         <file>images/d058ccbf6c81800a3dd7c3d3b93533fa828b4738.jpg</file>
         <file alias="userlist">images/userlist.jpg</file>
+        <file>images/返回 (1).png</file>
+        <file alias="return">images/返回.png</file>
     </qresource>
 </RCC>

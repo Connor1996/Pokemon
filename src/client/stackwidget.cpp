@@ -1,5 +1,6 @@
 ﻿#include "stackwidget.h"
 #include "ui_stackwidget.h"
+#include <QGraphicsDropShadowEffect>
 
 StackWidget::StackWidget(Connor_Socket::Client *client, QWidget *parent) :
     QWidget(parent), _client(client),
@@ -20,11 +21,15 @@ StackWidget::StackWidget(Connor_Socket::Client *client, QWidget *parent) :
 
     connect(_gameLobby, SIGNAL(clicked(int)), this, SLOT(SetCurrentIndex(int)));
     connect(_userListWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
+    connect(_gameLobby, SIGNAL(closeAll()), this, SLOT(close()));
 }
 
 StackWidget::~StackWidget()
 {
     delete ui;
+    delete _gameLobby;
+    delete _userListWidget;
+    delete _client;
 }
 
 void StackWidget::SetCurrentIndex(int index)

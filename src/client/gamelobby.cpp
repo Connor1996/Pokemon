@@ -23,6 +23,7 @@ GameLobby::GameLobby(Connor_Socket::Client *client, QWidget *parent) :
     InitUi();
     InitConnect();
 
+    ui->closeButton->resize(48, 48);
 //    QMovie *pikachu = new QMovie(":/pikachu");
 //    ui->test->setMovie(pikachu);
 //    pikachu->start();
@@ -127,5 +128,6 @@ void GameLobby::GetOnlineList()
 void GameLobby::LogOut()
 {
     this->close();
+    emit closeAll();
 }
 

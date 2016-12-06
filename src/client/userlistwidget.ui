@@ -13,6 +13,25 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <widget class="QPushButton" name="returnButton">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>89</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/images/返回 (1).png);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

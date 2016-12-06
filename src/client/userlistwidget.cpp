@@ -14,9 +14,18 @@ UserListWidget::UserListWidget(Connor_Socket::Client *client, QWidget *parent) :
     QPixmap pixmap(":/userlist");
     palette.setBrush(QPalette::Window, QBrush(pixmap.scaled(width(), height())));
     setPalette(palette);
+
+    ui->returnButton->resize(48, 48);
+
+    connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
 }
 
 UserListWidget::~UserListWidget()
 {
     delete ui;
+}
+
+void UserListWidget::Back()
+{
+    emit back();
 }

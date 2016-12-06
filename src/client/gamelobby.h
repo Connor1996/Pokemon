@@ -19,6 +19,7 @@ public:
 
 signals:
     void clicked(int type);
+    void closeAll();
 
 private slots:
     void GetOnlineList();

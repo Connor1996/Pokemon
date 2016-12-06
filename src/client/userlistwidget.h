@@ -19,10 +19,15 @@ public:
 signals:
     void back();
 
+public slots:
+    void Back();
+
 private:
     Ui::UserListWidget *ui;
 
     Connor_Socket::Client *_client;
+
+
 };
 
 #endif // USERLISTWIDGET_H
