@@ -1,7 +1,8 @@
-#ifndef USERLISTWIDGET_H
+﻿#ifndef USERLISTWIDGET_H
 #define USERLISTWIDGET_H
 
 #include <QWidget>
+#include "client.h"
 
 namespace Ui {
 class UserListWidget;
@@ -12,11 +13,16 @@ class UserListWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit UserListWidget(QWidget *parent = 0);
+    explicit UserListWidget(Connor_Socket::Client *client, QWidget *parent = 0);
     ~UserListWidget();
+
+signals:
+    void back();
 
 private:
     Ui::UserListWidget *ui;
+
+    Connor_Socket::Client *_client;
 };
 
 #endif // USERLISTWIDGET_H

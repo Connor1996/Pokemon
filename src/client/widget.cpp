@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QBrush>
 
-#include "gamelobby.h"
+#include "stackwidget.h"
 #include "include/json.hpp"
 #include "../define.h"
 
@@ -84,8 +84,8 @@ void Widget::Login()
        else if (receiveInfo["type"].get<int>() == LOG_IN_SUCCESS)
        {
            this->close();
-           GameLobby* lobby = new GameLobby(_client);
-           lobby->show();
+           StackWidget *stack = new StackWidget(_client);
+           stack->show();
            //lobby->exec();
            //this->show();
        }

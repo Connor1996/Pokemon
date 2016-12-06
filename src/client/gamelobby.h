@@ -22,7 +22,6 @@ signals:
 
 private slots:
     void GetOnlineList();
-    void ClickOn(int type);
     void LogOut();
 
 protected:

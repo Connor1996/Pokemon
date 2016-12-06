@@ -1,8 +1,8 @@
 ﻿#include "userlistwidget.h"
 #include "ui_userlistwidget.h"
 
-UserListWidget::UserListWidget(QWidget *parent) :
-    QWidget(parent),
+UserListWidget::UserListWidget(Connor_Socket::Client *client, QWidget *parent) :
+    QWidget(parent), _client(client),
     ui(new Ui::UserListWidget)
 {
     ui->setupUi(this);

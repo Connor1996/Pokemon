@@ -1,0 +1,56 @@
+
+# Change LOG
+
+-   2016/9/29
+    -   Initial 
+-   2016/10/6
+    -   Add unittest
+    -   Use conditional compilation to support different complier
+-   2016/10/7
+    -   Update directory
+-   2016/10/11
+    -   Add reflection:GetClassByName support
+-   2016/10/14
+    -   Add ormlite.h
+-   2016/10/15
+    -   Update ormlite.h
+-   2016/10/18
+    -   Complete ormlite.h
+-   2016/10/20
+    -   Adjust the way to init QueryMessager in ormlite.h
+    -   Fix bugs in ormlite.h
+    -   Add unittest for ormlite
+-   2016/11/25
+    -   Add socket
+-   2016/11/26
+    -   Add multi-thread support for server
+    -   Complete basic socket logic
+-   2016/11/27
+    -   Combine pokemon with socket
+    -   Fix conflicts between winsock2.h and windows.h 
+    -   Initial widget.ui
+    -   Add login logic
+    -   Improve socket for server 
+-   2016/11/28
+    -   Apart client.h and server.h from socket.h
+-   2016/11/29
+    -   Simplify QueryMessager
+-   2016/11/30
+    -   Add json support 
+    -   Add dispatcher
+-   2016/12/1
+    -   Fix link bugs
+    -   Add signup logic
+    -   Fix ormlite bug caused by Simplification of QueryMessager
+-   2016/12/2
+    -   Add unittest for fight
+-   2016/12/3
+    -   Add gamelobby.ui
+    -   Support query online list
+-   2016/12/4
+    -   Update UI
+-   2016/12/5
+    -   Add bag for user
+-   2016/12/6
+    -   Add ui for gamelobby
+    -   Use QstackLayout to realize switching between widgets

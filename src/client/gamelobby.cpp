@@ -65,35 +65,35 @@ void GameLobby::mousePressEvent(QMouseEvent *event)
     auto y = event->y();
 
     if (isPointInPolygon(pointsForUserList, std::move(QPointF(x, y))))
-        emit clicked(0);
-    else if (isPointInPolygon(pointsForScratch, std::move(QPointF(x, y))))
         emit clicked(1);
-    else if (isPointInPolygon(pointsForBag, std::move(QPointF(x, y))))
+    else if (isPointInPolygon(pointsForScratch, std::move(QPointF(x, y))))
         emit clicked(2);
-    else if (isPointInPolygon(pointsForFight, std::move(QPointF(x, y))))
+    else if (isPointInPolygon(pointsForBag, std::move(QPointF(x, y))))
         emit clicked(3);
+    else if (isPointInPolygon(pointsForFight, std::move(QPointF(x, y))))
+        emit clicked(4);
 }
 
-void GameLobby::ClickOn(int type)
-{
-    switch (type)
-    {
-    case 0:
-    {
-        _stackLayout->setCurrentIndex(1);
-        break;
-    }
-    case 1:
-        QMessageBox::information( this, "Scrath", "1");
-        break;
-    case 2:
-        QMessageBox::information( this, "Bag", "1");
-        break;
-    case 3:
-        QMessageBox::information( this, "Fight", "1");
-        break;
-    }
-}
+//void GameLobby::ClickOn(int type)
+//{
+//    switch (type)
+//    {
+//    case 0:
+//    {
+//        emit ToUserList();
+//        break;
+//    }
+//    case 1:
+//        QMessageBox::information( this, "Scrath", "1");
+//        break;
+//    case 2:
+//        QMessageBox::information( this, "Bag", "1");
+//        break;
+//    case 3:
+//        QMessageBox::information( this, "Fight", "1");
+//        break;
+//    }
+//}
 
 void GameLobby::InitUi()
 {
@@ -107,19 +107,12 @@ void GameLobby::InitUi()
     palette.setBrush(QPalette::Window, QBrush(pixmap.scaled(width(), height())));
     setPalette(palette);
 
-    // 设置关闭按钮
-    _stackLayout = new QStackedLayout(this);
-    //stack->addWidget(this);
-    _stackLayout->addWidget(this);
-    _stackLayout->addWidget(new UserListWidget());
-    _stackLayout->setCurrentIndex(0);
-
 }
 
 void GameLobby::InitConnect()
 {
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(LogOut()));
-    connect(this, SIGNAL(clicked(int)), this, SLOT(ClickOn(int)));
+    //connect(this, SIGNAL(clicked(int)), this, SLOT(ClickOn(int)));
 }
 
 void GameLobby::GetOnlineList()
