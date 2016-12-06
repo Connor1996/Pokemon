@@ -22,7 +22,6 @@ signals:
     void closeAll();
 
 private slots:
-    void GetOnlineList();
     void LogOut();
 
 protected:

@@ -116,14 +116,6 @@ void GameLobby::InitConnect()
     //connect(this, SIGNAL(clicked(int)), this, SLOT(ClickOn(int)));
 }
 
-void GameLobby::GetOnlineList()
-{
-    json sendInfo = {
-        {"type", GET_ONLINE_LIST}
-    };
-    json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
-    std::cout << receiveInfo << std::endl;
-}
 
 void GameLobby::LogOut()
 {

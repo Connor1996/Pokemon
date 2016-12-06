@@ -27,7 +27,10 @@ private:
 
     Connor_Socket::Client *_client;
 
+    void InitUi();
+    void InitConnect();
 
+    void SetOnlineList();
 };
 
 #endif // USERLISTWIDGET_H
