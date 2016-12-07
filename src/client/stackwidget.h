@@ -19,6 +19,9 @@ public:
     explicit StackWidget(Connor_Socket::Client *client, QWidget *parent = 0);
     ~StackWidget();
 
+signals:
+    void refresh();
+
 public slots:
     void SetCurrentIndex(int index);
     void BackToLobby();

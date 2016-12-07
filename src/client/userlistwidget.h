@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "client.h"
+#include <QSignalMapper>
 
 namespace Ui {
 class UserListWidget;
@@ -21,16 +22,17 @@ signals:
 
 public slots:
     void Back();
+    void SetOnlineList();
+    void ShowBag(QString username);
 
 private:
     Ui::UserListWidget *ui;
 
     Connor_Socket::Client *_client;
+    QSignalMapper *_signalMapper;
 
     void InitUi();
     void InitConnect();
-
-    void SetOnlineList();
 };
 
 #endif // USERLISTWIDGET_H

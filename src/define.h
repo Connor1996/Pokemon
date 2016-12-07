@@ -7,6 +7,7 @@
 #define LOG_IN          1
 #define SIGN_UP         2
 #define GET_ONLINE_LIST 3
+#define GET_USER_BAG    4
 
 /*--------------------返回状态------------------------*/
 

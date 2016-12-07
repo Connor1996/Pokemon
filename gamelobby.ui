@@ -28,6 +28,10 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="images.qrc">
+    <normaloff>:/ball</normaloff>:/ball</iconset>
+  </property>
   <widget class="QPushButton" name="closeButton">
    <property name="geometry">
     <rect>
@@ -36,6 +40,9 @@
      <width>51</width>
      <height>51</height>
     </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
    </property>
    <property name="styleSheet">
     <string notr="true">border-image: url(:/close);</string>
@@ -48,6 +55,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

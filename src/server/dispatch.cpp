@@ -24,6 +24,8 @@ std::string Dispatcher::Dispatch(json requestInfo)
     case GET_ONLINE_LIST:
         responseInfo = OnlineListHandle(requestInfo);
         break;
+    case GET_USER_BAG:
+        responseInfo = UserBagHandle(requestInfo);
     default:
         responseInfo["type"] = SERVER_ERROR;
         std::cout << "[ERROR] Bad request" << std::endl;
@@ -149,6 +151,19 @@ json Dispatcher::SignupHandle(json &requestInfo)
 json Dispatcher::OnlineListHandle(json &requestInfo)
 {
     return std::move(json(_parent->GetOnlineList()));
+}
+
+json Dispatcher::UserBagHandle(json &requestInfo)
+{
+    ORMapper<UserBag> mapper(DATABASE_NAME);
+    UserBag helper;
+    QueryMessager<UserBag> messager(helper);
+    json responseInfo;
+
+    auto result = mapper.Query(messager
+                               .Where(Field(helper.username)
+                                      == requestInfo["username"].get<std::string>()));
+
 }
 
 void Dispatcher::Logout()

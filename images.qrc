@@ -46,6 +46,8 @@
         <file>images/vibrava.gif</file>
         <file>images/victini.gif</file>
         <file>images/video-wallpaper-images-pokemon-game-52286.jpg</file>
-        <file>images/精灵球.png</file>
+        <file alias="ball">images/精灵球.png</file>
+        <file alias="offline">images/offline.png</file>
+        <file alias="online">images/online.png</file>
     </qresource>
 </RCC>
