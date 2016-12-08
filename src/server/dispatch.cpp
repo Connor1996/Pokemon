@@ -1,9 +1,12 @@
 ﻿#include "dispatch.h"
 #include "ormlite.h"
+
 #include "../define.h"
 #include "../model/userinfo.h"
 #include "../model/userbag.h"
 #include "../model/pokemoninfo.h"
+
+#include <stdexcept>
 
 using namespace ORMLite;
 
@@ -26,6 +29,7 @@ std::string Dispatcher::Dispatch(json requestInfo)
         break;
     case GET_USER_BAG:
         responseInfo = UserBagHandle(requestInfo);
+        break;
     default:
         responseInfo["type"] = SERVER_ERROR;
         std::cout << "[ERROR] Bad request" << std::endl;
@@ -150,7 +154,19 @@ json Dispatcher::SignupHandle(json &requestInfo)
 
 json Dispatcher::OnlineListHandle(json &requestInfo)
 {
-    return std::move(json(_parent->GetOnlineList()));
+    json responseInfo;
+
+    try{
+        responseInfo["info"] = json(_parent->GetOnlineList());
+        responseInfo["type"] = QUERY_SUCCESS;
+    }
+    catch (std::exception e)
+    {
+        responseInfo["type"] = SERVER_ERROR;
+        std::cout << e.what() << std::endl;
+    }
+
+    return std::move(responseInfo);
 }
 
 json Dispatcher::UserBagHandle(json &requestInfo)
@@ -158,12 +174,35 @@ json Dispatcher::UserBagHandle(json &requestInfo)
     ORMapper<UserBag> mapper(DATABASE_NAME);
     UserBag helper;
     QueryMessager<UserBag> messager(helper);
-    json responseInfo;
+
 
     auto result = mapper.Query(messager
                                .Where(Field(helper.username)
                                       == requestInfo["username"].get<std::string>()));
+    json responseInfo;
+    if (result)
+    {
+        responseInfo["type"] = QUERY_SUCCESS;
+        json itemsInfo;
+        for (const auto& vec: messager.GetVector())
+        {
+            json itemInfo = {
+                {"name", vec[1]},
+                {"level", vec[2]}
+            };
+            itemsInfo.push_back(itemInfo.dump());
+        }
+        responseInfo["info"] = itemsInfo;
+    }
+    else
+    {
+        responseInfo["type"] = SERVER_ERROR;
+        std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
+    }
 
+
+
+    return std::move(responseInfo);
 }
 
 void Dispatcher::Logout()

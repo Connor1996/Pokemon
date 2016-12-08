@@ -1,4 +1,4 @@
-#include "server.h"
+﻿#include "server.h"
 
 #include "dispatch.h"
 #include "include/json.hpp"
@@ -67,7 +67,7 @@ Server::Server() : _count(0), _mapper("data.db")
                         closesocket(connection);
                         break;
                     }
-                    cout << "[INFO] message: " << recvBuf << endl;
+                    cout << "[INFO] receive message: " << recvBuf << endl;
 
                     std::string responseStr;
                     try
@@ -81,7 +81,7 @@ Server::Server() : _count(0), _mapper("data.db")
                         cout << "[ERROR] " << e.what() << endl;
                     }
 
-                    //cout << "[INFO] parse done" << endl;
+                    cout << "[INFO] send message: " << responseStr << endl;
                     send(connection, responseStr.c_str(), DEFAULT_BUFLEN, 0);
 
                 }

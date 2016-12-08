@@ -22,7 +22,7 @@ signals:
 
 public slots:
     void Back();
-    void SetOnlineList();
+    void SetUserList();
     void ShowBag(QString username);
 
 private:

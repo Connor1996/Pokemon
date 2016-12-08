@@ -73,13 +73,13 @@ void Widget::Login()
        {
            _client->Close();
            delete _client;
-           QMessageBox::information(this, "Error", QString::fromLocal8Bit("登陆失败"));
+           QMessageBox::information(this, "Error", QString::fromLocal8Bit("登陆失败,用户名或密码错误"));
        }
        else if (receiveInfo["type"].get<int>() == LOG_IN_FAIL_AO)
        {
            _client->Close();
            delete _client;
-           QMessageBox::information(this, "Error", QString::fromLocal8Bit("登陆失败"));
+           QMessageBox::information(this, "Error", QString::fromLocal8Bit("登陆失败，该用户已经在线"));
        }
        else if (receiveInfo["type"].get<int>() == LOG_IN_SUCCESS)
        {

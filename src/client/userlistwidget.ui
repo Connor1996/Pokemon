@@ -44,11 +44,14 @@
     <rect>
      <x>440</x>
      <y>166</y>
-     <width>671</width>
+     <width>691</width>
      <height>441</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1,4">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetNoConstraint</enum>
+    </property>
     <item>
      <widget class="QScrollArea" name="scrollArea">
       <property name="styleSheet">
@@ -56,6 +59,15 @@
 border:0px;
 background-color: rgb(255, 175, 77);
 </string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>2</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>
@@ -65,7 +77,7 @@ background-color: rgb(255, 175, 77);
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>308</width>
+         <width>212</width>
          <height>439</height>
         </rect>
        </property>
@@ -100,19 +112,31 @@ border-radius : 20px;
     </item>
     <item>
      <widget class="QScrollArea" name="scrollArea_2">
+      <property name="styleSheet">
+       <string notr="true">
+border:0px;
+background-color: rgb(255, 175, 77);
+</string>
+      </property>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
+      <widget class="QWidget" name="bagWidget">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>305</width>
-         <height>437</height>
+         <width>423</width>
+         <height>439</height>
         </rect>
        </property>
-       <zorder>scrollArea</zorder>
+       <property name="styleSheet">
+        <string notr="true">#bagWidget{
+background-color: rgb(255, 175, 77);
+border: 5px solid rgb(0,0,0);
+border-radius : 20px;
+}</string>
+       </property>
       </widget>
      </widget>
     </item>

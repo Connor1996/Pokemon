@@ -4,10 +4,10 @@
 #define DATABASE_NAME "data.db"
 
 /*--------------------请求类型------------------------*/
-#define LOG_IN          1
-#define SIGN_UP         2
-#define GET_ONLINE_LIST 3
-#define GET_USER_BAG    4
+#define LOG_IN          2
+#define SIGN_UP         3
+#define GET_ONLINE_LIST 4
+#define GET_USER_BAG    5
 
 /*--------------------返回状态------------------------*/
 
@@ -18,8 +18,8 @@
 #define SIGN_UP_SUCCESS 68
 #define SIGN_UP_FAIL    69
 
-/*--------------------错误类型------------------------*/
 #define SERVER_ERROR    0
+#define QUERY_SUCCESS   1
 
 
 #endif // DEFINE_H

@@ -21,7 +21,7 @@ StackWidget::StackWidget(Connor_Socket::Client *client, QWidget *parent) :
 
     connect(_gameLobby, SIGNAL(clicked(int)), this, SLOT(SetCurrentIndex(int)));
     connect(_userListWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
-    connect(this, SIGNAL(refresh()), _userListWidget, SLOT(SetOnlineList()));
+    connect(this, SIGNAL(refresh()), _userListWidget, SLOT(SetUserList()));
     connect(_gameLobby, SIGNAL(closeAll()), this, SLOT(close()));
 
 }

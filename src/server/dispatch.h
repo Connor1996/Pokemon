@@ -1,4 +1,4 @@
-#ifndef DISPATCH_H
+﻿#ifndef DISPATCH_H
 #define DISPATCH_H
 
 #include "server.h"
@@ -20,6 +20,7 @@ public:
     json LoginHandle(json&);
     json SignupHandle(json&);
     json OnlineListHandle(json &);
+    json UserBagHandle(json &);
 
     void Logout();
 private:

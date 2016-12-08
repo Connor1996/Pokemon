@@ -1,11 +1,6 @@
-<RCC>
+﻿<RCC>
     <qresource prefix="/">
         <file alias="background">images/VGN94976413.jpg</file>
-        <file alias="pikachu">images/pikachu.gif</file>
-        <file>images/pikachu-2.gif</file>
-        <file>images/pikachu-3.gif</file>
-        <file>images/pikachu-4.gif</file>
-        <file>images/pikachu-5.gif</file>
         <file alias="lobby">images/lobby.jpg</file>
         <file alias="close">images/cancel_524px_1205790_easyicon.net.png</file>
         <file>images/d058ccbf6c81800a3dd7c3d3b93533fa828b4738.jpg</file>
@@ -15,7 +10,6 @@
         <file>images/6-vector-game-backgrounds-8003_imgs_8003_3.png</file>
         <file>images/614955.png</file>
         <file>images/614955.psd</file>
-        <file>images/12764687_962893940471252_6844124496185683986_o_1024.jpg</file>
         <file>images/483979926.jpg</file>
         <file>images/1477467390_pokemon-logo.png</file>
         <file>images/Ashketchum.gif</file>
@@ -25,29 +19,32 @@
         <file>images/fight.jpg</file>
         <file>images/fight_background.jpg</file>
         <file>images/Scratch.jpg</file>
-        <file>images/thumb-1920-723313.jpg</file>
-        <file>images/tranquill.gif</file>
-        <file>images/trapinch.gif</file>
-        <file>images/trapinch-2.gif</file>
-        <file>images/treecko.gif</file>
-        <file>images/trevenant.gif</file>
-        <file>images/typhlosion.gif</file>
-        <file>images/tyranitar.gif</file>
-        <file>images/tyrantrum.gif</file>
-        <file>images/tyrantrum-2.gif</file>
-        <file>images/tyrantrum-3.gif</file>
-        <file>images/ursaring.gif</file>
-        <file>images/uxie.gif</file>
-        <file>images/vanillite-2.gif</file>
-        <file>images/venonat.gif</file>
-        <file>images/venusaur.gif</file>
-        <file>images/vespiquen.gif</file>
         <file>images/VGN94976413H.jpg</file>
-        <file>images/vibrava.gif</file>
-        <file>images/victini.gif</file>
         <file>images/video-wallpaper-images-pokemon-game-52286.jpg</file>
         <file alias="ball">images/精灵球.png</file>
         <file alias="offline">images/offline.png</file>
         <file alias="online">images/online.png</file>
+        <file>images/dynamic/beedrill.gif</file>
+        <file>images/dynamic/bulbasaur.gif</file>
+        <file>images/dynamic/bulbasaur-2.gif</file>
+        <file>images/dynamic/bulbasaur-3.gif</file>
+        <file>images/dynamic/charmander.gif</file>
+        <file>images/dynamic/charmander-2.gif</file>
+        <file>images/dynamic/charmander-3.gif</file>
+        <file>images/dynamic/pikachu.gif</file>
+        <file>images/dynamic/pikachu-2.gif</file>
+        <file>images/dynamic/pikachu-3.gif</file>
+        <file>images/dynamic/pikachu-4.gif</file>
+        <file>images/dynamic/pikachu-5.gif</file>
+        <file>images/dynamic/squirtle.gif</file>
+        <file>images/dynamic/squirtle-2.gif</file>
+        <file>images/dynamic/squirtle-3.gif</file>
+        <file>images/static/bulbasaur.png</file>
+        <file>images/static/caterpie.png</file>
+        <file>images/static/charmander.png</file>
+        <file>images/static/pidgey.png</file>
+        <file>images/static/pikachu.png</file>
+        <file>images/static/squirtle.png</file>
+        <file>images/static/weedle.png</file>
     </qresource>
 </RCC>

@@ -50,8 +50,8 @@ TEST_CASE("Test Pokemon Class")
     {
         auto speed_p = pikachu->GetAttackFrequence();
         auto speed_c = charmander->GetAttackFrequence();
-        std::cout << "[INFO] the speed of " << pikachu->GetName() << " is " << speed_p;
-        std::cout << "[INFO] the speed of " << charmander->GetName() << " is " << speed_c;
+        std::cout << "[INFO] the speed of " << pikachu->GetName() << " is " << speed_p << std::endl;
+        std::cout << "[INFO] the speed of " << charmander->GetName() << " is " << speed_c << std::endl;
         std::cout << "[INFO] Fight begin" << std::endl;
         // 时间轴
         size_t time_p = 0;
