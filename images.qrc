@@ -13,10 +13,10 @@
         <file>images/483979926.jpg</file>
         <file>images/1477467390_pokemon-logo.png</file>
         <file>images/Ashketchum.gif</file>
-        <file>images/bag.jpg</file>
+        <file alias="bag">images/bag.jpg</file>
         <file>images/cartoon-game-background-landscape-vector-illustration-57884203.jpg</file>
         <file>images/depositphotos_106891270-stock-illustration-cartoon-nature-landscape-for-game.jpg</file>
-        <file>images/fight.jpg</file>
+        <file alias="fight">images/fight.jpg</file>
         <file>images/fight_background.jpg</file>
         <file>images/Scratch.jpg</file>
         <file>images/VGN94976413H.jpg</file>
@@ -46,5 +46,6 @@
         <file>images/static/pikachu.png</file>
         <file>images/static/squirtle.png</file>
         <file>images/static/weedle.png</file>
+        <file>images/ball.png</file>
     </qresource>
 </RCC>

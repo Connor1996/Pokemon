@@ -7,6 +7,8 @@
 #include "../model/pokemoninfo.h"
 
 #include <stdexcept>
+#include <algorithm>
+#include <set>
 
 using namespace ORMLite;
 
@@ -29,6 +31,9 @@ std::string Dispatcher::Dispatch(json requestInfo)
         break;
     case GET_USER_BAG:
         responseInfo = UserBagHandle(requestInfo);
+        break;
+    case GET_OFFLINE_LIST:
+        responseInfo = OfflineListHandle(requestInfo);
         break;
     default:
         responseInfo["type"] = SERVER_ERROR;
@@ -164,6 +169,40 @@ json Dispatcher::OnlineListHandle(json &requestInfo)
     {
         responseInfo["type"] = SERVER_ERROR;
         std::cout << e.what() << std::endl;
+    }
+
+    return std::move(responseInfo);
+}
+
+json Dispatcher::OfflineListHandle(json &requestInfo)
+{
+    json responseInfo;
+
+    ORMapper<UserInfo> mapper(DATABASE_NAME);
+    UserInfo helper;
+    QueryMessager<UserInfo> messager(helper);
+
+    std::list<std::string> userList;
+    std::list<std::string> offlineList;
+
+    auto result = mapper.Query(messager);
+    if (result)
+    {
+        for (const auto& vec: messager.GetVector())
+            userList.emplace_back(vec[0]);
+
+        std::list<std::string> onlineList(_parent->GetOnlineList());
+        std::set_difference(userList.begin(), userList.end(),
+                         onlineList.begin(), onlineList.end(),
+                              std::back_inserter(offlineList));
+
+        responseInfo["type"] = QUERY_SUCCESS;
+        responseInfo["info"] = json(std::move(offlineList));
+    }
+    else
+    {
+        responseInfo["type"] = SERVER_ERROR;
+        std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
     return std::move(responseInfo);

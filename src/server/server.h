@@ -1,7 +1,8 @@
-#ifndef SERVER_H
+﻿#ifndef SERVER_H
 #define SERVER_H
 
 #include <unordered_map>
+#include <set>
 
 #include "../socket.h"
 #include "../model/userinfo.h"

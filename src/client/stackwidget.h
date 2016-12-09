@@ -3,9 +3,12 @@
 
 #include <QWidget>
 #include <QStackedLayout>
+
 #include "gamelobby.h"
 #include "client.h"
 #include "userlistwidget.h"
+#include "bagwidget.h"
+#include "fightwidget.h"
 
 namespace Ui {
 class StackWidget;
@@ -33,6 +36,8 @@ private:
 
     GameLobby *_gameLobby;
     UserListWidget *_userListWidget;
+    BagWidget *_bagWidget;
+    FightWidget *_fightWidget;
 
     Connor_Socket::Client *_client;
 };

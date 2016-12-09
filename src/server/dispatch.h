@@ -21,6 +21,7 @@ public:
     json SignupHandle(json&);
     json OnlineListHandle(json &);
     json UserBagHandle(json &);
+    json OfflineListHandle(json &);
 
     void Logout();
 private:

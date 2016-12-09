@@ -76,11 +76,54 @@ void UserListWidget::SetUserList()
 
         // 显示用户状态
         QLabel *stateLabel = new QLabel();
-        stateLabel->setPixmap(QPixmap(":/online"));
+        stateLabel->setPixmap(QPixmap(":/online").scaled(48, 48));
         // 显示用户名
         QLabel *textLabel = new QLabel();
         textLabel->setText(QString::fromStdString(str));
-        //textLabel->setFont(QFont("微软雅黑"));
+        textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
+
+        QPushButton *bagButton = new QPushButton();
+        bagButton->setFlat(true);
+        bagButton->setStyleSheet("image: url(:/ball)");
+        _signalMapper->setMapping(bagButton, QString::fromStdString(str));
+        connect(bagButton, SIGNAL(clicked()), _signalMapper, SLOT(map()));
+
+
+        // 构建显示条目的layout
+        QHBoxLayout *rowlayout = new QHBoxLayout;
+        rowlayout->addStretch(1);
+        rowlayout->addWidget(stateLabel);
+        rowlayout->addStretch(1);
+        rowlayout->addWidget(textLabel);
+        rowlayout->addStretch(1);
+        rowlayout->addWidget(bagButton);
+        rowlayout->addStretch(1);
+        listLayout->addLayout(rowlayout);
+    }
+
+    // 获得离线用户
+    sendInfo = {
+        {"type", GET_OFFLINE_LIST}
+    };
+    receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+
+    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    {
+        QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取用户列表失败"));
+        return;
+    }
+
+    for(const auto& item : receiveInfo["info"])
+    {
+        std::string str = item.get<std::string>();
+
+        // 显示用户状态
+        QLabel *stateLabel = new QLabel();
+        stateLabel->setPixmap(QPixmap(":/offline").scaled(48, 48));
+        // 显示用户名
+        QLabel *textLabel = new QLabel();
+        textLabel->setText(QString::fromStdString(str));
+        textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
 
         QPushButton *bagButton = new QPushButton();
         bagButton->setFlat(true);
@@ -102,9 +145,7 @@ void UserListWidget::SetUserList()
         listLayout->addLayout(rowlayout);
     }
 
-
     ui->userListWidget->setLayout(listLayout);
-
     connect(_signalMapper, SIGNAL(mapped(QString)), this, SLOT(ShowBag(QString)));
 }
 
@@ -136,11 +177,13 @@ void UserListWidget::ShowBag(QString username)
         QLabel *picLabel = new QLabel();
         QPixmap pic(QString::fromStdString("://images/static/" +
                                             itemInfo["name"].get<std::string>() + ".png"));
-        picLabel->setPixmap(pic.scaled(128, 128));
+        picLabel->setPixmap(pic.scaled(128, 128, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         // 显示等级
         QLabel *textLabel = new QLabel();
-        textLabel->setText(QString::fromStdString(itemInfo["level"].get<std::string>()));
+        textLabel->setText(QString::fromStdString("Lv." + itemInfo["level"].get<std::string>()));
+        textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
+        textLabel->setAlignment(Qt::AlignCenter);
 
         QVBoxLayout *rowlayout = new QVBoxLayout;
         rowlayout->addWidget(picLabel);
@@ -154,7 +197,6 @@ void UserListWidget::ShowBag(QString username)
         }
     }
     gridLayout->setAlignment(Qt::AlignTop);
-    gridLayout->addLayout(new QHBoxLayout(), col, row + 1);
     ui->bagWidget->setLayout(gridLayout);
 }
 

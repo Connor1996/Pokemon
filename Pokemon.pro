@@ -28,7 +28,9 @@ SOURCES += \
     include/sqlite3.c \
     src/reflector.cpp \
     src/client/userlistwidget.cpp \
-    src/client/stackwidget.cpp
+    src/client/stackwidget.cpp \
+    src/client/bagwidget.cpp \
+    src/client/fightwidget.cpp
 
 
 HEADERS  +=  \
@@ -44,14 +46,18 @@ HEADERS  +=  \
     src/model/userbag.h \
     src/model/pokemoninfo.h \
     src/client/userlistwidget.h \
-    src/client/stackwidget.h
+    src/client/stackwidget.h \
+    src/client/bagwidget.h \
+    src/client/fightwidget.h
 
 
 FORMS    += \
     widget.ui \
     gamelobby.ui \
     src/client/userlistwidget.ui \
-    src/client/stackwidget.ui
+    src/client/stackwidget.ui \
+    src/client/bagwidget.ui \
+    src/client/fightwidget.ui
 
 RESOURCES += \
     images.qrc

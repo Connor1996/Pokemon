@@ -3,7 +3,6 @@
 #include "dispatch.h"
 #include "include/json.hpp"
 
-
 using namespace Connor_Socket;
 using json = nlohmann::json;
 
@@ -115,7 +114,7 @@ std::list<std::string> Server::GetOnlineList()
 {
     std::list<std::string> onlineList;
     for (const auto& pair : _sockets)
-        onlineList.push_back(pair.first);
+        onlineList.emplace_back(pair.first);
 
     return std::move(onlineList);
 }
