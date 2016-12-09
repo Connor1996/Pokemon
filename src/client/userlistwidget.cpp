@@ -163,29 +163,36 @@ void UserListWidget::ShowBag(QString username)
         return;
     }
 
-    // 判断是否已经有layout，有则删除
-    if(ui->bagWidget->layout() != 0)
-        delete ui->bagWidget->layout();
+    // 判断是否已经有widget，有则删除
+    if(ui->bagListArea->widget() != 0)
+        delete ui->bagListArea->widget();
 
-    QGridLayout *gridLayout = new QGridLayout;
+
+    QWidget *containWidget = new QWidget(ui->bagListArea);
+    containWidget->setStyleSheet("background-color: rgb(255, 175, 77);");
+
+    QGridLayout *gridLayout = new QGridLayout(containWidget);
+    containWidget->setLayout(gridLayout);
+
     auto row = 1, col = 1;
     for (const auto& item: receiveInfo["info"])
     {
         json itemInfo = json::parse(item.get<std::string>());
 
         // 显示精灵图片
-        QLabel *picLabel = new QLabel();
+        QLabel *picLabel = new QLabel(containWidget);
         QPixmap pic(QString::fromStdString("://images/static/" +
                                             itemInfo["name"].get<std::string>() + ".png"));
-        picLabel->setPixmap(pic.scaled(128, 128, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        //picLabel->setStyleSheet("margin: 0px");
+        picLabel->setPixmap(pic.scaled(120, 120, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         // 显示等级
-        QLabel *textLabel = new QLabel();
+        QLabel *textLabel = new QLabel(containWidget);
         textLabel->setText(QString::fromStdString("Lv." + itemInfo["level"].get<std::string>()));
         textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
         textLabel->setAlignment(Qt::AlignCenter);
 
-        QVBoxLayout *rowlayout = new QVBoxLayout;
+        QVBoxLayout *rowlayout = new QVBoxLayout();
         rowlayout->addWidget(picLabel);
         rowlayout->addWidget(textLabel);
         gridLayout->addLayout(rowlayout, row, col);
@@ -197,7 +204,10 @@ void UserListWidget::ShowBag(QString username)
         }
     }
     gridLayout->setAlignment(Qt::AlignTop);
-    ui->bagWidget->setLayout(gridLayout);
+    //containWidget->setLayout(gridLayout);
+    ui->bagListArea->setWidget(containWidget);
+    //this->erase();
+    //this->update();
 }
 
 void UserListWidget::Back()
