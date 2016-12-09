@@ -227,7 +227,12 @@ json Dispatcher::UserBagHandle(json &requestInfo)
         {
             json itemInfo = {
                 {"name", vec[1]},
-                {"level", vec[2]}
+                {"level", vec[2]},
+                {"type", vec[4]},
+                {"attackPoint", vec[5]},
+                {"defensePoint", vec[6]},
+                {"healthPoint", vec[7]},
+                {"attackFrequence", vec[8]}
             };
             itemsInfo.push_back(itemInfo.dump());
         }

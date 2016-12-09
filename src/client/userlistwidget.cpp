@@ -58,46 +58,51 @@ void UserListWidget::SetUserList()
         return;
     }
 
-    // 判断是否已经有layout，有则删除
-    if(ui->userListWidget->layout() != 0)
-        delete ui->userListWidget->layout();
-    if(_signalMapper != nullptr)
-    {
-        _signalMapper->disconnect();
-        delete _signalMapper;
-    }
-    _signalMapper = new QSignalMapper;
+    // 判断是否已经有widget，有则删除
+    if(ui->userListArea->widget() != 0)
+        delete ui->userListArea->widget();
 
-    QVBoxLayout *listLayout = new QVBoxLayout;
+
+    QWidget *containWidget = new QWidget(ui->userListArea);
+    containWidget->setStyleSheet("background-color: rgb(255, 175, 77);");
+
+    QVBoxLayout *listLayout = new QVBoxLayout(containWidget);
     listLayout->setAlignment(Qt::AlignTop);
+    //containWidget->setLayout(listLayout);
+
+    _signalMapper = new QSignalMapper(containWidget);
+
+
     for(const auto& item : receiveInfo["info"])
     {
         std::string str = item.get<std::string>();
 
         // 显示用户状态
         QLabel *stateLabel = new QLabel();
-        stateLabel->setPixmap(QPixmap(":/online").scaled(48, 48));
+        stateLabel->setPixmap(QPixmap(":/online")
+                              .scaled(36, 36, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         // 显示用户名
         QLabel *textLabel = new QLabel();
         textLabel->setText(QString::fromStdString(str));
         textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
 
         QPushButton *bagButton = new QPushButton();
-        bagButton->setFlat(true);
-        bagButton->setStyleSheet("image: url(:/ball)");
+//        bagButton->setFlat(true);
+//        bagButton->resize(36, 36);
+//        bagButton->setStyleSheet("image: url(:/ball)");
         _signalMapper->setMapping(bagButton, QString::fromStdString(str));
         connect(bagButton, SIGNAL(clicked()), _signalMapper, SLOT(map()));
 
 
         // 构建显示条目的layout
         QHBoxLayout *rowlayout = new QHBoxLayout;
-        rowlayout->addStretch(1);
+        rowlayout->addSpacing(5);
         rowlayout->addWidget(stateLabel);
         rowlayout->addStretch(1);
         rowlayout->addWidget(textLabel);
         rowlayout->addStretch(1);
         rowlayout->addWidget(bagButton);
-        rowlayout->addStretch(1);
+        rowlayout->addSpacing(5);
         listLayout->addLayout(rowlayout);
     }
 
@@ -119,33 +124,34 @@ void UserListWidget::SetUserList()
 
         // 显示用户状态
         QLabel *stateLabel = new QLabel();
-        stateLabel->setPixmap(QPixmap(":/offline").scaled(48, 48));
+        stateLabel->setPixmap(QPixmap(":/offline")
+                              .scaled(36, 36, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         // 显示用户名
         QLabel *textLabel = new QLabel();
         textLabel->setText(QString::fromStdString(str));
         textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
 
         QPushButton *bagButton = new QPushButton();
-        bagButton->setFlat(true);
-        bagButton->resize(48, 48);
-        bagButton->setStyleSheet("image: url(:/ball)");
+//        bagButton->setFlat(true);
+//        bagButton->resize(48, 48);
+//        bagButton->setStyleSheet("image: url(:/ball)");
         _signalMapper->setMapping(bagButton, QString::fromStdString(str));
         connect(bagButton, SIGNAL(clicked()), _signalMapper, SLOT(map()));
 
 
         // 构建显示条目的layout
         QHBoxLayout *rowlayout = new QHBoxLayout;
-        rowlayout->addStretch(1);
+        rowlayout->addSpacing(5);
         rowlayout->addWidget(stateLabel);
         rowlayout->addStretch(1);
         rowlayout->addWidget(textLabel);
         rowlayout->addStretch(1);
         rowlayout->addWidget(bagButton);
-        rowlayout->addStretch(1);
+        rowlayout->addSpacing(5);
         listLayout->addLayout(rowlayout);
     }
 
-    ui->userListWidget->setLayout(listLayout);
+    ui->userListArea->setWidget(containWidget);
     connect(_signalMapper, SIGNAL(mapped(QString)), this, SLOT(ShowBag(QString)));
 }
 
@@ -180,14 +186,20 @@ void UserListWidget::ShowBag(QString username)
         json itemInfo = json::parse(item.get<std::string>());
 
         // 显示精灵图片
-        QLabel *picLabel = new QLabel(containWidget);
+        QLabel *picLabel = new QLabel();
         QPixmap pic(QString::fromStdString("://images/static/" +
                                             itemInfo["name"].get<std::string>() + ".png"));
-        //picLabel->setStyleSheet("margin: 0px");
         picLabel->setPixmap(pic.scaled(120, 120, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
+        // 构建提示字符串
+        std::string infoStr;
+        for (json::iterator it = itemInfo.begin(); it != itemInfo.end(); ++it)
+            infoStr += it.key() + " : " + it.value().get<std::string>() + "\n";
+        infoStr.pop_back();
+        picLabel->setToolTip(QString::fromStdString(infoStr));
+
         // 显示等级
-        QLabel *textLabel = new QLabel(containWidget);
+        QLabel *textLabel = new QLabel();
         textLabel->setText(QString::fromStdString("Lv." + itemInfo["level"].get<std::string>()));
         textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
         textLabel->setAlignment(Qt::AlignCenter);
@@ -204,10 +216,7 @@ void UserListWidget::ShowBag(QString username)
         }
     }
     gridLayout->setAlignment(Qt::AlignTop);
-    //containWidget->setLayout(gridLayout);
     ui->bagListArea->setWidget(containWidget);
-    //this->erase();
-    //this->update();
 }
 
 void UserListWidget::Back()

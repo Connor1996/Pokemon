@@ -1,4 +1,4 @@
-#ifndef USERINFO_H
+﻿#ifndef USERINFO_H
 #define USERINFO_H
 
 #ifdef __SERVER__
@@ -9,8 +9,11 @@
 
 struct UserInfo
 {
+    // 用户名
     std::string username;
+    // 密码
     std::string password;
+
 
 #ifdef __SERVER__
     ORMAP(UserInfo, username, password);

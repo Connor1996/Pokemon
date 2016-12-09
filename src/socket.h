@@ -1,4 +1,4 @@
-#ifndef SOCKET_H
+﻿#ifndef SOCKET_H
 #define SOCKET_H
 
 //#define WIN32_LEAN_AND_MEAN
@@ -19,7 +19,7 @@
 namespace Connor_Socket
 {
 
-#define DEFAULT_BUFLEN 500
+#define DEFAULT_BUFLEN 5000
 
 #define CLIENT_PORT 5150
 #define SERVER_PORT 2222
