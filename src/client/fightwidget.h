@@ -22,6 +22,7 @@ signals:
 public slots:
     void Back();
     void SetBag();
+    bool eventFilter(QObject *watched, QEvent *event);
 
 private:
     void InitUi();

@@ -37,6 +37,26 @@ void FightWidget::InitConnect()
     connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
 }
 
+bool FightWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    static QObject *select = nullptr;
+    if (watched->inherits("QLabel"))
+    {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
+            if (select == watched)
+                reinterpret_cast<QLabel*>(watched)->setStyleSheet("");
+            else
+                reinterpret_cast<QLabel*>(watched)->setStyleSheet("background: rgba(0,0,0, 20%);"
+                                                              "border-radius: 5px");
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return eventFilter(watched, event);
+}
 
 void FightWidget::SetBag()
 {
@@ -74,6 +94,7 @@ void FightWidget::SetBag()
         QPixmap pic(QString::fromStdString("://images/static/" +
                                             itemInfo["name"].get<std::string>() + ".png"));
         picLabel->setPixmap(pic.scaled(120, 120, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        picLabel->installEventFilter(this);
 
         // 构建提示字符串
         std::string infoStr;
@@ -91,6 +112,7 @@ void FightWidget::SetBag()
         QVBoxLayout *rowlayout = new QVBoxLayout();
         rowlayout->addWidget(picLabel);
         rowlayout->addWidget(textLabel);
+
         gridLayout->addLayout(rowlayout, row, col);
 
         if (++col > 3)
