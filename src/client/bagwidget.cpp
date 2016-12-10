@@ -37,12 +37,51 @@ void BagWidget::InitConnect()
     connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
 }
 
+
 void BagWidget::SetBag()
 {
+    auto setInfo = [this](std::string username, double rate) {
+        json sendInfo = {
+            {"type", GET_USER_ACH},
+            {"username", username}
+        };
+        json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
+        if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+        {
+            QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取用户信息失败"));
+            return;
+        }
+
+        auto str = "用户名: " + username;
+        ui->usernameLabel->setText(QString::fromLocal8Bit(str.c_str()));
+
+        std::stringstream rateStream;
+        rateStream << std::setiosflags(std::ios::fixed) << std::setprecision(1) << rate;
+        str = "胜率: "+ rateStream.str() + "%";
+        ui->rateLabel->setText(QString::fromLocal8Bit(str.c_str()));
+
+        auto getFileName = [](int num) {
+            if (num < 20)
+                return ":/bronze";
+            else if (num < 50)
+                return ":/silver";
+            else
+                return ":/golden";
+        };
+
+        ui->sumLabel->setPixmap(
+                    QPixmap(getFileName(receiveInfo["sum_ach"].get<int>()))
+                .scaled(20, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        ui->adsumLabel->setPixmap(
+                    QPixmap(getFileName(receiveInfo["advance_ach"].get<int>()))
+                .scaled(20, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    };
+
+    auto username = _client->GetUserName();
     json sendInfo = {
         {"type", GET_USER_BAG},
-        {"username", _client->GetUserName()}
+        {"username", username}
     };
     json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
@@ -51,6 +90,9 @@ void BagWidget::SetBag()
         QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取背包信息失败"));
         return;
     }
+
+    // 设置用户信息
+    setInfo(username, receiveInfo["rate"].get<double>());
 
     // 判断是否已经有widget，有则删除
     if(ui->bagListArea->widget() != 0)

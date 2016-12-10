@@ -85,7 +85,15 @@ void Widget::Login()
        {
            this->close();
            StackWidget *stack = new StackWidget(_client);
-           stack->show();
+           try
+           {
+                stack->show();
+           }
+           catch (std::exception e)
+           {
+               QMessageBox::information(this, "Error", QString::fromLocal8Bit("与服务器断开连接"));
+           }
+
            //lobby->exec();
            //this->show();
        }

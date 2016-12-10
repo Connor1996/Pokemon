@@ -76,7 +76,6 @@ std::string Client::Connect(std::string requestInfo)
 
 std::string Client::Send(std::string requestInfo)
 {
-
     int recvBufLen = DEFAULT_BUFLEN;
     char recvBuf[DEFAULT_BUFLEN];
 
@@ -89,14 +88,14 @@ std::string Client::Send(std::string requestInfo)
         closesocket(_connectSocket);
         throw std::runtime_error("Failed at send message");
     }
-    cout << "send complete" << endl;
+    cout << "[INFO] send complete" << endl;
     if (recv(_connectSocket, recvBuf, recvBufLen, 0) <= 0)
     {
         closesocket(_connectSocket);
         throw std::runtime_error("Failed at receive message");
     }
 
-    cout << "receive: " << recvBuf << endl;
+    cout << "[INFO] receive: " << recvBuf << endl;
 
     return std::move(std::string(recvBuf));
 }

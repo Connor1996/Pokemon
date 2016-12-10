@@ -35,6 +35,9 @@ std::string Dispatcher::Dispatch(json requestInfo)
     case GET_OFFLINE_LIST:
         responseInfo = OfflineListHandle(requestInfo);
         break;
+    case GET_USER_ACH:
+        responseInfo = UserAchievementHandle(requestInfo);
+        break;
     default:
         responseInfo["type"] = SERVER_ERROR;
         std::cout << "[ERROR] Bad request" << std::endl;
@@ -259,6 +262,36 @@ json Dispatcher::UserBagHandle(json &requestInfo)
             responseInfo["type"] = SERVER_ERROR;
             std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
         }
+    }
+    else
+    {
+        responseInfo["type"] = SERVER_ERROR;
+        std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
+    }
+
+    return std::move(responseInfo);
+}
+
+json Dispatcher::UserAchievementHandle(json &requestInfo)
+{
+    ORMapper<UserInfo> mapper(DATABASE_NAME);
+    UserInfo helper;
+    QueryMessager<UserInfo> messager(helper);
+
+    // 查询用户背包信息
+    auto result = mapper.Query(messager
+                               .Where(Field(helper.username)
+                                      == requestInfo["username"].get<std::string>()));
+    json responseInfo;
+    if (result)
+    {
+        auto win = std::stoi(messager.GetVector()[0][3]);
+        auto lose = std::stoi(messager.GetVector()[0][4]);
+
+        responseInfo["type"] = QUERY_SUCCESS;
+        responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 1.0) / (win + lose);
+        responseInfo["sum_ach"] = std::stoi(messager.GetVector()[0][4]);
+        responseInfo["advance_ach"] = std::stoi(messager.GetVector()[0][5]);
     }
     else
     {

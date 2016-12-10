@@ -38,10 +38,10 @@
   <widget class="QScrollArea" name="bagListArea">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>130</y>
+     <x>140</x>
+     <y>110</y>
      <width>423</width>
-     <height>499</height>
+     <height>531</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -105,7 +105,7 @@ QScrollBar::sub-line:vertiacal {
       <x>0</x>
       <y>0</y>
       <width>403</width>
-      <height>479</height>
+      <height>511</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -114,6 +114,123 @@ background-color: rgb(141, 220, 163);
 }</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>720</x>
+     <y>110</y>
+     <width>221</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#widget
+{
+background-color: rgb(141, 220, 163);
+border: 5px solid rgb(0,0,0);
+border-radius : 20px;
+}
+</string>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,15,1">
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLabel" name="usernameLabel">
+        <property name="styleSheet">
+         <string notr="true">
+font: 75 12pt &quot;等线&quot;;</string>
+        </property>
+        <property name="text">
+         <string>用户名：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="rateLabel">
+        <property name="styleSheet">
+         <string notr="true">
+font: 75 12pt &quot;等线&quot;;</string>
+        </property>
+        <property name="text">
+         <string>胜率：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="styleSheet">
+           <string notr="true">
+font: 75 12pt &quot;等线&quot;;</string>
+          </property>
+          <property name="text">
+           <string>宠物个数徽章:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="sumLabel">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="styleSheet">
+           <string notr="true">
+font: 75 12pt &quot;等线&quot;;</string>
+          </property>
+          <property name="text">
+           <string>高级宠物徽章:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="adsumLabel">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

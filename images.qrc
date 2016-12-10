@@ -3,7 +3,6 @@
         <file alias="background">images/VGN94976413.jpg</file>
         <file alias="lobby">images/lobby.jpg</file>
         <file alias="close">images/cancel_524px_1205790_easyicon.net.png</file>
-        <file>images/d058ccbf6c81800a3dd7c3d3b93533fa828b4738.jpg</file>
         <file alias="userlist">images/userlist.jpg</file>
         <file>images/返回 (1).png</file>
         <file alias="return">images/返回.png</file>
@@ -12,7 +11,6 @@
         <file>images/614955.psd</file>
         <file>images/483979926.jpg</file>
         <file>images/1477467390_pokemon-logo.png</file>
-        <file>images/Ashketchum.gif</file>
         <file alias="bag">images/bag.jpg</file>
         <file>images/cartoon-game-background-landscape-vector-illustration-57884203.jpg</file>
         <file>images/depositphotos_106891270-stock-illustration-cartoon-nature-landscape-for-game.jpg</file>
@@ -47,5 +45,9 @@
         <file>images/static/squirtle.png</file>
         <file>images/static/weedle.png</file>
         <file alias="ball">images/ball.png</file>
+        <file alias="bronze">images/bronze.png</file>
+        <file alias="golden">images/golden.png</file>
+        <file alias="silver">images/silver.png</file>
+        <file>images/d058ccbf6c81800a3dd7c3d3b93533fa828b4738.jpg</file>
     </qresource>
 </RCC>

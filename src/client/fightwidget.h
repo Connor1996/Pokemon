@@ -21,6 +21,7 @@ signals:
 
 public slots:
     void Back();
+    void SetBag();
 
 private:
     void InitUi();

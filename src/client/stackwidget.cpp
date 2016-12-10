@@ -40,6 +40,7 @@ void StackWidget::InitConnect()
     // 点击的时候刷新相应界面内容
     connect(this, SIGNAL(refreshUserList()), _userListWidget, SLOT(SetUserList()));
     connect(this, SIGNAL(refreshBag()), _bagWidget, SLOT(SetBag()));
+    connect(this, SIGNAL(refreshFight()), _fightWidget, SLOT(SetBag()));
 
     connect(_gameLobby, SIGNAL(closeAll()), this, SLOT(close()));
 }
@@ -60,6 +61,8 @@ void StackWidget::SetCurrentIndex(int index)
         emit refreshUserList();
     else if (index == 3)
         emit refreshBag();
+    else if (index == 4)
+        emit refreshFight();
     _stackLayout->setCurrentIndex(index);
 
 }

@@ -25,6 +25,7 @@ public:
 signals:
     void refreshUserList();
     void refreshBag();
+    void refreshFight();
 
 public slots:
     void SetCurrentIndex(int index);

@@ -22,6 +22,7 @@ public:
     json OnlineListHandle(json &);
     json UserBagHandle(json &);
     json OfflineListHandle(json &);
+    json UserAchievementHandle(json &);
 
     void Logout();
 private:

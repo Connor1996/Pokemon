@@ -9,6 +9,7 @@
 #define GET_ONLINE_LIST     4
 #define GET_OFFLINE_LIST    5
 #define GET_USER_BAG        6
+#define GET_USER_ACH        7
 
 /*--------------------返回状态------------------------*/
 
