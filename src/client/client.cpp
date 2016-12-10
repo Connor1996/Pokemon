@@ -28,6 +28,11 @@ Client::Client(string name)
         closesocket(_connectSocket);
         throw std::runtime_error("Second parrameter does not contain valid ipaddress");
     }
+
+    //发送时限
+    int nNetTimeout = 1000; //1秒
+    setsockopt(_connectSocket, SOL_SOCKET, SO_SNDTIMEO, (char *)&nNetTimeout, sizeof(int));
+
     cout << "Initial success" << endl;
 }
 
@@ -76,12 +81,15 @@ std::string Client::Send(std::string requestInfo)
     char recvBuf[DEFAULT_BUFLEN];
 
     cout << "[INFO] request: " << requestInfo << endl;
-    if (send(_connectSocket, requestInfo.c_str(), DEFAULT_BUFLEN, 0) == SOCKET_ERROR)
+    char sendBuf[DEFAULT_BUFLEN];
+    int sendBufLen = DEFAULT_BUFLEN;
+    strcpy(sendBuf, requestInfo.c_str());
+    if (send(_connectSocket, sendBuf, sendBufLen, 0) == SOCKET_ERROR)
     {
         closesocket(_connectSocket);
         throw std::runtime_error("Failed at send message");
     }
-    //cout << "send complete" << endl;
+    cout << "send complete" << endl;
     if (recv(_connectSocket, recvBuf, recvBufLen, 0) <= 0)
     {
         closesocket(_connectSocket);

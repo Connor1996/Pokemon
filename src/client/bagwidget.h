@@ -21,7 +21,7 @@ signals:
 
 public slots:
     void Back();
-    //void ShowBag(QString username);
+    void SetBag();
 
 private:
     void InitUi();

@@ -376,7 +376,7 @@ public:
         return *this;
     }
 
-    std::vector<std::vector<std::string>> GetVector()
+    std::vector<std::vector<std::string>> &GetVector()
     {
         return _result;
     }

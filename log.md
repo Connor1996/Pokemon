@@ -54,3 +54,16 @@
 -   2016/12/6
     -   Add ui for gamelobby
     -   Use QstackLayout to realize switching between widgets
+-   2016/12/7
+    -   Add images
+    -   Add ui support for onlinelist
+-   2016/12/8
+    -   Add ui for userbag
+-   2016/12/9
+    -   Update resource
+    -   Add other widget
+    -   Fix bugs for showing the bag
+-   2016/12/10
+    -   Fix memory bugs in userlistwidget
+    -   Fix bug: when pass a pointer inside stack to socket-function, send() will return error with 10014. Solve it using char[] instead of string::c_str()
+    -   Complete bagwidget

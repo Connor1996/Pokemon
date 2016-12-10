@@ -230,6 +230,23 @@ background-color: rgb(255, 175, 77);
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="rateLabel">
+   <property name="geometry">
+    <rect>
+     <x>1080</x>
+     <y>610</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 12pt &quot;等线&quot;;
+color: rgb(0, 0, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../../images.qrc"/>

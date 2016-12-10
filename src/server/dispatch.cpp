@@ -98,8 +98,9 @@ json Dispatcher::SignupHandle(json &requestInfo)
     {
         if (messager.IsNone())
         {
+            // 构建新的用户信息
             UserInfo userinfo = { requestInfo["username"].get<std::string>(),
-                        requestInfo["password"].get<std::string>() };
+                        requestInfo["password"].get<std::string>(), 0, 0, 0, 0};
             auto result = mapper.Insert(userinfo);
             if (result)
             {
@@ -214,7 +215,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
     UserBag helper;
     QueryMessager<UserBag> messager(helper);
 
-
+    // 查询用户背包信息
     auto result = mapper.Query(messager
                                .Where(Field(helper.username)
                                       == requestInfo["username"].get<std::string>()));
@@ -237,14 +238,33 @@ json Dispatcher::UserBagHandle(json &requestInfo)
             itemsInfo.push_back(itemInfo.dump());
         }
         responseInfo["info"] = itemsInfo;
+
+        ORMapper<UserInfo> mapper(DATABASE_NAME);
+        UserInfo helper;
+        QueryMessager<UserInfo> messager(helper);
+
+        // 查询用户胜率
+        auto result = mapper.Query(messager
+                                   .Where(Field(helper.username)
+                                          == requestInfo["username"].get<std::string>()));
+        if (result)
+        {
+            auto win = std::stoi(messager.GetVector()[0][3]);
+            auto lose = std::stoi(messager.GetVector()[0][4]);
+
+            responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 1.0) / (win + lose);
+        }
+        else
+        {
+            responseInfo["type"] = SERVER_ERROR;
+            std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
+        }
     }
     else
     {
         responseInfo["type"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
-
-
 
     return std::move(responseInfo);
 }

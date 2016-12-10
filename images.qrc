@@ -21,7 +21,7 @@
         <file>images/Scratch.jpg</file>
         <file>images/VGN94976413H.jpg</file>
         <file>images/video-wallpaper-images-pokemon-game-52286.jpg</file>
-        <file alias="ball">images/精灵球.png</file>
+        <file>images/精灵球.png</file>
         <file alias="offline">images/offline.png</file>
         <file alias="online">images/online.png</file>
         <file>images/dynamic/beedrill.gif</file>
@@ -46,6 +46,6 @@
         <file>images/static/pikachu.png</file>
         <file>images/static/squirtle.png</file>
         <file>images/static/weedle.png</file>
-        <file>images/ball.png</file>
+        <file alias="ball">images/ball.png</file>
     </qresource>
 </RCC>

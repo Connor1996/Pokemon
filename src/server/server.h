@@ -27,7 +27,6 @@ protected:
 
     // 地址信息
     SOCKADDR_IN _serverAddr;
-    SOCKADDR_IN _clientAddr;
 
     // 持有与各个客户端保持通信的线程
     std::vector<std::thread> _socketThreads;

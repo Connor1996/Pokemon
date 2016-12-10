@@ -23,7 +23,8 @@ public:
     ~StackWidget();
 
 signals:
-    void refresh();
+    void refreshUserList();
+    void refreshBag();
 
 public slots:
     void SetCurrentIndex(int index);
@@ -31,6 +32,9 @@ public slots:
 
 
 private:
+    void InitUi();
+    void InitConnect();
+
     Ui::StackWidget *ui;
     QStackedLayout *_stackLayout;
 

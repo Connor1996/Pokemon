@@ -1,4 +1,4 @@
-#ifndef CLIENT_H
+﻿#ifndef CLIENT_H
 #define CLIENT_H
 
 #include "../socket.h"
@@ -24,6 +24,7 @@ public:
 
     void Close();
 
+    std::string GetUserName() { return _username; }
 protected:
     // 与服务器通信的socket
     SOCKET _connectSocket;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1200</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,86 @@
    <property name="flat">
     <bool>true</bool>
    </property>
+  </widget>
+  <widget class="QScrollArea" name="bagListArea">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>130</y>
+     <width>423</width>
+     <height>499</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#bagListArea{
+background-color: rgb(141, 220, 163);
+border: 5px solid rgb(0,0,0);
+border-radius : 20px;
+padding: 5px;
+}
+
+QScrollBar:vertical
+{
+    width:8px;
+    background:rgba(0,0,0,0%);
+    margin:0px,0px,0px,0px;
+    padding-top:9px;  
+    padding-bottom:9px;
+}
+QScrollBar::handle:vertical
+{
+    width:8px;
+    background:rgba(0,0,0,25%);
+    border-radius:4px;  
+    min-height:20;
+}
+QScrollBar::handle:vertical:hover
+{
+    width:8px;
+    background:rgba(0,0,0,50%);   
+    border-radius:4px;
+    min-height:20;
+}
+
+QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical  
+{
+    background:rgba(0,0,0,10%);
+    border-radius:4px;
+}
+QScrollBar::add-line:vertical {
+      border: 10px;
+      background: none;
+}
+
+QScrollBar::sub-line:vertiacal {
+      border: none;
+      background: none;
+}</string>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAsNeeded</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="widgetResizable">
+    <bool>true</bool>
+   </property>
+   <widget class="QWidget" name="bagWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>403</width>
+      <height>479</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#bagWidget{
+background-color: rgb(141, 220, 163);
+}</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

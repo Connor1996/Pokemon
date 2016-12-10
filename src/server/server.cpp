@@ -37,7 +37,9 @@ Server::Server() : _count(0), _mapper("data.db")
     std::mutex mtx; //各个连接客户端线程输出信息锁
     while (true)
     {
-        SOCKET newConnection = accept(_listeningSocket, NULL, NULL);
+        SOCKADDR_IN clientAddr;
+        int addrlen = sizeof(clientAddr);
+        SOCKET newConnection = accept(_listeningSocket, (SOCKADDR *)&clientAddr, &addrlen);
         _socketThreads.emplace_back(std::thread([this, &mtx] (SOCKET &&connection)
         {
             char recvBuf[DEFAULT_BUFLEN];
@@ -80,9 +82,15 @@ Server::Server() : _count(0), _mapper("data.db")
                         cout << "[ERROR] " << e.what() << endl;
                     }
 
-                    cout << "[INFO] send message: " << responseStr << endl;
-                    send(connection, responseStr.c_str(), DEFAULT_BUFLEN, 0);
-
+                    char recvBuf[DEFAULT_BUFLEN];
+                    int recvBufLen = DEFAULT_BUFLEN;
+                    strcpy(recvBuf, responseStr.c_str());
+                    if (send(connection, recvBuf, recvBufLen, 0) <= 0)
+                    {
+                        cout << "[ERROR] failed at send messager, code: " << WSAGetLastError() << endl;
+                    }
+                    else
+                        cout << "[INFO] send message: " << responseStr << endl;
                 }
             }
         }, std::move(newConnection)));

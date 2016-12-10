@@ -2,12 +2,13 @@
 #include "ui_userlistwidget.h"
 
 #include <QLabel>
-#include <QMovie>
 #include <QMessageBox>
 
 #include "include/json.hpp"
 #include "../define.h"
 using json = nlohmann::json;
+
+#include <iomanip>s
 
 UserListWidget::UserListWidget(Connor_Socket::Client *client, QWidget *parent) :
     QWidget(parent), _client(client), _signalMapper(nullptr),
@@ -66,9 +67,9 @@ void UserListWidget::SetUserList()
     QWidget *containWidget = new QWidget(ui->userListArea);
     containWidget->setStyleSheet("background-color: rgb(255, 175, 77);");
 
-    QVBoxLayout *listLayout = new QVBoxLayout(containWidget);
+    QVBoxLayout *listLayout = new QVBoxLayout();
     listLayout->setAlignment(Qt::AlignTop);
-    //containWidget->setLayout(listLayout);
+    containWidget->setLayout(listLayout);
 
     _signalMapper = new QSignalMapper(containWidget);
 
@@ -81,15 +82,15 @@ void UserListWidget::SetUserList()
         QLabel *stateLabel = new QLabel();
         stateLabel->setPixmap(QPixmap(":/online")
                               .scaled(36, 36, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
         // 显示用户名
         QLabel *textLabel = new QLabel();
         textLabel->setText(QString::fromStdString(str));
         textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
 
         QPushButton *bagButton = new QPushButton();
-//        bagButton->setFlat(true);
-//        bagButton->resize(36, 36);
-//        bagButton->setStyleSheet("image: url(:/ball)");
+        bagButton->setFlat(true);
+        bagButton->setIcon(QPixmap(":ball"));
         _signalMapper->setMapping(bagButton, QString::fromStdString(str));
         connect(bagButton, SIGNAL(clicked()), _signalMapper, SLOT(map()));
 
@@ -132,9 +133,11 @@ void UserListWidget::SetUserList()
         textLabel->setStyleSheet("font: 75 13pt \"Arial Black\"");
 
         QPushButton *bagButton = new QPushButton();
-//        bagButton->setFlat(true);
-//        bagButton->resize(48, 48);
-//        bagButton->setStyleSheet("image: url(:/ball)");
+        bagButton->setIcon(QPixmap(":ball"));
+        //bagButton->setStyleSheet("border-image: url(:/ball)");
+        bagButton->setFlat(true);
+        //bagButton->resize(36, 72);
+
         _signalMapper->setMapping(bagButton, QString::fromStdString(str));
         connect(bagButton, SIGNAL(clicked()), _signalMapper, SLOT(map()));
 
@@ -217,6 +220,12 @@ void UserListWidget::ShowBag(QString username)
     }
     gridLayout->setAlignment(Qt::AlignTop);
     ui->bagListArea->setWidget(containWidget);
+
+    // 显示胜率
+    std::stringstream rate;
+    rate << std::setiosflags(std::ios::fixed) << std::setprecision(1) << receiveInfo["rate"].get<double>();
+    auto str = "胜率: "+ rate.str() + "%";
+    ui->rateLabel->setText(QString::fromLocal8Bit(str.c_str()));
 }
 
 void UserListWidget::Back()
