@@ -1,15 +1,14 @@
-﻿#ifndef POKEMONINFO_H
-#define POKEMONINFO_H
+﻿#ifndef POKEMONLIST_H
+#define POKEMONLIST_H
 
 #ifdef __SERVER__
 #include "../server/ormlite.h"
 
 #endif
 
-struct PokemonInfo
+struct PokemonList
 {
     //小精灵属性
-    int id;
     std::string name;
 
     int type;
@@ -21,10 +20,11 @@ struct PokemonInfo
     std::string property;
 
 #ifdef __SERVER__
-    ORMAP(PokemonInfo, id, name, type, attackPoint, defensePoint,
+    ORMAP(PokemonList, name, type, attackPoint, defensePoint,
           healthPoint, attackFrequence, property);
 #endif
 
 };
 
-#endif // POKEMONINFO_H
+
+#endif // POKEMONLIST_H

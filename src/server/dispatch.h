@@ -23,6 +23,8 @@ public:
     json UserBagHandle(json &);
     json OfflineListHandle(json &);
     json UserAchievementHandle(json &);
+    json PokemonListHandle(json &);
+    json PokemonInfoHandle(json &);
 
     void Logout();
 private:

@@ -213,6 +213,19 @@ QScrollBar::sub-line:vertiacal {
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>930</x>
+     <y>590</y>
+     <width>89</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>对战</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

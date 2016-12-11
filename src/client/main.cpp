@@ -3,20 +3,27 @@
 #include <QTextCodec>
 
 #include <iostream>
-
-//#if _MSC_VER >= 1600
-//#pragma execution_character_set("UTF-8")
-//#endif
+#include <stdexcept>
 
 int main(int argc, char *argv[])
 {
    // QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+    int ret;
 
-    QApplication a(argc, argv);
-    Widget w;
-    w.show();
+    try{
+        QApplication a(argc, argv);
+        Widget w;
+        w.show();
 
-    return a.exec();
+        ret = a.exec();
+    }
+    catch (std::exception e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+
+    return ret;
+
 }
 
 

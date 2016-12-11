@@ -20,10 +20,11 @@ struct UserBag
     int defensePoint;
     int healthPoint;
     int attackFrequence;
+    std::string property;
 
 #ifdef __SERVER__
     ORMAP(UserBag, username, name, level, exp, type, attackPoint, defensePoint,
-          healthPoint, attackFrequence);
+          healthPoint, attackFrequence, property);
 #endif
 
 };

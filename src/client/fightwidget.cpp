@@ -6,11 +6,12 @@
 #include <QLabel>
 
 #include "../define.h"
+#include "../model/pokemonlist.h"
 #include "include/json.hpp"
 using json = nlohmann::json;
 
 FightWidget::FightWidget(Connor_Socket::Client *client, QWidget *parent) :
-    QWidget(parent), _client(client),
+    QWidget(parent), _client(client), _select(nullptr),
     ui(new Ui::FightWidget)
 {
     ui->setupUi(this);
@@ -30,6 +31,29 @@ void FightWidget::InitUi()
     setPalette(palette);
 
     ui->returnButton->resize(48, 48);
+
+    // 获取对战精灵列表
+    json sendInfo = {
+        {"type", GET_POKEMON_LIST}
+    };
+    json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+
+    if (receiveInfo["type"].get<int>() == QUERY_SUCCESS)
+    {
+        for(const auto& item : receiveInfo["info"])
+        {
+            QListWidgetItem *listItem = new QListWidgetItem(ui->listWidget);
+            listItem->setText(QString::fromStdString(item.get<std::string>()));
+            listItem->setTextAlignment(Qt::AlignHCenter);
+            ui->listWidget->addItem(listItem);
+        }
+    }
+    else
+    {
+        QMessageBox::information(this, "Error", QString::fromLocal8Bit("获得对战精灵列表失败"));
+    }
+
+
 }
 
 void FightWidget::InitConnect()
@@ -38,17 +62,32 @@ void FightWidget::InitConnect()
 }
 
 bool FightWidget::eventFilter(QObject *watched, QEvent *event)
-{
-    static QObject *select = nullptr;
+{ 
     if (watched->inherits("QLabel"))
     {
         if (event->type() == QEvent::MouseButtonPress)
         {
-            if (select == watched)
-                reinterpret_cast<QLabel*>(watched)->setStyleSheet("");
-            else
+            if (_select == nullptr)
+            {
+                _select = watched;
                 reinterpret_cast<QLabel*>(watched)->setStyleSheet("background: rgba(0,0,0, 20%);"
                                                               "border-radius: 5px");
+            }
+            else
+            {
+                if (watched == _select)
+                {
+                    _select = nullptr;
+                    reinterpret_cast<QLabel*>(watched)->setStyleSheet("");
+                }
+                else
+                {
+                    reinterpret_cast<QLabel*>(_select)->setStyleSheet("");
+                    _select = watched;
+                    reinterpret_cast<QLabel*>(watched)->setStyleSheet("background: rgba(0,0,0, 20%);"
+                                                                  "border-radius: 5px");
+                }
+            }
             return true;
         }
         else

@@ -48,7 +48,8 @@ HEADERS  +=  \
     src/client/userlistwidget.h \
     src/client/stackwidget.h \
     src/client/bagwidget.h \
-    src/client/fightwidget.h
+    src/client/fightwidget.h \
+    src/model/pokemonlist.h
 
 
 FORMS    += \

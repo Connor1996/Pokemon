@@ -30,6 +30,9 @@ private:
 
     Ui::FightWidget *ui;
     Connor_Socket::Client *_client;
+
+    // 选中出战的小精灵
+    QObject *_select = nullptr;
 };
 
 #endif // FIGHTWIDGET_H

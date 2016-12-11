@@ -10,6 +10,8 @@
 #define GET_OFFLINE_LIST    5
 #define GET_USER_BAG        6
 #define GET_USER_ACH        7
+#define GET_POKEMON_LIST    8
+#define GET_POKEMON_INFO    9
 
 /*--------------------返回状态------------------------*/
 

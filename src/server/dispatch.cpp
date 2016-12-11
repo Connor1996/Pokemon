@@ -5,6 +5,7 @@
 #include "../model/userinfo.h"
 #include "../model/userbag.h"
 #include "../model/pokemoninfo.h"
+#include "../model/pokemonlist.h"
 
 #include <stdexcept>
 #include <algorithm>
@@ -37,6 +38,12 @@ std::string Dispatcher::Dispatch(json requestInfo)
         break;
     case GET_USER_ACH:
         responseInfo = UserAchievementHandle(requestInfo);
+        break;
+    case GET_POKEMON_LIST:
+        responseInfo = PokemonListHandle(requestInfo);
+        break;
+    case GET_POKEMON_INFO:
+        responseInfo = PokemonInfoHandle(requestInfo);
         break;
     default:
         responseInfo["type"] = SERVER_ERROR;
@@ -109,7 +116,7 @@ json Dispatcher::SignupHandle(json &requestInfo)
             {
                 //产生0-num中的整数
                 auto random = [](int num) {
-                    srand(static_cast<int>(time(NULL)));
+                    srand(static_cast<unsigned>(time(NULL)));
                     return rand() % (num + 1);
                 };
 
@@ -236,7 +243,8 @@ json Dispatcher::UserBagHandle(json &requestInfo)
                 {"attackPoint", vec[5]},
                 {"defensePoint", vec[6]},
                 {"healthPoint", vec[7]},
-                {"attackFrequence", vec[8]}
+                {"attackFrequence", vec[8]},
+                {"property", vec[9]}
             };
             itemsInfo.push_back(itemInfo.dump());
         }
@@ -292,6 +300,69 @@ json Dispatcher::UserAchievementHandle(json &requestInfo)
         responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 1.0) / (win + lose);
         responseInfo["sum_ach"] = std::stoi(messager.GetVector()[0][4]);
         responseInfo["advance_ach"] = std::stoi(messager.GetVector()[0][5]);
+    }
+    else
+    {
+        responseInfo["type"] = SERVER_ERROR;
+        std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
+    }
+
+    return std::move(responseInfo);
+}
+
+json Dispatcher::PokemonListHandle(json &requestInfo)
+{
+    ORMapper<PokemonList> mapper(DATABASE_NAME);
+    PokemonList helper;
+    QueryMessager<PokemonList> messager(helper);
+
+    // 查询对战精灵名字
+    auto result = mapper.Query(messager);
+    json responseInfo;
+    if (result)
+    {
+        responseInfo["type"] = QUERY_SUCCESS;
+        std::list<std::string> pokemonList;
+        for (const auto& vec: messager.GetVector())
+        {
+            pokemonList.push_back(vec[0]);
+        }
+        responseInfo["info"] = json(pokemonList);
+    }
+    else
+    {
+        responseInfo["type"] = SERVER_ERROR;
+        std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
+    }
+
+    return std::move(responseInfo);
+}
+
+json Dispatcher::PokemonInfoHandle(json &requestInfo)
+{
+    ORMapper<PokemonList> mapper(DATABASE_NAME);
+    PokemonList helper;
+    QueryMessager<PokemonList> messager(helper);
+
+    // 查询用户背包信息
+    auto result = mapper.Query(messager
+                               .Where(Field(helper.name)
+                                      == requestInfo["name"].get<std::string>()));
+    json responseInfo;
+    if (result)
+    {
+        auto vec = messager.GetVector()[0];
+        responseInfo["type"] = QUERY_SUCCESS;
+        json itemInfo = {
+            {"name", vec[0]},
+            {"type", vec[1]},
+            {"attackPoint", vec[2]},
+            {"defensePoint", vec[3]},
+            {"healthPoint", vec[4]},
+            {"attackFrequence", vec[5]},
+            {"property", vec[6]}
+        };
+        responseInfo["info"] = json(itemInfo);
     }
     else
     {
