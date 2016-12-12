@@ -1,4 +1,4 @@
-#ifndef POKEMONFACTORY_H
+﻿#ifndef POKEMONFACTORY_H
 #define POKEMONFACTORY_H
 
 #include <string>
@@ -6,15 +6,17 @@
 class Pokemon;
 typedef struct struct_Attribute Attribute;
 
+#include "client/client.h"
+using Client = Connor_Socket::Client;
+
 class PokemonFactory
 {
 public:
     PokemonFactory() {}
 
-    Pokemon* Create(std::string name);
+    static Pokemon* CreateComputer(std::string name, Connor_Socket::Client *client);
+    static Pokemon* CreateUser(std::string str);
 
-private:
-    Attribute QueryInDateBase(std::string name, std::string &property);
 };
 
 #endif // POKEMONFACTORY_H

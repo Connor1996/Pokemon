@@ -67,3 +67,5 @@
     -   Fix memory bugs in userlistwidget
     -   Fix bug: when pass a pointer inside stack to socket-function, send() will return error with 10014. Solve it using char[] instead of string::c_str()
     -   Complete bagwidget
+-   2016/12/11
+    -   Fix 

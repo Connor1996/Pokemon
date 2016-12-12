@@ -22,6 +22,7 @@ signals:
 public slots:
     void Back();
     void SetBag();
+    void FightBegin();
     bool eventFilter(QObject *watched, QEvent *event);
 
 private:
@@ -29,6 +30,7 @@ private:
     void InitConnect();
 
     Ui::FightWidget *ui;
+    QWidget *_parent;
     Connor_Socket::Client *_client;
 
     // 选中出战的小精灵

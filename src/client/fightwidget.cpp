@@ -1,17 +1,19 @@
 ﻿#include "fightwidget.h"
+#include "fightroom.h"
 #include "ui_fightwidget.h"
 
 #include <QMessageBox>
 #include <QGridLayout>
 #include <QLabel>
 
+#include "../pokemonfactory.h"
 #include "../define.h"
 #include "../model/pokemonlist.h"
 #include "include/json.hpp"
 using json = nlohmann::json;
 
 FightWidget::FightWidget(Connor_Socket::Client *client, QWidget *parent) :
-    QWidget(parent), _client(client), _select(nullptr),
+    _parent(parent), _client(client), _select(nullptr),
     ui(new Ui::FightWidget)
 {
     ui->setupUi(this);
@@ -59,6 +61,7 @@ void FightWidget::InitUi()
 void FightWidget::InitConnect()
 {
     connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
+    connect(ui->fightButton, SIGNAL(clicked()), this, SLOT(FightBegin()));
 }
 
 bool FightWidget::eventFilter(QObject *watched, QEvent *event)
@@ -94,11 +97,15 @@ bool FightWidget::eventFilter(QObject *watched, QEvent *event)
             return false;
     }
     else
-        return eventFilter(watched, event);
+        return false;
 }
 
 void FightWidget::SetBag()
 {
+    // 初始化_select
+    _select = nullptr;
+    removeEventFilter(this);
+
     auto username = _client->GetUserName();
     json sendInfo = {
         {"type", GET_USER_BAG},
@@ -163,6 +170,25 @@ void FightWidget::SetBag()
     gridLayout->setAlignment(Qt::AlignTop);
     ui->bagListArea->setWidget(containWidget);
 
+}
+
+void FightWidget::FightBegin()
+{
+    if (_select == nullptr || ui->listWidget->currentItem() == nullptr)
+    {
+        QMessageBox::information(this, "ERROR", QString::fromLocal8Bit("请选择对战的小精灵"));
+        return;
+    }
+
+    Pokemon *fighter = PokemonFactory::CreateUser(
+                reinterpret_cast<QLabel *>(_select)->toolTip().toStdString());
+    Pokemon *againster = PokemonFactory::CreateComputer(
+                ui->listWidget->currentItem()->text().toStdString(), _client);
+
+    FightRoom *fightRoom = new FightRoom(fighter, againster);
+    this->hide();//this->_parent->hide();
+    fightRoom->show();
+    this->show();
 }
 
 void FightWidget::Back()

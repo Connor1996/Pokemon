@@ -7,95 +7,95 @@
 #include <iostream>
 
 
-TEST_CASE("Test Pokemon Class")
-{
-    PokemonFactory factory = PokemonFactory();
-    Pokemon* pikachu = factory.Create("Pikachu");
-    Pokemon* charmander = factory.Create("Charmander");
+//TEST_CASE("Test Pokemon Class")
+//{
+//    PokemonFactory factory = PokemonFactory();
+//    Pokemon* pikachu = factory.CreateComputer("Pikachu");
+//    Pokemon* charmander = factory.CreateComputer("Charmander");
 
-    REQUIRE(pikachu->GetName() == "Pikachu");
-    REQUIRE(charmander->GetName() == "Charmander");
-    REQUIRE(GET_CLASS_TYPE(*pikachu) == "Electricity");
+//    REQUIRE(pikachu->GetName() == "Pikachu");
+//    REQUIRE(charmander->GetName() == "Charmander");
+//    REQUIRE(GET_CLASS_TYPE(*pikachu) == "Electricity");
 
-    // 测试攻击函数和被伤害函数
-    SECTION("one attacks the other one")
-    {
-        auto damage = pikachu->Attack(charmander);
-        auto result = charmander->Hurt(damage);
-        if (result == false)
-            REQUIRE(charmander->GetHp() == charmander->GetHealthPoint());
-        else
-            REQUIRE(charmander->GetHp() < charmander->GetHealthPoint());
-    }
+//    // 测试攻击函数和被伤害函数
+//    SECTION("one attacks the other one")
+//    {
+//        auto damage = pikachu->Attack(charmander);
+//        auto result = charmander->Hurt(damage);
+//        if (result == false)
+//            REQUIRE(charmander->GetHp() == charmander->GetHealthPoint());
+//        else
+//            REQUIRE(charmander->GetHp() < charmander->GetHealthPoint());
+//    }
 
-    // 测试获得经验但未升级情况
-    SECTION("get experience but not upgrade")
-    {
-        auto result = pikachu->Upgrade(10);
-        REQUIRE(pikachu->GetExp() == 10);
-        REQUIRE(result == false);
-        REQUIRE(pikachu->GetLevel() == 1);
-    }
+//    // 测试获得经验但未升级情况
+//    SECTION("get experience but not upgrade")
+//    {
+//        auto result = pikachu->Upgrade(10);
+//        REQUIRE(pikachu->GetExp() == 10);
+//        REQUIRE(result == false);
+//        REQUIRE(pikachu->GetLevel() == 1);
+//    }
 
-    // 测试获得经验并升级情况
-    SECTION("get experience and upgrade")
-    {
-        auto result = pikachu->Upgrade(1000);
-        REQUIRE(pikachu->GetExp() == 1000);
-        REQUIRE(result == true);
-        REQUIRE(pikachu->GetLevel() >= 1);
-    }
+//    // 测试获得经验并升级情况
+//    SECTION("get experience and upgrade")
+//    {
+//        auto result = pikachu->Upgrade(1000);
+//        REQUIRE(pikachu->GetExp() == 1000);
+//        REQUIRE(result == true);
+//        REQUIRE(pikachu->GetLevel() >= 1);
+//    }
 
-    SECTION("simulate a fight")
-    {
-        auto speed_p = pikachu->GetAttackFrequence();
-        auto speed_c = charmander->GetAttackFrequence();
-        std::cout << "[INFO] the speed of " << pikachu->GetName() << " is " << speed_p << std::endl;
-        std::cout << "[INFO] the speed of " << charmander->GetName() << " is " << speed_c << std::endl;
-        std::cout << "[INFO] Fight begin" << std::endl;
-        // 时间轴
-        size_t time_p = 0;
-        size_t time_c = 0;
+//    SECTION("simulate a fight")
+//    {
+//        auto speed_p = pikachu->GetAttackFrequence();
+//        auto speed_c = charmander->GetAttackFrequence();
+//        std::cout << "[INFO] the speed of " << pikachu->GetName() << " is " << speed_p << std::endl;
+//        std::cout << "[INFO] the speed of " << charmander->GetName() << " is " << speed_c << std::endl;
+//        std::cout << "[INFO] Fight begin" << std::endl;
+//        // 时间轴
+//        size_t time_p = 0;
+//        size_t time_c = 0;
 
-        while (time_p++, time_c++)
-        {
-            if (time_p == speed_p)
-            {
-                std::cout << "[INFO] " << pikachu->GetName() <<
-                             "attack" << charmander->GetName() << std::endl;
-                auto damage = pikachu->Attack(charmander);
-                std::cout << "[INFO] " << charmander->GetName() << " get hurt by "
-                          << damage << std::endl;
-                if (charmander->Hurt(damage))
-                {
-                    std::cout << "[INFO] " << charmander->GetName() << " is died" << std::endl;
-                    break;
-                }
-                time_p = 0;
-            }
+//        while (time_p++, time_c++)
+//        {
+//            if (time_p == speed_p)
+//            {
+//                std::cout << "[INFO] " << pikachu->GetName() <<
+//                             "attack" << charmander->GetName() << std::endl;
+//                auto damage = pikachu->Attack(charmander);
+//                std::cout << "[INFO] " << charmander->GetName() << " get hurt by "
+//                          << damage << std::endl;
+//                if (charmander->Hurt(damage))
+//                {
+//                    std::cout << "[INFO] " << charmander->GetName() << " is died" << std::endl;
+//                    break;
+//                }
+//                time_p = 0;
+//            }
 
-            if (time_c == speed_c)
-            {
-                std::cout << "[INFO] " << charmander->GetName() <<
-                             "attack" << pikachu->GetName() << std::endl;
-                auto damage = charmander->Attack(pikachu);
-                std::cout << "[INFO] " << pikachu->GetName() << " get hurt by "
-                          << damage << std::endl;
-                if (pikachu->Hurt(damage))
-                {
-                    std::cout << "[INFO] " << pikachu->GetName() << " is died" << std::endl;
-                    break;
-                }
-                time_c = 0;
-            }
+//            if (time_c == speed_c)
+//            {
+//                std::cout << "[INFO] " << charmander->GetName() <<
+//                             "attack" << pikachu->GetName() << std::endl;
+//                auto damage = charmander->Attack(pikachu);
+//                std::cout << "[INFO] " << pikachu->GetName() << " get hurt by "
+//                          << damage << std::endl;
+//                if (pikachu->Hurt(damage))
+//                {
+//                    std::cout << "[INFO] " << pikachu->GetName() << " is died" << std::endl;
+//                    break;
+//                }
+//                time_c = 0;
+//            }
 
-        }
-        std:: cout << "[INFO] Fight over" << std::endl;
-    }
+//        }
+//        std:: cout << "[INFO] Fight over" << std::endl;
+//    }
 
-    delete pikachu;
-    delete charmander;
-}
+//    delete pikachu;
+//    delete charmander;
+//}
 
 
 TEST_CASE("Test ORMLite")

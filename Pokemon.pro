@@ -24,18 +24,13 @@ TEMPLATE = app
 DEFINES += WIN32_LEAN_AND_MEAN  #ÅÅ³ýwindows.hÓëwinsock.hµÄ³å
 SOURCES += \
     src/pokemon.cpp \
-    src/pokemonfactory.cpp \
     include/sqlite3.c \
     src/reflector.cpp \
-    src/client/userlistwidget.cpp \
-    src/client/stackwidget.cpp \
-    src/client/bagwidget.cpp \
-    src/client/fightwidget.cpp
+    src/client/fightroom.cpp
 
 
 HEADERS  +=  \
     src/pokemon.h \
-    src/pokemonfactory.h \
     include/sqlite3.h \
     src/reflector.h \
     src/model.h \
@@ -45,20 +40,9 @@ HEADERS  +=  \
     src/define.h \
     src/model/userbag.h \
     src/model/pokemoninfo.h \
-    src/client/userlistwidget.h \
-    src/client/stackwidget.h \
-    src/client/bagwidget.h \
-    src/client/fightwidget.h \
-    src/model/pokemonlist.h
+    src/model/pokemonlist.h \
+    src/client/fightroom.h
 
-
-FORMS    += \
-    widget.ui \
-    gamelobby.ui \
-    src/client/userlistwidget.ui \
-    src/client/stackwidget.ui \
-    src/client/bagwidget.ui \
-    src/client/fightwidget.ui
 
 RESOURCES += \
     images.qrc
@@ -77,13 +61,31 @@ Client{
         src/client/main.cpp \
         src/client/widget.cpp  \
         src/client/client.cpp \
-        src/client/gamelobby.cpp
+        src/client/gamelobby.cpp \
+        src/pokemonfactory.cpp \
+        src/client/userlistwidget.cpp \
+        src/client/stackwidget.cpp \
+        src/client/bagwidget.cpp \
+        src/client/fightwidget.cpp
 
 
     HEADERS += \
         src/client/widget.h \
         src/client/client.h \
-        src/client/gamelobby.h
+        src/client/gamelobby.h \
+        src/pokemonfactory.h \
+        src/client/userlistwidget.h \
+        src/client/stackwidget.h \
+        src/client/bagwidget.h \
+        src/client/fightwidget.h
+
+    FORMS    += \
+        widget.ui \
+        gamelobby.ui \
+        src/client/userlistwidget.ui \
+        src/client/stackwidget.ui \
+        src/client/bagwidget.ui \
+        src/client/fightwidget.ui
 }
 
 Server{
@@ -102,6 +104,9 @@ Server{
         src/server/dispatch.h
 
 }
+
+FORMS += \
+    src/client/fightroom.ui
 
 
 

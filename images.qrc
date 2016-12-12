@@ -49,5 +49,6 @@
         <file alias="golden">images/golden.png</file>
         <file alias="silver">images/silver.png</file>
         <file>images/d058ccbf6c81800a3dd7c3d3b93533fa828b4738.jpg</file>
+        <file alias="fightroom">images/fightroom.png</file>
     </qresource>
 </RCC>

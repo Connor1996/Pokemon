@@ -193,31 +193,15 @@ QScrollBar::sub-line:vertiacal {
       <property name="textElideMode">
        <enum>Qt::ElideMiddle</enum>
       </property>
-      <item>
-       <property name="text">
-        <string>新建项目</string>
-       </property>
-       <property name="textAlignment">
-        <set>AlignCenter</set>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>nihao</string>
-       </property>
-       <property name="textAlignment">
-        <set>AlignCenter</set>
-       </property>
-      </item>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="fightButton">
    <property name="geometry">
     <rect>
-     <x>930</x>
-     <y>590</y>
+     <x>900</x>
+     <y>560</y>
      <width>89</width>
      <height>91</height>
     </rect>

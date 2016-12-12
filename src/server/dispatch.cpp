@@ -203,6 +203,8 @@ json Dispatcher::OfflineListHandle(json &requestInfo)
             userList.emplace_back(vec[0]);
 
         std::list<std::string> onlineList(_parent->GetOnlineList());
+        userList.sort();
+        onlineList.sort();
         std::set_difference(userList.begin(), userList.end(),
                          onlineList.begin(), onlineList.end(),
                               std::back_inserter(offlineList));
@@ -239,6 +241,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
             json itemInfo = {
                 {"name", vec[1]},
                 {"level", vec[2]},
+                {"exp", vec[3]},
                 {"type", vec[4]},
                 {"attackPoint", vec[5]},
                 {"defensePoint", vec[6]},
@@ -344,7 +347,7 @@ json Dispatcher::PokemonInfoHandle(json &requestInfo)
     PokemonList helper;
     QueryMessager<PokemonList> messager(helper);
 
-    // 查询用户背包信息
+    // 查询对战小精灵信息
     auto result = mapper.Query(messager
                                .Where(Field(helper.name)
                                       == requestInfo["name"].get<std::string>()));
@@ -362,7 +365,7 @@ json Dispatcher::PokemonInfoHandle(json &requestInfo)
             {"attackFrequence", vec[5]},
             {"property", vec[6]}
         };
-        responseInfo["info"] = json(itemInfo);
+        responseInfo["info"] = itemInfo.dump();
     }
     else
     {
