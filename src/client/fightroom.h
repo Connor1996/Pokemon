@@ -3,8 +3,10 @@
 
 #include <QWidget>
 #include "../pokemon.h"
-
+#include "client.h"
 #include <QLabel>
+
+using Client = Connor_Socket::Client;
 
 namespace Ui {
 class FightRoom;
@@ -15,7 +17,8 @@ class FightRoom : public QWidget
     Q_OBJECT
 
 public:
-    explicit FightRoom(Pokemon *fighter, Pokemon *againster, QWidget *parent = 0);
+    explicit FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
+                       QWidget *parent = 0);
     ~FightRoom();
     void Fight();
 
@@ -38,6 +41,7 @@ private:
     std::pair<Pokemon *, QLabel *> _fighter;
     std::pair<Pokemon *, QLabel *> _againster;
 
+    Connor_Socket::Client *_client;
 };
 
 #endif // FIGHTROOM_H

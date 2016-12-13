@@ -26,6 +26,7 @@
 
 #define SERVER_ERROR        0
 #define QUERY_SUCCESS       1
+#define ACCEPT              2
 
 
 #endif // DEFINE_H

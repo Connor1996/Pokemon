@@ -25,6 +25,8 @@ public:
     json UserAchievementHandle(json &);
     json PokemonListHandle(json &);
     json PokemonInfoHandle(json &);
+    json GameWinHandle(json &);
+    json GameLoseHandle(json &);
 
     void Logout();
 private:

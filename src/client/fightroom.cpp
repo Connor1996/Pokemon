@@ -12,7 +12,11 @@
 #include <iostream>
 #include <thread>
 
-FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client client,
+#include "include/json.hpp"
+#include "../define.h"
+using json = nlohmann::json;
+
+FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
                      QWidget *parent) :
     QWidget(parent), _fighter(std::make_pair(fighter, new QLabel(this))),
     _againster(std::make_pair(againster, new QLabel(this))), _client(client),
@@ -95,7 +99,7 @@ void FightRoom::setAnimation(QLabel *attacker, QLabel *suffer)
 void FightRoom::GameComplete(QString winner)
 {
     QMessageBox::information(this, "INFO", "winner is " + winner);
-    if (winner == _fighter.first->GetName())
+    if (winner.toStdString() == _fighter.first->GetName())
     {
         json sendInfo = {
             {"type", GAME_WIN},

@@ -185,7 +185,7 @@ void FightWidget::FightBegin()
     Pokemon *againster = PokemonFactory::CreateComputer(
                 ui->listWidget->currentItem()->text().toStdString(), _client);
 
-    FightRoom *fightRoom = new FightRoom(fighter, againster);
+    FightRoom *fightRoom = new FightRoom(fighter, againster, _client);
     this->hide();//this->_parent->hide();
     fightRoom->show();
     //fightRoom->Fight();
