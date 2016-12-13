@@ -1,4 +1,4 @@
-#ifndef POKEMON_H
+﻿#ifndef POKEMON_H
 #define POKEMON_H
 
 #include "reflector.h"
@@ -114,7 +114,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.94)
+        if (Bonus() > 0.8)
             coefficient += 1;
         return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
@@ -141,7 +141,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.94)
+        if (Bonus() > 0.8)
             coefficient += 1;
         return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
@@ -168,7 +168,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.94)
+        if (Bonus() > 0.8)
             coefficient += 1;
         return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
@@ -195,7 +195,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.94)
+        if (Bonus() > 0.8)
             coefficient += 1;
         return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }
@@ -223,7 +223,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.94)
+        if (Bonus() > 0.8)
             coefficient += 1;
         return static_cast<unsigned int>(_attribute.attackPoint * coefficient);
     }

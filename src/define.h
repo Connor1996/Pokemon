@@ -12,6 +12,8 @@
 #define GET_USER_ACH        7
 #define GET_POKEMON_LIST    8
 #define GET_POKEMON_INFO    9
+#define GAME_WIN            10
+#define GAME_LOSE           11
 
 /*--------------------返回状态------------------------*/
 

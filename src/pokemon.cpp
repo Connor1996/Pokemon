@@ -1,4 +1,4 @@
-#include "pokemon.h"
+﻿#include "pokemon.h"
 #include <ctime>
 #include <typeinfo>
 
@@ -12,7 +12,7 @@ REGISTER(Ice);
 
 bool Pokemon::Hurt(unsigned int damage)
 {
-    auto score = damage - _attribute.defensePoint;
+    auto score = (1 + Bonus()) * (damage - _attribute.defensePoint);
     if (score > 0)
         if (_hp <= score)
         {
@@ -64,7 +64,7 @@ bool Pokemon::Upgrade(unsigned int exp)
 double Pokemon::Bonus()
 {
     //随机生成0-1的小数.
-    srand(static_cast<int>(time(NULL)));
+    srand(static_cast<unsigned int>(time(NULL)));
     return static_cast<double>(rand() % (N + 1)) / (N + 1);
 }
 

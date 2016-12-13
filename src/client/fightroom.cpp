@@ -12,9 +12,10 @@
 #include <iostream>
 #include <thread>
 
-FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, QWidget *parent) :
+FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client client,
+                     QWidget *parent) :
     QWidget(parent), _fighter(std::make_pair(fighter, new QLabel(this))),
-    _againster(std::make_pair(againster, new QLabel(this))),
+    _againster(std::make_pair(againster, new QLabel(this))), _client(client),
     ui(new Ui::FightRoom)
 {
     ui->setupUi(this);
@@ -23,9 +24,6 @@ FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, QWidget *parent) :
 
 
     std::thread th(std::bind(&FightRoom::Fight, this));
-//    std::thread th([this](){
-//        emit attack();
-//    });
     th.detach();
 }
 
@@ -92,24 +90,61 @@ void FightRoom::setAnimation(QLabel *attacker, QLabel *suffer)
     actions->addAnimation(animation2);
 
     actions->start();
-
-
 }
 
 void FightRoom::GameComplete(QString winner)
 {
     QMessageBox::information(this, "INFO", "winner is " + winner);
+    if (winner == _fighter.first->GetName())
+    {
+        json sendInfo = {
+            {"type", GAME_WIN},
+            {"username", _client->GetUserName()},
+            {"name", _againster.first->GetName()}
+        };
+        json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+
+    }
+    else
+    {
+        json sendInfo = {
+            {"type", GAME_LOSE},
+            {"username", _client->GetUserName()},
+            {"name", _againster.first->GetName()}
+        };
+        json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+    }
     this->close();
 }
 
 void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
 {
     QParallelAnimationGroup *actions = new QParallelAnimationGroup;
+    QPropertyAnimation *animation1;
 
-    if (attacker == _fighter.second)
-        ui->againsterBar->setValue(_againster.first->GetHp());
+    if (suffer == _fighter.second)
+    {
+        animation1 = new QPropertyAnimation(ui->label, "pos");
+        auto num = ui->fighterBar->value() - (int)_fighter.first->GetHp();
+        if (num == 0)
+            ui->label->setText(QString::fromLocal8Bit("闪避"));
+        else
+            ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
+        animation1->setEndValue(QPoint(ui->label->x(), ui->label->y() - 50));
+    }
     else
-        ui->fighterBar->setValue(_fighter.first->GetHp());
+    {
+        animation1 = new QPropertyAnimation(ui->label_2, "pos");
+        auto num = ui->againsterBar->value() - (int)_againster.first->GetHp();
+        if (num == 0)
+            ui->label_2->setText(QString::fromLocal8Bit("闪避"));
+        else
+            ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
+        animation1->setEndValue(QPoint(ui->label_2->x(), ui->label_2->y() - 50));
+    }
+
+    animation1->setDuration(400);
+    actions->addAnimation(animation1);
 
     // 被攻击方震动
     auto dx = suffer->x();
@@ -131,6 +166,12 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     actions->addAnimation(animation3);
 
     actions->start(QAbstractAnimation::DeleteWhenStopped);
+
+    if (attacker == _fighter.second)
+        ui->againsterBar->setValue(_againster.first->GetHp());
+    else
+        ui->fighterBar->setValue(_fighter.first->GetHp());
+
 }
 
 // op1为玩家，op2为电脑

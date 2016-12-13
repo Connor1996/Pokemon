@@ -45,6 +45,12 @@ std::string Dispatcher::Dispatch(json requestInfo)
     case GET_POKEMON_INFO:
         responseInfo = PokemonInfoHandle(requestInfo);
         break;
+    case GAME_WIN:
+        responseInfo = GameWinHandle(requestInfo);
+        break;
+    case GAME_LOSE:
+        responseInfo = GameLoseHandle(requsetInfo);
+        break;
     default:
         responseInfo["type"] = SERVER_ERROR;
         std::cout << "[ERROR] Bad request" << std::endl;
@@ -374,6 +380,42 @@ json Dispatcher::PokemonInfoHandle(json &requestInfo)
     }
 
     return std::move(responseInfo);
+}
+
+json Dispatcher::GameWinHandle(json &requestInfo)
+{
+    json responseInfo;
+
+    ORMapper<PokemonInfo> infoMapper(DATABASE_NAME);
+    PokemonInfo helper;
+    QueryMessager<PokemonInfo> infoMessager(helper);
+
+    infoMapper.Query(infoMessager.Where(Field(helper.name) == _username));
+    if (infoMessager.IsNone())
+        throw std::runtime_error("Unknown name for pokemon");
+    else
+    {
+        auto vec = infoMessager.GetVector()[0];
+        ORMapper<UserBag> userMapper(DATABASE_NAME);
+        // Bad code style, wait for ormlite to support for GetObjects()
+        UserBag userBag = { requestInfo["username"].get<std::string>(), vec[1],
+                            1, 0, std::stoi(vec[2]), std::stoi(vec[3]), std::stoi(vec[4]),
+                            std::stoi(vec[5]), std::stoi(vec[6]) };
+        if (!userMapper.Insert(userBag))
+        {
+            responseInfo["type"] = SERVER_ERROR;
+            throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
+        }
+        else
+            responseInfo["type"] = ACCEPT;
+    }
+
+    return std::move(responseInfo);
+}
+
+json Dispatcher::GameLoseHandle(json &requestInfo)
+{
+
 }
 
 void Dispatcher::Logout()
