@@ -50,5 +50,9 @@
         <file alias="silver">images/silver.png</file>
         <file>images/d058ccbf6c81800a3dd7c3d3b93533fa828b4738.jpg</file>
         <file alias="fightroom">images/fightroom.png</file>
+        <file>images/dynamic/bulbasaur_left.gif</file>
+        <file>images/dynamic/charmander_left.gif</file>
+        <file>images/dynamic/pikachu_left.gif</file>
+        <file>images/dynamic/squirtle_left.gif</file>
     </qresource>
 </RCC>

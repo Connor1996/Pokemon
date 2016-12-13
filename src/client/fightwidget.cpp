@@ -188,6 +188,7 @@ void FightWidget::FightBegin()
     FightRoom *fightRoom = new FightRoom(fighter, againster);
     this->hide();//this->_parent->hide();
     fightRoom->show();
+    //fightRoom->Fight();
     this->show();
 }
 
