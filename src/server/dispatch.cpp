@@ -390,7 +390,8 @@ json Dispatcher::GameWinHandle(json &requestInfo)
     PokemonInfo helper;
     QueryMessager<PokemonInfo> infoMessager(helper);
 
-    infoMapper.Query(infoMessager.Where(Field(helper.name) == _username));
+    infoMapper.Query(infoMessager.Where(Field(helper.name)
+                                        == requestInfo["name"].get<std::string>()));
     if (infoMessager.IsNone())
         throw std::runtime_error("Unknown name for pokemon");
     else

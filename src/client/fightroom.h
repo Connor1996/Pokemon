@@ -27,12 +27,14 @@ signals:
     void attack(QLabel *, QLabel *);
     void over(QString);
     void hurt(QLabel *attacker, QLabel *suffer);
-    void close();
+    void isClosed();
+    void clearText();
 
 private slots:
     void setAnimation(QLabel *, QLabel *);
     void GameComplete(QString);
     void UpdateHp(QLabel *attacker, QLabel *suffer);
+    void setText();
 
 private:
     void InitUi();
@@ -44,6 +46,8 @@ private:
     std::pair<Pokemon *, QLabel *> _againster;
 
     Connor_Socket::Client *_client;
+
+    bool _quit;
 };
 
 #endif // FIGHTROOM_H

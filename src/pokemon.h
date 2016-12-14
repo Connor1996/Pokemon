@@ -2,6 +2,7 @@
 #define POKEMON_H
 
 #include "reflector.h"
+#include <ctime>
 
 // 获得对象运行时多态类型
 // 多编译器支持
@@ -53,7 +54,9 @@ public:
             Attribute attribute)
         : _name(name), _level(level), _exp(exp),
           _attribute(attribute), _hp(attribute.healthPoint)
-    {}
+    {
+        srand(time(NULL));
+    }
 
     ~Pokemon() {}
 

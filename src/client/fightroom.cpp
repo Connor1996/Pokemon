@@ -21,7 +21,7 @@ FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
                      QWidget *parent) :
     QWidget(parent), _fighter(std::make_pair(fighter, new QLabel(this))),
     _againster(std::make_pair(againster, new QLabel(this))), _client(client),
-    ui(new Ui::FightRoom)
+    ui(new Ui::FightRoom), _quit(false)
 {
     ui->setupUi(this);
     InitUi();
@@ -56,7 +56,7 @@ void FightRoom::InitUi()
     op2->setMovie(new QMovie(QString::fromStdString("://images/dynamic/"
                                                     + _againster.first->GetName() + ".gif")));
     op2->movie()->start();
-    op2->setGeometry(880, 359, 192, 192);
+    op2->setGeometry(860, 359, 192, 192);
 
     ui->fighterLabel->setText(QString::fromStdString(_fighter.first->GetName()));
     ui->fighterBar->setRange(0, _fighter.first->GetHealthPoint());
@@ -72,11 +72,13 @@ void FightRoom::InitConnect()
     connect(this, SIGNAL(attack(QLabel *, QLabel *)), this, SLOT(setAnimation(QLabel *, QLabel *)));
     connect(this, SIGNAL(over(QString)), this, SLOT(GameComplete(QString)));
     connect(this, SIGNAL(hurt(QLabel *, QLabel *)), this, SLOT(UpdateHp(QLabel *, QLabel *)));
+    connect(this, SIGNAL(clearText()), this, SLOT(setText()));
 }
 
 void FightRoom::closeEvent(QCloseEvent *event)
 {
-    emit close();
+    emit isClosed();
+    _quit = true;
     event->accept();
 }
 
@@ -103,6 +105,14 @@ void FightRoom::setAnimation(QLabel *attacker, QLabel *suffer)
     actions->start();
 }
 
+void FightRoom::setText()
+{
+    ui->label->setText("");
+    ui->label->setGeometry(340, 440, 81, 31);
+    ui->label_2->setText("");
+    ui->label_2->setGeometry(890, 440, 81, 31);
+}
+
 void FightRoom::GameComplete(QString winner)
 {
     QMessageBox::information(this, "INFO", "winner is " + winner);
@@ -110,7 +120,6 @@ void FightRoom::GameComplete(QString winner)
     {
         json sendInfo = {
             {"type", GAME_WIN},
-            {"username", _client->GetUserName()},
             {"name", _againster.first->GetName()}
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
@@ -120,7 +129,6 @@ void FightRoom::GameComplete(QString winner)
     {
         json sendInfo = {
             {"type", GAME_LOSE},
-            {"username", _client->GetUserName()},
             {"name", _againster.first->GetName()}
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
@@ -142,7 +150,7 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
             ui->label->setText(QString::fromLocal8Bit("闪避"));
         else
             ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
-        animation1->setEndValue(QPoint(ui->label->x(), ui->label->y()));
+        animation1->setEndValue(QPoint(ui->label->x(), ui->label->y() - 10));
     }
     else
     {
@@ -153,7 +161,7 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
             ui->label_2->setText(QString::fromLocal8Bit("闪避"));
         else
             ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
-        animation1->setEndValue(QPoint(ui->label_2->x(), ui->label_2->y()));
+        animation1->setEndValue(QPoint(ui->label_2->x(), ui->label_2->y() - 10));
     }
 
     animation1->setDuration(400);
@@ -183,11 +191,13 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     if (attacker == _fighter.second)
     {
         ui->againsterBar->setValue(_againster.first->GetHp());
+        //ui->againsterBar->update();
         ui->againsterBar->repaint();
     }
     else
     {
         ui->fighterBar->setValue(_fighter.first->GetHp());
+        //ui->fighterBar->update();
         ui->fighterBar->repaint();
     }
 }
@@ -206,6 +216,9 @@ void FightRoom::Fight()
 
     while (++time1, ++time2)
     {
+       if (_quit)
+           return;
+
        if (time1 == speed1)
        {
            // op1进行攻击
@@ -216,6 +229,7 @@ void FightRoom::Fight()
            std::this_thread::sleep_for(std::chrono::seconds(1));
            emit hurt(_fighter.second, _againster.second);
            std::this_thread::sleep_for(std::chrono::seconds(1));
+           emit clearText();
 
            if (isDead)
            {
@@ -236,6 +250,7 @@ void FightRoom::Fight()
            std::this_thread::sleep_for(std::chrono::seconds(1));
            emit hurt(_againster.second, _fighter.second);
            std::this_thread::sleep_for(std::chrono::seconds(1));
+           emit clearText();
 
            if (isDead)
            {

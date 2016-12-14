@@ -186,7 +186,7 @@ void FightWidget::FightBegin()
                 ui->listWidget->currentItem()->text().toStdString(), _client);
 
     FightRoom *fightRoom = new FightRoom(fighter, againster, _client);
-    connect(fightRoom, SIGNAL(close()), this, SLOT(show()));
+    connect(fightRoom, SIGNAL(isClosed()), this, SLOT(show()));
 
     this->hide();//this->_parent->hide();
     fightRoom->show();

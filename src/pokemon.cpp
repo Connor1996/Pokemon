@@ -12,7 +12,11 @@ REGISTER(Ice);
 
 bool Pokemon::Hurt(int damage)
 {
-    auto score = (damage - _attribute.defensePoint);
+    // 闪避
+    if (Bonus() > 0.8)
+        return false;
+
+    auto score = (0.85 + Bonus() / 4) * (damage - _attribute.defensePoint);
     if (score > 0)
         if (_hp <= score)
         {
@@ -60,11 +64,11 @@ bool Pokemon::Upgrade(int exp)
     return isUpgraded;
 }
 
+#include <iostream>
 #define N 999
 double Pokemon::Bonus()
 {
     //随机生成0-1的小数.
-    srand(static_cast<int>(time(NULL)));
     return static_cast<double>(rand() % (N + 1)) / (N + 1);
 }
 
