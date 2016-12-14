@@ -49,7 +49,7 @@ std::string Dispatcher::Dispatch(json requestInfo)
         responseInfo = GameWinHandle(requestInfo);
         break;
     case GAME_LOSE:
-        responseInfo = GameLoseHandle(requsetInfo);
+        responseInfo = GameLoseHandle(requestInfo);
         break;
     default:
         responseInfo["type"] = SERVER_ERROR;
@@ -415,7 +415,7 @@ json Dispatcher::GameWinHandle(json &requestInfo)
 
 json Dispatcher::GameLoseHandle(json &requestInfo)
 {
-
+    return json();
 }
 
 void Dispatcher::Logout()

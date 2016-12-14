@@ -10,9 +10,9 @@ REGISTER(Grass);
 REGISTER(Ice);
 
 
-bool Pokemon::Hurt(unsigned int damage)
+bool Pokemon::Hurt(int damage)
 {
-    auto score = (1 + Bonus()) * (damage - _attribute.defensePoint);
+    auto score = (damage - _attribute.defensePoint);
     if (score > 0)
         if (_hp <= score)
         {
@@ -24,7 +24,7 @@ bool Pokemon::Hurt(unsigned int damage)
     return false;
 }
 
-bool Pokemon::Upgrade(unsigned int exp)
+bool Pokemon::Upgrade(int exp)
 {
     // 增加经验值，达到15级后无法继续升级，故直接返回false
     _exp += exp;
@@ -37,7 +37,7 @@ bool Pokemon::Upgrade(unsigned int exp)
     {
         _level++;
 
-        unsigned int *master = NULL;
+        int *master = NULL;
         switch (GetType()) {
         case Type::Strength:
             master = &_attribute.attackPoint;
@@ -64,13 +64,13 @@ bool Pokemon::Upgrade(unsigned int exp)
 double Pokemon::Bonus()
 {
     //随机生成0-1的小数.
-    srand(static_cast<unsigned int>(time(NULL)));
+    srand(static_cast<int>(time(NULL)));
     return static_cast<double>(rand() % (N + 1)) / (N + 1);
 }
 
-void Pokemon::Grow(unsigned int * master)
+void Pokemon::Grow(int * master)
 {
-    unsigned int * values[4] = {&_attribute.attackPoint, &_attribute.defensePoint,
+    int * values[4] = {&_attribute.attackPoint, &_attribute.defensePoint,
                                 &_attribute.healthPoint, &_attribute.attackPoint};
 
     //遍历变量指针，与master相同的说明为主要属性，升级时增加的幅度更大

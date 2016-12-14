@@ -8,6 +8,7 @@
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
 #include <QParallelAnimationGroup>
+#include <QCloseEvent>
 
 #include <iostream>
 #include <thread>
@@ -73,12 +74,18 @@ void FightRoom::InitConnect()
     connect(this, SIGNAL(hurt(QLabel *, QLabel *)), this, SLOT(UpdateHp(QLabel *, QLabel *)));
 }
 
+void FightRoom::closeEvent(QCloseEvent *event)
+{
+    emit close();
+    event->accept();
+}
+
 void FightRoom::setAnimation(QLabel *attacker, QLabel *suffer)
 {
     auto x = attacker->x();
     auto y = attacker->y();
 
-    QSequentialAnimationGroup *actions = new QSequentialAnimationGroup;
+    QSequentialAnimationGroup *actions = new QSequentialAnimationGroup(this);
 
     // 攻击方出击
     QPropertyAnimation *animation1 = new QPropertyAnimation(attacker, "pos");
@@ -129,22 +136,24 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     if (suffer == _fighter.second)
     {
         animation1 = new QPropertyAnimation(ui->label, "pos");
-        auto num = ui->fighterBar->value() - (int)_fighter.first->GetHp();
+        int num = ui->fighterBar->value() - (int)_fighter.first->GetHp();
+        //std::cout << num << std::endl;
         if (num == 0)
             ui->label->setText(QString::fromLocal8Bit("闪避"));
         else
             ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
-        animation1->setEndValue(QPoint(ui->label->x(), ui->label->y() - 50));
+        animation1->setEndValue(QPoint(ui->label->x(), ui->label->y()));
     }
     else
     {
         animation1 = new QPropertyAnimation(ui->label_2, "pos");
-        auto num = ui->againsterBar->value() - (int)_againster.first->GetHp();
+        int num = ui->againsterBar->value() - (int)_againster.first->GetHp();
+        //std::cout << num << std::endl;
         if (num == 0)
             ui->label_2->setText(QString::fromLocal8Bit("闪避"));
         else
             ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
-        animation1->setEndValue(QPoint(ui->label_2->x(), ui->label_2->y() - 50));
+        animation1->setEndValue(QPoint(ui->label_2->x(), ui->label_2->y()));
     }
 
     animation1->setDuration(400);
@@ -172,10 +181,15 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     actions->start(QAbstractAnimation::DeleteWhenStopped);
 
     if (attacker == _fighter.second)
+    {
         ui->againsterBar->setValue(_againster.first->GetHp());
+        ui->againsterBar->repaint();
+    }
     else
+    {
         ui->fighterBar->setValue(_fighter.first->GetHp());
-
+        ui->fighterBar->repaint();
+    }
 }
 
 // op1为玩家，op2为电脑
@@ -215,6 +229,7 @@ void FightRoom::Fight()
        {
 
            auto damage = _againster.first->Attack(_fighter.first);
+           //std::cout << "damage:" << std::to_string(damage) << std::endl;
            auto isDead = _fighter.first->Hurt(damage);
 
            emit attack(_againster.second, _fighter.second);

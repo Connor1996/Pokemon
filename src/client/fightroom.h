@@ -21,11 +21,13 @@ public:
                        QWidget *parent = 0);
     ~FightRoom();
     void Fight();
+    void FightRoom::closeEvent(QCloseEvent *event);
 
 signals:
     void attack(QLabel *, QLabel *);
     void over(QString);
     void hurt(QLabel *attacker, QLabel *suffer);
+    void close();
 
 private slots:
     void setAnimation(QLabel *, QLabel *);

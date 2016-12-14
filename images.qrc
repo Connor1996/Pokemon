@@ -4,8 +4,7 @@
         <file alias="lobby">images/lobby.jpg</file>
         <file alias="close">images/cancel_524px_1205790_easyicon.net.png</file>
         <file alias="userlist">images/userlist.jpg</file>
-        <file>images/返回 (1).png</file>
-        <file alias="return">images/返回.png</file>
+        <file alias="return">images/return.png</file>
         <file>images/6-vector-game-backgrounds-8003_imgs_8003_3.png</file>
         <file>images/614955.png</file>
         <file>images/614955.psd</file>
@@ -19,7 +18,6 @@
         <file>images/Scratch.jpg</file>
         <file>images/VGN94976413H.jpg</file>
         <file>images/video-wallpaper-images-pokemon-game-52286.jpg</file>
-        <file>images/精灵球.png</file>
         <file alias="offline">images/offline.png</file>
         <file alias="online">images/online.png</file>
         <file>images/dynamic/beedrill.gif</file>
