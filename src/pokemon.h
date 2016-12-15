@@ -51,9 +51,9 @@ class Pokemon
 {
 public:
     Pokemon(std::string name, int level, int exp,
-            Attribute attribute)
+            Attribute attribute, int id)
         : _name(name), _level(level), _exp(exp),
-          _attribute(attribute), _hp(attribute.healthPoint)
+          _attribute(attribute), _hp(attribute.healthPoint), _id(id)
     {
         srand(time(NULL));
     }
@@ -69,6 +69,7 @@ public:
     int GetDefensePoint() const { return _attribute.defensePoint; }
     int GetAttackFrequence() const { return _attribute.attackFrequence; }
     int GetHp() const { return _hp; }
+    int GetId() const { return _id; }
 
     // 根据受到的伤害更新血量，同时返回是否死亡
     virtual bool Hurt(int damage);
@@ -87,6 +88,7 @@ protected:
     Attribute _attribute;
 
     int _hp;
+    int _id;
 
     // 小精灵升级时各属性的成长
     virtual void Grow(int *);
@@ -101,8 +103,8 @@ class Fire : public Pokemon
 {
 public:
     Fire(std::string name, int level, int exp,
-         Attribute attribute)
-        : Pokemon(name, level, exp, attribute)
+         Attribute attribute, int id)
+        : Pokemon(name, level, exp, attribute, id)
     {}
 
     int Attack(Pokemon * opPokemon) override
@@ -128,8 +130,8 @@ class Water : public Pokemon
 {
 public:
     Water(std::string name, int level, int exp,
-          Attribute attribute)
-         : Pokemon(name, level, exp, attribute)
+          Attribute attribute, int id)
+         : Pokemon(name, level, exp, attribute, id)
     {}
 
     int Attack(Pokemon * opPokemon) override
@@ -155,8 +157,8 @@ class Electricity : public Pokemon
 {
 public:
     Electricity(std::string name, int level, int exp,
-                Attribute attribute)
-               : Pokemon(name, level, exp, attribute)
+                Attribute attribute, int id)
+               : Pokemon(name, level, exp, attribute, id)
     {}
 
     int Attack(Pokemon * opPokemon) override
@@ -182,8 +184,8 @@ class Grass : public Pokemon
 {
 public:
     Grass(std::string name, int level, int exp,
-          Attribute attribute)
-         : Pokemon(name, level, exp, attribute)
+          Attribute attribute, int id)
+         : Pokemon(name, level, exp, attribute, id)
     {}
 
     int Attack(Pokemon * opPokemon) override
@@ -209,8 +211,8 @@ class Ice : public Pokemon
 {
 public:
     Ice(std::string name, int level, int exp,
-        Attribute attribute)
-       : Pokemon(name, level, exp, attribute)
+        Attribute attribute, int id)
+       : Pokemon(name, level, exp, attribute, id)
     {}
 
     int Attack(Pokemon * opPokemon) override

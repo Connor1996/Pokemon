@@ -19,9 +19,12 @@ struct PokemonList
 
     std::string property;
 
+    // 击败小精灵可以获得的经验
+    int exp;
+
 #ifdef __SERVER__
     ORMAP(PokemonList, name, type, attackPoint, defensePoint,
-          healthPoint, attackFrequence, property);
+          healthPoint, attackFrequence, property, exp);
 #endif
 
 };

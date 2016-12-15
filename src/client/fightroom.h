@@ -25,14 +25,14 @@ public:
 
 signals:
     void attack(QLabel *, QLabel *);
-    void over(QString);
+    void over(Pokemon *);
     void hurt(QLabel *attacker, QLabel *suffer);
     void isClosed();
     void clearText();
 
 private slots:
     void setAnimation(QLabel *, QLabel *);
-    void GameComplete(QString);
+    void GameComplete(Pokemon *);
     void UpdateHp(QLabel *attacker, QLabel *suffer);
     void setText();
 

@@ -7,7 +7,7 @@ using namespace Connor_Socket;
 using json = nlohmann::json;
 
 
-Server::Server() : _count(0), _mapper("data.db")
+Server::Server() : _count(0)
 {
     _listeningSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (_listeningSocket == -1)

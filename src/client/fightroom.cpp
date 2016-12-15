@@ -70,7 +70,7 @@ void FightRoom::InitUi()
 void FightRoom::InitConnect()
 {
     connect(this, SIGNAL(attack(QLabel *, QLabel *)), this, SLOT(setAnimation(QLabel *, QLabel *)));
-    connect(this, SIGNAL(over(QString)), this, SLOT(GameComplete(QString)));
+    connect(this, SIGNAL(over(Pokemon *)), this, SLOT(GameComplete(Pokemon *)));
     connect(this, SIGNAL(hurt(QLabel *, QLabel *)), this, SLOT(UpdateHp(QLabel *, QLabel *)));
     connect(this, SIGNAL(clearText()), this, SLOT(setText()));
 }
@@ -113,25 +113,50 @@ void FightRoom::setText()
     ui->label_2->setGeometry(890, 440, 81, 31);
 }
 
-void FightRoom::GameComplete(QString winner)
+void FightRoom::GameComplete(Pokemon* winner)
 {
-    QMessageBox::information(this, "INFO", "winner is " + winner);
-    if (winner.toStdString() == _fighter.first->GetName())
+
+    if (winner == _fighter.first)
     {
+        auto isUpgrade = _fighter.first->Upgrade(_againster.first->GetExp());
+
         json sendInfo = {
             {"type", GAME_WIN},
-            {"name", _againster.first->GetName()}
+            {"get", _againster.first->GetName()},
+            {"name", _fighter.first->GetName()},
+            {"type", (int)_fighter.first->GetType()},
+            {"attackPoint", _fighter.first->GetAttackPoint()},
+            {"defensePoint", _fighter.first->GetDefensePoint()},
+            {"healthPoint", _fighter.first->GetHealthPoint()},
+            {"attackFrequence", _fighter.first->GetAttackFrequence()},
+            {"property", GET_CLASS_TYPE(*_fighter.first)},
+            {"level", _fighter.first->GetLevel()},
+            {"exp", _fighter.first->GetExp()},
+            {"id", _fighter.first->GetId()}
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+        if (receiveInfo["type"].get<int>() == ACCEPT)
+        {
+            std::string info = "挑战成功!\n获得目标小精灵：" + _againster.first->GetName() + "\n" +
+                           "获得经验：" + std::to_string(_againster.first->GetExp());
+            if (isUpgrade)
+                info += "\n小精灵升级到" + std::to_string(_fighter.first->GetLevel()) + "级";
+            QMessageBox::information(this, "INFO", QString::fromLocal8Bit(info.c_str()));
+        }
+        else
+            QMessageBox::information(this, "ERROR", QString::fromLocal8Bit("服务器出错"));
+
 
     }
     else
     {
         json sendInfo = {
             {"type", GAME_LOSE},
-            {"name", _againster.first->GetName()}
+            {"name", _againster.first->GetName()},
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+
+        QMessageBox::information(this, "INFO", QString::fromLocal8Bit("挑战失败！"));
     }
     this->close();
 }
@@ -191,13 +216,11 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     if (attacker == _fighter.second)
     {
         ui->againsterBar->setValue(_againster.first->GetHp());
-        //ui->againsterBar->update();
         ui->againsterBar->repaint();
     }
     else
     {
         ui->fighterBar->setValue(_fighter.first->GetHp());
-        //ui->fighterBar->update();
         ui->fighterBar->repaint();
     }
 }
@@ -205,7 +228,7 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
 // op1为玩家，op2为电脑
 void FightRoom::Fight()
 {
-    std::string winner;
+    Pokemon *winner = nullptr;
 
     auto speed1 = _fighter.first->GetAttackFrequence();
     auto speed2 = _againster.first->GetAttackFrequence();
@@ -233,7 +256,7 @@ void FightRoom::Fight()
 
            if (isDead)
            {
-               winner = _fighter.first->GetName();
+               winner = _fighter.first;
                break;
            }
            time1 = 0;
@@ -243,7 +266,6 @@ void FightRoom::Fight()
        {
 
            auto damage = _againster.first->Attack(_fighter.first);
-           //std::cout << "damage:" << std::to_string(damage) << std::endl;
            auto isDead = _fighter.first->Hurt(damage);
 
            emit attack(_againster.second, _fighter.second);
@@ -254,14 +276,14 @@ void FightRoom::Fight()
 
            if (isDead)
            {
-               winner = _againster.first->GetName();
+               winner = _againster.first;
                break;
            }
            time2 = 0;
        }
     }
 
-    emit over(QString::fromStdString(winner));
+    emit over(winner);
 }
 
 FightRoom::~FightRoom()

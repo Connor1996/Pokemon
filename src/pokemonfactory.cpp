@@ -10,44 +10,38 @@ using json = nlohmann::json;
 
 Pokemon* PokemonFactory::CreateComputer(std::string name, Client* client)
 {
-    auto queryInDateBase = [&](std::string name) -> std::pair<std::string, Attribute>
-    {
-        transform(name.begin(), name.end(), name.begin(), ::tolower);
+    transform(name.begin(), name.end(), name.begin(), ::tolower);
 
-        json sendInfo = {
-            {"type", GET_POKEMON_INFO},
-            {"name", name}
-        };
-        json receiveInfo = json::parse(client->Send(sendInfo.dump()));
-        if (receiveInfo["type"].get<int>() == SERVER_ERROR)
-            throw std::runtime_error("Failed at create computer pokemon");
+    json sendInfo = {
+        {"type", GET_POKEMON_INFO},
+        {"name", name}
+    };
+    json receiveInfo = json::parse(client->Send(sendInfo.dump()));
+    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+        throw std::runtime_error("Failed at create computer pokemon");
 
-        json info = json::parse(receiveInfo["info"].get<std::string>());
-        Attribute attr = {
-            Type(std::stoi(info["type"].get<std::string>())),
-            std::stoi(info["attackPoint"].get<std::string>()),
-            std::stoi(info["defensePoint"].get<std::string>()),
-            std::stoi(info["healthPoint"].get<std::string>()),
-            std::stoi(info["attackFrequence"].get<std::string>())
-        };
-
-        return std::move(std::make_pair(info["property"].get<std::string>(), attr));
+    json info = json::parse(receiveInfo["info"].get<std::string>());
+    Attribute attr = {
+        Type(std::stoi(info["type"].get<std::string>())),
+        std::stoi(info["attackPoint"].get<std::string>()),
+        std::stoi(info["defensePoint"].get<std::string>()),
+        std::stoi(info["healthPoint"].get<std::string>()),
+        std::stoi(info["attackFrequence"].get<std::string>())
     };
 
-    auto info = queryInDateBase(name);
     // 获取创建相应种类的回调函数
-    PTRCreateObject callback = Reflector::GetInstance().GetClassByName(info.first);
+    PTRCreateObject callback = Reflector::GetInstance()
+            .GetClassByName(info["property"].get<std::string>());
     if (callback == NULL)
         throw std::runtime_error("wrong pokemon property");
 
-    return callback(name, 1, 0, info.second);
+    return callback(name, 1, std::stoi(info["exp"].get<std::string>()), attr, NULL);
 
 }
 
 Pokemon* PokemonFactory::CreateUser(std::string str)
 {
     // 先反序列化属性字符串
-    //str.push_back(EOF);
     std::stringstream ss(str);
     std::string line;
     json info;
@@ -77,7 +71,7 @@ Pokemon* PokemonFactory::CreateUser(std::string str)
             .GetClassByName(type);
 
     return callback(info["name"].get<std::string>(),
-            info["level"].get<int>(), info["exp"].get<int>(), attr);
+            info["level"].get<int>(), info["exp"].get<int>(), attr, info["id"].get<int>());
 
 }
 

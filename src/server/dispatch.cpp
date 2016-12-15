@@ -122,7 +122,7 @@ json Dispatcher::SignupHandle(json &requestInfo)
             {
                 //产生0-num中的整数
                 auto random = [](int num) {
-                    srand(static_cast<unsigned>(time(NULL)));
+                    //srand(static_cast<unsigned>(time(NULL)));
                     return rand() % (num + 1);
                 };
 
@@ -145,9 +145,10 @@ json Dispatcher::SignupHandle(json &requestInfo)
                             auto vec = infoMessager.GetVector()[0];
                             ORMapper<UserBag> userMapper(DATABASE_NAME);
                             // Bad code style, wait for ormlite to support for GetObjects()
-                            UserBag userBag = { requestInfo["username"].get<std::string>(), vec[1],
-                                                1, 0, std::stoi(vec[2]), std::stoi(vec[3]), std::stoi(vec[4]),
-                                                std::stoi(vec[5]), std::stoi(vec[6]) };
+                            UserBag userBag = { nullptr, vec[1], 1, 0, std::stoi(vec[2]),
+                                                std::stoi(vec[3]), std::stoi(vec[4]),
+                                                std::stoi(vec[5]), std::stoi(vec[6]),
+                                                vec[7], requestInfo["username"].get<std::string>()};
                             if (!userMapper.Insert(userBag))
                             {
                                 throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
@@ -245,6 +246,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
         for (const auto& vec: messager.GetVector())
         {
             json itemInfo = {
+                {"id", vec[0]},
                 {"name", vec[1]},
                 {"level", vec[2]},
                 {"exp", vec[3]},
@@ -253,7 +255,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
                 {"defensePoint", vec[6]},
                 {"healthPoint", vec[7]},
                 {"attackFrequence", vec[8]},
-                {"property", vec[9]}
+                {"property", vec[9]},
             };
             itemsInfo.push_back(itemInfo.dump());
         }
@@ -369,7 +371,8 @@ json Dispatcher::PokemonInfoHandle(json &requestInfo)
             {"defensePoint", vec[3]},
             {"healthPoint", vec[4]},
             {"attackFrequence", vec[5]},
-            {"property", vec[6]}
+            {"property", vec[6]},
+            {"exp", vec[7]}
         };
         responseInfo["info"] = itemInfo.dump();
     }
@@ -391,7 +394,7 @@ json Dispatcher::GameWinHandle(json &requestInfo)
     QueryMessager<PokemonInfo> infoMessager(helper);
 
     infoMapper.Query(infoMessager.Where(Field(helper.name)
-                                        == requestInfo["name"].get<std::string>()));
+                                        == requestInfo["get"].get<std::string>()));
     if (infoMessager.IsNone())
         throw std::runtime_error("Unknown name for pokemon");
     else
@@ -399,16 +402,40 @@ json Dispatcher::GameWinHandle(json &requestInfo)
         auto vec = infoMessager.GetVector()[0];
         ORMapper<UserBag> userMapper(DATABASE_NAME);
         // Bad code style, wait for ormlite to support for GetObjects()
-        UserBag userBag = { requestInfo["username"].get<std::string>(), vec[1],
+        UserBag userBag = {nullptr , vec[1],
                             1, 0, std::stoi(vec[2]), std::stoi(vec[3]), std::stoi(vec[4]),
-                            std::stoi(vec[5]), std::stoi(vec[6]) };
+                            std::stoi(vec[5]), std::stoi(vec[6]), vec[7], _username};
         if (!userMapper.Insert(userBag))
         {
             responseInfo["type"] = SERVER_ERROR;
             throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
         }
         else
+        {
             responseInfo["type"] = ACCEPT;
+            // 更新小精灵信息
+        }
+
+        ORMapper<UserBag> bagMapper(DATABASE_NAME);
+        // Bad code style, wait for ormlite to support for GetObjects()
+        UserBag updateItem = {
+            requestInfo["id"].get<int>(),
+            requestInfo["name"].get<std::string>(),
+            requestInfo["level"].get<int>(),
+            requestInfo["exp"].get<int>(),
+            requestInfo["type"].get<int>(),
+            requestInfo["attackPoint"].get<int>(),
+            requestInfo["defensePoint"].get<int>(),
+            requestInfo["healthPoint"].get<int>(),
+            requestInfo["attackFrequence"].get<int>(),
+            requestInfo["property"].get<std::string>(),
+            _username
+        };
+        if (!bagMapper.Update(updateItem))
+        {
+            responseInfo["type"] = SERVER_ERROR;
+            throw std::runtime_error("Failed at update pokemon info");
+        }
     }
 
     return std::move(responseInfo);
@@ -416,7 +443,63 @@ json Dispatcher::GameWinHandle(json &requestInfo)
 
 json Dispatcher::GameLoseHandle(json &requestInfo)
 {
-    return json();
+    json responseInfo;
+
+    ORMapper<UserBag> infoMapper(DATABASE_NAME);
+    UserBag helper;
+    QueryMessager<UserBag> infoMessager(helper);
+
+    infoMapper.Query(infoMessager.Where(
+                         Field(helper.username) == _username));
+    if (infoMessager.IsNone())
+        throw std::runtime_error("Unknown username");
+    else
+    {
+        auto random = [](int num) {
+            //srand(static_cast<unsigned>(time(NULL)));
+            return rand() % (num + 1);
+        };
+
+        auto vec = infoMessager.GetVector();
+
+        for (int i = 0; i < 3; i++)
+        {
+            auto item = vec.at(random(vec.size() - 1));
+            if (!userMapper.Insert(userBag))
+            {
+                responseInfo["type"] = SERVER_ERROR;
+                throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
+            }
+            else
+            {
+                responseInfo["type"] = ACCEPT;
+                // 更新小精灵信息
+            }
+        }
+
+        ORMapper<UserBag> bagMapper(DATABASE_NAME);
+        // Bad code style, wait for ormlite to support for GetObjects()
+        UserBag updateItem = {
+            requestInfo["id"].get<int>(),
+            requestInfo["name"].get<std::string>(),
+            requestInfo["level"].get<int>(),
+            requestInfo["exp"].get<int>(),
+            requestInfo["type"].get<int>(),
+            requestInfo["attackPoint"].get<int>(),
+            requestInfo["defensePoint"].get<int>(),
+            requestInfo["healthPoint"].get<int>(),
+            requestInfo["attackFrequence"].get<int>(),
+            requestInfo["property"].get<std::string>(),
+            _username
+        };
+        if (!bagMapper.Update(updateItem))
+        {
+            responseInfo["type"] = SERVER_ERROR;
+            throw std::runtime_error("Failed at update pokemon info");
+        }
+    }
+
+    return std::move(responseInfo);
 }
 
 void Dispatcher::Logout()

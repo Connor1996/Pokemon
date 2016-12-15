@@ -12,7 +12,9 @@ public:
     Dispatcher() : _state(0) { }
     Dispatcher(SOCKET &connection, Connor_Socket::Server *parent)
         : _connection(connection), _parent(parent), _state(0)
-    { }
+    {
+        srand((unsigned int)time(NULL));
+    }
 
     // 根据请求信息，分发到相应的函数处理请求
     std::string Dispatch(json requestInfo);

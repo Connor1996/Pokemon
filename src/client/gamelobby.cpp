@@ -24,19 +24,6 @@ GameLobby::GameLobby(Connor_Socket::Client *client, QWidget *parent) :
     InitConnect();
 
     ui->closeButton->resize(48, 48);
-//    QMovie *pikachu = new QMovie(":/pikachu");
-//    ui->test->setMovie(pikachu);
-//    pikachu->start();
-//    QPropertyAnimation *animation = new QPropertyAnimation(ui->test,"pos");
-//    animation->setDuration(1000);
-//    animation->setStartValue(QPoint(0, 0));
-//    animation->setEndValue(QPoint(120, 0));
-//    animation->setEasingCurve(QEasingCurve::OutBounce);
-//    animation->start();
-//    animation->setDuration(200);
-//    animation->setEndValue(QRect(0, 0, 192, 192));
-//    animation->setStartValue(QRect(120, 0, 192, 192));
-//    animation->start();
 }
 
 GameLobby::~GameLobby()
@@ -74,27 +61,6 @@ void GameLobby::mousePressEvent(QMouseEvent *event)
     else if (isPointInPolygon(pointsForFight, std::move(QPointF(x, y))))
         emit clicked(4);
 }
-
-//void GameLobby::ClickOn(int type)
-//{
-//    switch (type)
-//    {
-//    case 0:
-//    {
-//        emit ToUserList();
-//        break;
-//    }
-//    case 1:
-//        QMessageBox::information( this, "Scrath", "1");
-//        break;
-//    case 2:
-//        QMessageBox::information( this, "Bag", "1");
-//        break;
-//    case 3:
-//        QMessageBox::information( this, "Fight", "1");
-//        break;
-//    }
-//}
 
 void GameLobby::InitUi()
 {

@@ -25,8 +25,8 @@ DEFINES += WIN32_LEAN_AND_MEAN  #ÅÅ³ýwindows.hÓëwinsock.hµÄ³å
 SOURCES += \
     src/pokemon.cpp \
     include/sqlite3.c \
-    src/reflector.cpp \
-    src/client/fightroom.cpp
+    src/reflector.cpp
+
 
 
 HEADERS  +=  \
@@ -40,8 +40,8 @@ HEADERS  +=  \
     src/define.h \
     src/model/userbag.h \
     src/model/pokemoninfo.h \
-    src/model/pokemonlist.h \
-    src/client/fightroom.h
+    src/model/pokemonlist.h
+
 
 
 RESOURCES += \
@@ -66,7 +66,8 @@ Client{
         src/client/userlistwidget.cpp \
         src/client/stackwidget.cpp \
         src/client/bagwidget.cpp \
-        src/client/fightwidget.cpp
+        src/client/fightwidget.cpp \
+        src/client/fightroom.cpp
 
 
     HEADERS += \
@@ -77,7 +78,8 @@ Client{
         src/client/userlistwidget.h \
         src/client/stackwidget.h \
         src/client/bagwidget.h \
-        src/client/fightwidget.h
+        src/client/fightwidget.h \
+        src/client/fightroom.h
 
     FORMS    += \
         widget.ui \
@@ -85,7 +87,8 @@ Client{
         src/client/userlistwidget.ui \
         src/client/stackwidget.ui \
         src/client/bagwidget.ui \
-        src/client/fightwidget.ui
+        src/client/fightwidget.ui \
+        src/client/fightroom.ui
 }
 
 Server{
@@ -105,8 +108,6 @@ Server{
 
 }
 
-FORMS += \
-    src/client/fightroom.ui
 
 
 

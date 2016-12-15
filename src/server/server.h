@@ -37,8 +37,8 @@ protected:
     // 连接到服务器的客户端数
     size_t _count;
 
-    // 链接数据库的mapper对象
-    ORMLite::ORMapper<UserInfo> _mapper;
+//    // 链接数据库的mapper对象
+//    ORMLite::ORMapper<UserInfo> _mapper;
 };
 
 }

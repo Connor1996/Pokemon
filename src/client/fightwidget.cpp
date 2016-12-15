@@ -188,7 +188,7 @@ void FightWidget::FightBegin()
     FightRoom *fightRoom = new FightRoom(fighter, againster, _client);
     connect(fightRoom, SIGNAL(isClosed()), this, SLOT(show()));
 
-    this->hide();//this->_parent->hide();
+    this->hide();
     fightRoom->show();
 
 }
