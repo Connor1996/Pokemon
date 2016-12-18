@@ -140,6 +140,17 @@ void BagWidget::SetBag()
             col = 1;
         }
     }
+    // 用空layout填充第一行的空位置
+    if (row == 1 && col != 1)
+        for (int i = col; i <= 3; i++)
+        {
+            QVBoxLayout *rowlayout = new QVBoxLayout();
+            QLabel *picLabel = new QLabel();
+            picLabel->resize(120, 120);
+            rowlayout->addWidget(picLabel);
+            gridLayout->addLayout(rowlayout, 1, i);
+        }
+
     gridLayout->setAlignment(Qt::AlignTop);
     ui->bagListArea->setWidget(containWidget);
 

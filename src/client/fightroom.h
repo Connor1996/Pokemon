@@ -2,9 +2,12 @@
 #define FIGHTROOM_H
 
 #include <QWidget>
+#include <QSignalMapper>
+#include <QLabel>
+
 #include "../pokemon.h"
 #include "client.h"
-#include <QLabel>
+
 
 using Client = Connor_Socket::Client;
 
@@ -35,6 +38,7 @@ private slots:
     void GameComplete(Pokemon *);
     void UpdateHp(QLabel *attacker, QLabel *suffer);
     void setText();
+    void Choose(int);
 
 private:
     void InitUi();
@@ -46,6 +50,7 @@ private:
     std::pair<Pokemon *, QLabel *> _againster;
 
     Connor_Socket::Client *_client;
+    QSignalMapper *_signalMapper;
 
     bool _quit;
 };

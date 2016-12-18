@@ -189,11 +189,17 @@ struct Expr
     std::vector<std::pair<const void *, std::string>> expr;
 
 
+    template <typename T>
+    Expr (const ORMLite::Nullable<T>& property, const std::string& op, const ORMLite::Nullable<T>& value)
+        : expr{ std::make_pair(&property, op + std::to_string(value.Value())) }
+    { }
 
     template <typename T>
     Expr (const T& property, const std::string& op, const T& value)
         : expr{ std::make_pair(&property, op + std::to_string(value)) }
     { }
+
+
 
     template <>
     Expr (const std::string& property, const std::string& op,
@@ -784,6 +790,12 @@ private:
 
 };
 
+
+//template <typename T>
+//inline ORMLite_Impl::Field_Expr<T> Field(Nullable<T>& property)
+//{
+//    return ORMLite_Impl::Field_Expr<T>(property.Value());
+//}
 
 template <typename T>
 inline ORMLite_Impl::Field_Expr<T> Field(T& property)

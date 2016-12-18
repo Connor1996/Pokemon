@@ -21,7 +21,7 @@ FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
                      QWidget *parent) :
     QWidget(parent), _fighter(std::make_pair(fighter, new QLabel(this))),
     _againster(std::make_pair(againster, new QLabel(this))), _client(client),
-    ui(new Ui::FightRoom), _quit(false)
+    ui(new Ui::FightRoom), _quit(false), _signalMapper(new QSignalMapper)
 {
     ui->setupUi(this);
     InitUi();
@@ -35,6 +35,7 @@ FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
 void FightRoom::InitUi()
 {
     setFixedSize(1280, 720);
+    setWindowFlags(Qt::FramelessWindowHint);
 
     // 设置背景
     setAutoFillBackground(true);
@@ -43,6 +44,7 @@ void FightRoom::InitUi()
     palette.setBrush(QPalette::Window, QBrush(pixmap.scaled(width(), height())));
     setPalette(palette);
 
+    ui->chooseWidget->hide();
     //ui->returnButton->resize(48, 48);
 
     QLabel *op1 = _fighter.second;
@@ -73,6 +75,7 @@ void FightRoom::InitConnect()
     connect(this, SIGNAL(over(Pokemon *)), this, SLOT(GameComplete(Pokemon *)));
     connect(this, SIGNAL(hurt(QLabel *, QLabel *)), this, SLOT(UpdateHp(QLabel *, QLabel *)));
     connect(this, SIGNAL(clearText()), this, SLOT(setText()));
+    connect(_signalMapper, SIGNAL(mapped(int)), this, SLOT(Choose(int)));
 }
 
 void FightRoom::closeEvent(QCloseEvent *event)
@@ -115,7 +118,7 @@ void FightRoom::setText()
 
 void FightRoom::GameComplete(Pokemon* winner)
 {
-
+    // 挑战成功
     if (winner == _fighter.first)
     {
         auto isUpgrade = _fighter.first->Upgrade(_againster.first->GetExp());
@@ -145,21 +148,65 @@ void FightRoom::GameComplete(Pokemon* winner)
         }
         else
             QMessageBox::information(this, "ERROR", QString::fromLocal8Bit("服务器出错"));
-
-
+        this->close();
     }
+    // 挑战失败
     else
     {
         json sendInfo = {
-            {"type", GAME_LOSE},
-            {"name", _againster.first->GetName()},
+            {"type", GAME_LOSE},     
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-        QMessageBox::information(this, "INFO", QString::fromLocal8Bit("挑战失败！"));
+        int count = 0;
+        for (const auto& item: receiveInfo["info"])
+        {
+            count++;
+            json itemInfo = json::parse(item.get<std::string>());
+
+            // 显示精灵图片
+            QPushButton *picLabel = new QPushButton();
+            picLabel->setFlat(true);
+            picLabel->setMinimumSize(120, 120);
+            picLabel->setMaximumSize(120, 120);
+            picLabel->setStyleSheet("border-image: url(://images/static/" +
+                                    QString::fromStdString(itemInfo["name"].get<std::string>()) + ".png);");
+            _signalMapper->setMapping(picLabel, std::stoi(itemInfo["id"].get<std::string>()));
+            connect(picLabel, SIGNAL(clicked()), _signalMapper, SLOT(map()));
+
+            // 构建提示字符串
+            std::string infoStr;
+            QLabel *textLabel = new QLabel();
+            for (json::iterator it = itemInfo.begin(); it != itemInfo.end(); ++it)
+                infoStr += it.key() + " : " + it.value().get<std::string>() + "\n";
+            infoStr.pop_back();
+            textLabel->setStyleSheet("font: 75 8pt");
+            textLabel->setText(QString::fromStdString(infoStr));
+
+
+            QVBoxLayout *itemLayout = new QVBoxLayout();
+            itemLayout->addWidget(picLabel);
+            itemLayout->addWidget(textLabel);
+
+            ui->chooseLayout->addLayout(itemLayout);
+        }
+        ui->chooseLayout->setAlignment(Qt::AlignHCenter);
+        ui->chooseWidget->show();
     }
+}
+
+void FightRoom::Choose(int id)
+{
+    json sendInfo = {
+        {"type", LOSE_POKEMON},
+        {"id", id}
+    };
+    json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+        QMessageBox::information(this, "ERROR", QString::fromLocal8Bit("服务器出错"));
     this->close();
 }
+
 
 void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
 {
@@ -237,6 +284,26 @@ void FightRoom::Fight()
     size_t time1 = 0;
     size_t time2 = 0;
 
+    // 一方攻击另外一方
+    auto fight = [&](std::pair<Pokemon *, QLabel *> *op1,
+            std::pair<Pokemon *, QLabel *> *op2)
+    {
+        auto damage = op1->first->Attack(op2->first);
+        auto isDead = op2->first->Hurt(damage);
+
+        emit attack(op1->second, op2->second);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        emit hurt(op1->second, op2->second);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        emit clearText();
+
+        // 判断对手是否死亡
+        if (isDead)
+            winner = op1->first;
+
+        return isDead;
+    };
+
     while (++time1, ++time2)
     {
        if (_quit)
@@ -245,40 +312,18 @@ void FightRoom::Fight()
        if (time1 == speed1)
        {
            // op1进行攻击
-           auto damage = _fighter.first->Attack(_againster.first);
-           auto isDead = _againster.first->Hurt(damage);
-
-           emit attack(_fighter.second, _againster.second);
-           std::this_thread::sleep_for(std::chrono::seconds(1));
-           emit hurt(_fighter.second, _againster.second);
-           std::this_thread::sleep_for(std::chrono::seconds(1));
-           emit clearText();
-
-           if (isDead)
-           {
-               winner = _fighter.first;
+           if (fight(&_fighter, &_againster))
                break;
-           }
+
            time1 = 0;
        }
 
        if (time2 == speed2)
        {
-
-           auto damage = _againster.first->Attack(_fighter.first);
-           auto isDead = _fighter.first->Hurt(damage);
-
-           emit attack(_againster.second, _fighter.second);
-           std::this_thread::sleep_for(std::chrono::seconds(1));
-           emit hurt(_againster.second, _fighter.second);
-           std::this_thread::sleep_for(std::chrono::seconds(1));
-           emit clearText();
-
-           if (isDead)
-           {
-               winner = _againster.first;
+           // op2进行攻击
+           if (fight(&_againster, &_fighter))
                break;
-           }
+
            time2 = 0;
        }
     }

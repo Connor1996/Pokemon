@@ -182,6 +182,7 @@ void UserListWidget::ShowBag(QString username)
 
     QGridLayout *gridLayout = new QGridLayout(containWidget);
     containWidget->setLayout(gridLayout);
+    gridLayout->setAlignment(Qt::AlignTop);
 
     auto row = 1, col = 1;
     for (const auto& item: receiveInfo["info"])
@@ -193,7 +194,7 @@ void UserListWidget::ShowBag(QString username)
         QPixmap pic(QString::fromStdString("://images/static/" +
                                             itemInfo["name"].get<std::string>() + ".png"));
         picLabel->setPixmap(pic.scaled(120, 120, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-
+        picLabel->setAlignment(Qt::AlignCenter);
         // 构建提示字符串
         std::string infoStr;
         for (json::iterator it = itemInfo.begin(); it != itemInfo.end(); ++it)
@@ -210,6 +211,7 @@ void UserListWidget::ShowBag(QString username)
         QVBoxLayout *rowlayout = new QVBoxLayout();
         rowlayout->addWidget(picLabel);
         rowlayout->addWidget(textLabel);
+        //rowlayout->setSizeConstraint(QLayout::SetFixedSize);
         gridLayout->addLayout(rowlayout, row, col);
 
         if (++col > 3)
@@ -218,7 +220,18 @@ void UserListWidget::ShowBag(QString username)
             col = 1;
         }
     }
-    gridLayout->setAlignment(Qt::AlignTop);
+    // 用空layout填充第一行的空位置
+    if (row == 1 && col != 1)
+        for (int i = col; i <= 3; i++)
+        {
+            QVBoxLayout *rowlayout = new QVBoxLayout();
+            QLabel *picLabel = new QLabel();
+            picLabel->resize(120, 120);
+            rowlayout->addWidget(picLabel);
+            gridLayout->addLayout(rowlayout, 1, i);
+        }
+
+    //gridLayout->setAlignment(Qt::AlignLeft);
     ui->bagListArea->setWidget(containWidget);
 
     // 显示胜率

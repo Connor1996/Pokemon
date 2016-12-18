@@ -249,6 +249,56 @@ color: rgb(255, 23, 26);</string>
     <string/>
    </property>
   </widget>
+  <widget class="QWidget" name="chooseWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>240</y>
+     <width>601</width>
+     <height>391</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#chooseWidget
+{
+	background-color: rgba(0,0,0, 40%);
+	border-radius:10px;
+}</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLabel" name="label_3">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>黑体</family>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>挑战失败，请选择一个丢弃的小精灵</string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="chooseLayout" stretch=""/>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources/>
  <connections/>

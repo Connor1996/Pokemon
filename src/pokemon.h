@@ -25,6 +25,8 @@
 
 #endif
 
+
+#define MISS_RATE 0.9
 enum class Type
 {
     Strength,   //高攻击
@@ -119,7 +121,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.8)
+        if (Bonus() > MISS_RATE)
             coefficient += 1;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
@@ -146,7 +148,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.8)
+        if (Bonus() > MISS_RATE)
             coefficient += 1;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
@@ -173,7 +175,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.8)
+        if (Bonus() > MISS_RATE)
             coefficient += 1;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
@@ -200,7 +202,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.8)
+        if (Bonus() > MISS_RATE)
             coefficient += 1;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
@@ -228,7 +230,7 @@ public:
             coefficient = 1.3;
 
         // 有几率产生暴击
-        if (Bonus() > 0.8)
+        if (Bonus() > MISS_RATE)
             coefficient += 1;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
