@@ -180,7 +180,7 @@ void FightRoom::GameComplete(Pokemon* winner)
             for (json::iterator it = itemInfo.begin(); it != itemInfo.end(); ++it)
                 infoStr += it.key() + " : " + it.value().get<std::string>() + "\n";
             infoStr.pop_back();
-            textLabel->setStyleSheet("font: 75 8pt");
+            textLabel->setStyleSheet("font: 75 8pt; color: rgb(255, 255, 255);");
             textLabel->setText(QString::fromStdString(infoStr));
 
 
@@ -223,7 +223,7 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
         else
         {
             if (_againster.first->IsCritical())
-                ui->label->setText(QString::fromStdString("暴击-" + std::to_string(num)));
+                ui->label->setText(QString::fromStdString("BANG-" + std::to_string(num)));
             else
                 ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
         }
@@ -239,7 +239,7 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
         else
         {
             if (_fighter.first->IsCritical())
-                ui->label_2->setText(QString::fromStdString("暴击-" + std::to_string(num)));
+                ui->label_2->setText(QString::fromStdString("BANG-" + std::to_string(num)));
             else
                 ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
         }

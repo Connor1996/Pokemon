@@ -5,17 +5,12 @@
         <file alias="close">images/cancel_524px_1205790_easyicon.net.png</file>
         <file alias="userlist">images/userlist.jpg</file>
         <file alias="return">images/return.png</file>
-        <file>images/6-vector-game-backgrounds-8003_imgs_8003_3.png</file>
         <file>images/614955.png</file>
         <file>images/614955.psd</file>
-        <file>images/483979926.jpg</file>
         <file>images/1477467390_pokemon-logo.png</file>
         <file alias="bag">images/bag.jpg</file>
-        <file>images/cartoon-game-background-landscape-vector-illustration-57884203.jpg</file>
-        <file>images/depositphotos_106891270-stock-illustration-cartoon-nature-landscape-for-game.jpg</file>
         <file alias="fight">images/fight.jpg</file>
-        <file>images/fight_background.jpg</file>
-        <file>images/Scratch.jpg</file>
+        <file alias="scratch">images/Scratch.jpg</file>
         <file>images/VGN94976413H.jpg</file>
         <file>images/video-wallpaper-images-pokemon-game-52286.jpg</file>
         <file alias="offline">images/offline.png</file>

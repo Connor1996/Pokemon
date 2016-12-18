@@ -8,7 +8,8 @@ StackWidget::StackWidget(Connor_Socket::Client *client, QWidget *parent) :
     _gameLobby(new GameLobby(client)),
     _userListWidget(new UserListWidget(client)),
     _bagWidget(new BagWidget(client)),
-    _fightWidget(new FightWidget(client))
+    _fightWidget(new FightWidget(client)),
+    _scratchWidget(new ScratchWidget(client))
 {
     ui->setupUi(this);
     InitUi();
@@ -24,7 +25,7 @@ void StackWidget::InitUi()
     _stackLayout = new QStackedLayout(this);
     _stackLayout->addWidget(_gameLobby);
     _stackLayout->addWidget(_userListWidget);
-    _stackLayout->addWidget(new UserListWidget(_client));
+    _stackLayout->addWidget(_scratchWidget);
     _stackLayout->addWidget(_bagWidget);
     _stackLayout->addWidget(_fightWidget);
     _stackLayout->setCurrentIndex(0);
@@ -36,6 +37,7 @@ void StackWidget::InitConnect()
     connect(_userListWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
     connect(_bagWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
     connect(_fightWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
+    connect(_scratchWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
 
     // 点击的时候刷新相应界面内容
     connect(this, SIGNAL(refreshUserList()), _userListWidget, SLOT(SetUserList()));
@@ -52,6 +54,7 @@ StackWidget::~StackWidget()
     delete _userListWidget;
     delete _bagWidget;
     delete _fightWidget;
+    delete _scratchWidget;
     delete _client;
 }
 

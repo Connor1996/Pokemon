@@ -1,6 +1,5 @@
 ﻿#ifndef BAGWIDGET_H
 #define BAGWIDGET_H
-
 #include <QWidget>
 #include "client.h"
 

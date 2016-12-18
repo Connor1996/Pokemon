@@ -25,7 +25,8 @@ DEFINES += WIN32_LEAN_AND_MEAN  #ÅÅ³ýwindows.hÓëwinsock.hµÄ³å
 SOURCES += \
     src/pokemon.cpp \
     include/sqlite3.c \
-    src/reflector.cpp
+    src/reflector.cpp \
+    src/client/scratchwidget.cpp
 
 
 
@@ -40,7 +41,8 @@ HEADERS  +=  \
     src/define.h \
     src/model/userbag.h \
     src/model/pokemoninfo.h \
-    src/model/pokemonlist.h
+    src/model/pokemonlist.h \
+    src/client/scratchwidget.h
 
 
 
@@ -107,6 +109,9 @@ Server{
         src/server/dispatch.h
 
 }
+
+FORMS += \
+    src/client/scratchwidget.ui
 
 
 

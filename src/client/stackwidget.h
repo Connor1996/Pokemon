@@ -9,6 +9,7 @@
 #include "userlistwidget.h"
 #include "bagwidget.h"
 #include "fightwidget.h"
+#include "scratchwidget.h"
 
 namespace Ui {
 class StackWidget;
@@ -43,6 +44,7 @@ private:
     UserListWidget *_userListWidget;
     BagWidget *_bagWidget;
     FightWidget *_fightWidget;
+    ScratchWidget *_scratchWidget;
 
     Connor_Socket::Client *_client;
 };
