@@ -8,7 +8,7 @@
 #include "../define.h"
 using json = nlohmann::json;
 
-#include <iomanip>s
+#include <iomanip>
 
 UserListWidget::UserListWidget(Connor_Socket::Client *client, QWidget *parent) :
     QWidget(parent), _client(client), _signalMapper(nullptr),
@@ -49,11 +49,11 @@ void UserListWidget::SetUserList()
 {
     // 获得在线用户
     json sendInfo = {
-        {"type", GET_ONLINE_LIST}
+        {"define", GET_ONLINE_LIST}
     };
     json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    if (receiveInfo["define"].get<int>() == SERVER_ERROR)
     {
         QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取用户列表失败"));
         return;
@@ -109,11 +109,11 @@ void UserListWidget::SetUserList()
 
     // 获得离线用户
     sendInfo = {
-        {"type", GET_OFFLINE_LIST}
+        {"define", GET_OFFLINE_LIST}
     };
     receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    if (receiveInfo["define"].get<int>() == SERVER_ERROR)
     {
         QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取用户列表失败"));
         return;
@@ -161,12 +161,12 @@ void UserListWidget::SetUserList()
 void UserListWidget::ShowBag(QString username)
 {
     json sendInfo = {
-        {"type", GET_USER_BAG},
+        {"define", GET_USER_BAG},
         {"username", username.toStdString()}
     };
     json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    if (receiveInfo["define"].get<int>() == SERVER_ERROR)
     {
         QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取背包信息失败"));
         return;
@@ -236,7 +236,8 @@ void UserListWidget::ShowBag(QString username)
 
     // 显示胜率
     std::stringstream rate;
-    rate << std::setiosflags(std::ios::fixed) << std::setprecision(1) << receiveInfo["rate"].get<double>();
+    rate << std::setiosflags(std::ios::fixed) << std::setprecision(1)
+         << receiveInfo["rate"].get<double>();
     auto str = "胜率: "+ rate.str() + "%";
     ui->rateLabel->setText(QString::fromLocal8Bit(str.c_str()));
 }

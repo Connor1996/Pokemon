@@ -20,7 +20,7 @@ std::string Dispatcher::Dispatch(json requestInfo)
 {
     json responseInfo;
     //std::cout << "[INFO] dispatch" << std::endl;
-    switch (requestInfo["type"].get<int>()) {
+    switch (requestInfo["define"].get<int>()) {
     case LOG_IN:
         responseInfo = LoginHandle(requestInfo);
         break;
@@ -55,7 +55,7 @@ std::string Dispatcher::Dispatch(json requestInfo)
         responseInfo = LosePokemonHandle(requestInfo);
         break;
     default:
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] Bad request" << std::endl;
         break;
     }
@@ -80,20 +80,20 @@ json Dispatcher::LoginHandle(json &requestInfo)
     if (result)
     {
         if (messager.IsNone())
-            responseInfo["type"] = LOG_IN_FAIL_WP;
+            responseInfo["define"] = LOG_IN_FAIL_WP;
         else
         {
             // 将username加入在线列表
             _username = requestInfo["username"].get<std::string>();
             if (_parent->Online(_username, _connection))
-                responseInfo["type"] = LOG_IN_SUCCESS;
+                responseInfo["define"] = LOG_IN_SUCCESS;
             else
-                responseInfo["type"] = LOG_IN_FAIL_AO;
+                responseInfo["define"] = LOG_IN_FAIL_AO;
         }
     }
     else
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
@@ -119,7 +119,7 @@ json Dispatcher::SignupHandle(json &requestInfo)
         {
             // 构建新的用户信息
             UserInfo userinfo = { requestInfo["username"].get<std::string>(),
-                        requestInfo["password"].get<std::string>(), 0, 0, 0, 0};
+                        requestInfo["password"].get<std::string>(), 0, 0, 3, 0};
             auto result = mapper.Insert(userinfo);
             if (result)
             {
@@ -131,18 +131,19 @@ json Dispatcher::SignupHandle(json &requestInfo)
                     }
                 };
 
-                responseInfo["type"] = SIGN_UP_SUCCESS;
+
+                responseInfo["define"] = SIGN_UP_SUCCESS;
                 InitialBag();
             }
             else
-                responseInfo["type"] = SIGN_UP_FAIL;
+                responseInfo["define"] = SIGN_UP_FAIL;
         }
         else
-            responseInfo["type"] = SIGN_UP_FAIL;
+            responseInfo["define"] = SIGN_UP_FAIL;
     }
     else
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
@@ -155,11 +156,11 @@ json Dispatcher::OnlineListHandle(json &requestInfo)
 
     try{
         responseInfo["info"] = json(_parent->GetOnlineList());
-        responseInfo["type"] = QUERY_SUCCESS;
+        responseInfo["define"] = QUERY_SUCCESS;
     }
     catch (std::exception e)
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << e.what() << std::endl;
     }
 
@@ -190,12 +191,12 @@ json Dispatcher::OfflineListHandle(json &requestInfo)
                          onlineList.begin(), onlineList.end(),
                               std::back_inserter(offlineList));
 
-        responseInfo["type"] = QUERY_SUCCESS;
+        responseInfo["define"] = QUERY_SUCCESS;
         responseInfo["info"] = json(std::move(offlineList));
     }
     else
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
@@ -215,7 +216,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
     json responseInfo;
     if (result)
     {
-        responseInfo["type"] = QUERY_SUCCESS;
+        responseInfo["define"] = QUERY_SUCCESS;
         json itemsInfo;
         for (const auto& vec: messager.GetVector())
         {
@@ -245,20 +246,20 @@ json Dispatcher::UserBagHandle(json &requestInfo)
                                           == requestInfo["username"].get<std::string>()));
         if (result)
         {
-            auto win = std::stoi(messager.GetVector()[0][3]);
-            auto lose = std::stoi(messager.GetVector()[0][4]);
+            auto win = std::stoi(messager.GetVector()[0][2]);
+            auto lose = std::stoi(messager.GetVector()[0][3]);
 
-            responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 1.0) / (win + lose);
+            responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 100.0) / (win + lose);
         }
         else
         {
-            responseInfo["type"] = SERVER_ERROR;
+            responseInfo["define"] = SERVER_ERROR;
             std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
         }
     }
     else
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
@@ -278,17 +279,17 @@ json Dispatcher::UserAchievementHandle(json &requestInfo)
     json responseInfo;
     if (result)
     {
-        auto win = std::stoi(messager.GetVector()[0][3]);
-        auto lose = std::stoi(messager.GetVector()[0][4]);
+        auto win = std::stoi(messager.GetVector()[0][2]);
+        auto lose = std::stoi(messager.GetVector()[0][3]);
 
-        responseInfo["type"] = QUERY_SUCCESS;
-        responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 1.0) / (win + lose);
+        responseInfo["define"] = QUERY_SUCCESS;
+        responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 100.0) / (win + lose);
         responseInfo["sum_ach"] = std::stoi(messager.GetVector()[0][4]);
         responseInfo["advance_ach"] = std::stoi(messager.GetVector()[0][5]);
     }
     else
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
@@ -306,7 +307,7 @@ json Dispatcher::PokemonListHandle(json &requestInfo)
     json responseInfo;
     if (result)
     {
-        responseInfo["type"] = QUERY_SUCCESS;
+        responseInfo["define"] = QUERY_SUCCESS;
         std::list<std::string> pokemonList;
         for (const auto& vec: messager.GetVector())
         {
@@ -316,7 +317,7 @@ json Dispatcher::PokemonListHandle(json &requestInfo)
     }
     else
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
@@ -337,7 +338,7 @@ json Dispatcher::PokemonInfoHandle(json &requestInfo)
     if (result)
     {
         auto vec = messager.GetVector()[0];
-        responseInfo["type"] = QUERY_SUCCESS;
+        responseInfo["define"] = QUERY_SUCCESS;
         json itemInfo = {
             {"name", vec[0]},
             {"type", vec[1]},
@@ -352,7 +353,7 @@ json Dispatcher::PokemonInfoHandle(json &requestInfo)
     }
     else
     {
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] " << mapper.GetErrorMessage() << std::endl;
     }
 
@@ -392,12 +393,12 @@ json Dispatcher::GameWinHandle(json &requestInfo)
         // 放入新获得的小精灵
         if (!bagMapper.Insert(userBag))
         {
-            responseInfo["type"] = SERVER_ERROR;
+            responseInfo["define"] = SERVER_ERROR;
             throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
         }
         else
         {
-            responseInfo["type"] = ACCEPT;
+            responseInfo["define"] = ACCEPT;
 
             // 更新用户信息
             userInfo.win += 1;
@@ -407,7 +408,7 @@ json Dispatcher::GameWinHandle(json &requestInfo)
             userInfo.advanceSum += 1;
         if (!userMapper.Update(userInfo))
         {
-            responseInfo["type"] = SERVER_ERROR;
+            responseInfo["define"] = SERVER_ERROR;
             throw std::runtime_error("Failed at update user info");
         }
 
@@ -428,7 +429,7 @@ json Dispatcher::GameWinHandle(json &requestInfo)
         };
         if (!bagMapper.Update(updateItem))
         {
-            responseInfo["type"] = SERVER_ERROR;
+            responseInfo["define"] = SERVER_ERROR;
             throw std::runtime_error("Failed at update pokemon info");
         }
 
@@ -504,7 +505,7 @@ json Dispatcher::LosePokemonHandle(json &requestInfo)
     // 删除指定的小精灵
     if (bagMapper.Delete("id", std::to_string(requestInfo["id"].get<int>())))
     {
-        responseInfo["type"] = ACCEPT;
+        responseInfo["define"] = ACCEPT;
 
         bagMapper.Query(bagMessager.Where(
                              Field(helper.username) == _username));
@@ -534,7 +535,7 @@ json Dispatcher::LosePokemonHandle(json &requestInfo)
         userMapper.Update(userInfo);
     }
     else
-        responseInfo["type"] = SERVER_ERROR;
+        responseInfo["define"] = SERVER_ERROR;
 
     return responseInfo;
 }

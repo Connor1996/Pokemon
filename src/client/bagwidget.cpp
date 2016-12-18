@@ -42,12 +42,12 @@ void BagWidget::SetBag()
 {
     auto setInfo = [this](std::string username, double rate) {
         json sendInfo = {
-            {"type", GET_USER_ACH},
+            {"define", GET_USER_ACH},
             {"username", username}
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-        if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+        if (receiveInfo["define"].get<int>() == SERVER_ERROR)
         {
             QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取用户信息失败"));
             return;
@@ -80,12 +80,12 @@ void BagWidget::SetBag()
 
     auto username = _client->GetUserName();
     json sendInfo = {
-        {"type", GET_USER_BAG},
+        {"define", GET_USER_BAG},
         {"username", username}
     };
     json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    if (receiveInfo["define"].get<int>() == SERVER_ERROR)
     {
         QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取背包信息失败"));
         return;

@@ -36,11 +36,11 @@ void FightWidget::InitUi()
 
     // 获取对战精灵列表
     json sendInfo = {
-        {"type", GET_POKEMON_LIST}
+        {"define", GET_POKEMON_LIST}
     };
     json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-    if (receiveInfo["type"].get<int>() == QUERY_SUCCESS)
+    if (receiveInfo["define"].get<int>() == QUERY_SUCCESS)
     {
         for(const auto& item : receiveInfo["info"])
         {
@@ -108,12 +108,12 @@ void FightWidget::SetBag()
 
     auto username = _client->GetUserName();
     json sendInfo = {
-        {"type", GET_USER_BAG},
+        {"define", GET_USER_BAG},
         {"username", username}
     };
     json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
-    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    if (receiveInfo["define"].get<int>() == SERVER_ERROR)
     {
         QMessageBox::information(this, "Error", QString::fromLocal8Bit("获取背包信息失败"));
         return;

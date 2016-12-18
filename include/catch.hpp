@@ -9239,7 +9239,7 @@ namespace Catch {
             if( assertionResult.hasExpression() ) {
                 m_xml.startElement( "Expression" )
                     .writeAttribute( "success", assertionResult.succeeded() )
-					.writeAttribute( "type", assertionResult.getTestMacroName() )
+					.writeAttribute( "define", assertionResult.getTestMacroName() )
                     .writeAttribute( "filename", assertionResult.getSourceInfo().file )
                     .writeAttribute( "line", assertionResult.getSourceInfo().line );
 
@@ -9519,7 +9519,7 @@ namespace Catch {
                 XmlWriter::ScopedElement e = xml.scopedElement( elementName );
 
                 xml.writeAttribute( "message", result.getExpandedExpression() );
-                xml.writeAttribute( "type", result.getTestMacroName() );
+                xml.writeAttribute( "define", result.getTestMacroName() );
 
                 std::ostringstream oss;
                 if( !result.getMessage().empty() )

@@ -13,11 +13,11 @@ Pokemon* PokemonFactory::CreateComputer(std::string name, Client* client)
     transform(name.begin(), name.end(), name.begin(), ::tolower);
 
     json sendInfo = {
-        {"type", GET_POKEMON_INFO},
+        {"define", GET_POKEMON_INFO},
         {"name", name}
     };
     json receiveInfo = json::parse(client->Send(sendInfo.dump()));
-    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    if (receiveInfo["define"].get<int>() == SERVER_ERROR)
         throw std::runtime_error("Failed at create computer pokemon");
 
     json info = json::parse(receiveInfo["info"].get<std::string>());

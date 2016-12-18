@@ -124,7 +124,7 @@ void FightRoom::GameComplete(Pokemon* winner)
         auto isUpgrade = _fighter.first->Upgrade(_againster.first->GetExp());
 
         json sendInfo = {
-            {"type", GAME_WIN},
+            {"define", GAME_WIN},
             {"get", _againster.first->GetName()},
             {"name", _fighter.first->GetName()},
             {"type", (int)_fighter.first->GetType()},
@@ -138,7 +138,7 @@ void FightRoom::GameComplete(Pokemon* winner)
             {"id", _fighter.first->GetId()}
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
-        if (receiveInfo["type"].get<int>() == ACCEPT)
+        if (receiveInfo["define"].get<int>() == ACCEPT)
         {
             std::string info = "挑战成功!\n获得目标小精灵：" + _againster.first->GetName() + "\n" +
                            "获得经验：" + std::to_string(_againster.first->GetExp());
@@ -154,7 +154,7 @@ void FightRoom::GameComplete(Pokemon* winner)
     else
     {
         json sendInfo = {
-            {"type", GAME_LOSE},     
+            {"define", GAME_LOSE},
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
 
@@ -198,11 +198,11 @@ void FightRoom::GameComplete(Pokemon* winner)
 void FightRoom::Choose(int id)
 {
     json sendInfo = {
-        {"type", LOSE_POKEMON},
+        {"define", LOSE_POKEMON},
         {"id", id}
     };
     json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
-    if (receiveInfo["type"].get<int>() == SERVER_ERROR)
+    if (receiveInfo["define"].get<int>() == SERVER_ERROR)
         QMessageBox::information(this, "ERROR", QString::fromLocal8Bit("服务器出错"));
     this->close();
 }
@@ -217,11 +217,16 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     {
         animation1 = new QPropertyAnimation(ui->label, "pos");
         int num = ui->fighterBar->value() - (int)_fighter.first->GetHp();
-        //std::cout << num << std::endl;
+        //std::cout << num << std::endl;         
         if (num == 0)
             ui->label->setText(QString::fromLocal8Bit("闪避"));
         else
-            ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
+        {
+            if (_againster.first->IsCritical())
+                ui->label->setText(QString::fromStdString("暴击-" + std::to_string(num)));
+            else
+                ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
+        }
         animation1->setEndValue(QPoint(ui->label->x(), ui->label->y() - 10));
     }
     else
@@ -232,7 +237,12 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
         if (num == 0)
             ui->label_2->setText(QString::fromLocal8Bit("闪避"));
         else
-            ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
+        {
+            if (_fighter.first->IsCritical())
+                ui->label_2->setText(QString::fromStdString("暴击-" + std::to_string(num)));
+            else
+                ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
+        }
         animation1->setEndValue(QPoint(ui->label_2->x(), ui->label_2->y() - 10));
     }
 

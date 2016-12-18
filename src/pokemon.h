@@ -55,7 +55,8 @@ public:
     Pokemon(std::string name, int level, int exp,
             Attribute attribute, int id)
         : _name(name), _level(level), _exp(exp),
-          _attribute(attribute), _hp(attribute.healthPoint), _id(id)
+          _attribute(attribute), _hp(attribute.healthPoint),
+          _id(id), _critical(false)
     {
         srand(time(NULL));
     }
@@ -73,6 +74,7 @@ public:
     int GetHp() const { return _hp; }
     int GetId() const { return _id; }
 
+    bool IsCritical() const { return _critical; }
     // 根据受到的伤害更新血量，同时返回是否死亡
     virtual bool Hurt(int damage);
 
@@ -90,8 +92,9 @@ protected:
     Attribute _attribute;
 
     int _hp;
-    int _id;
 
+    int _id;
+    bool _critical;
     // 小精灵升级时各属性的成长
     virtual void Grow(int *);
 
@@ -122,7 +125,12 @@ public:
 
         // 有几率产生暴击
         if (Bonus() > MISS_RATE)
+        {
+            _critical = true;
             coefficient += 1;
+        }
+        else
+            _critical = false;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
 };
@@ -149,7 +157,12 @@ public:
 
         // 有几率产生暴击
         if (Bonus() > MISS_RATE)
+        {
+            _critical = true;
             coefficient += 1;
+        }
+        else
+            _critical = false;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
 };
@@ -176,7 +189,12 @@ public:
 
         // 有几率产生暴击
         if (Bonus() > MISS_RATE)
+        {
+            _critical = true;
             coefficient += 1;
+        }
+        else
+            _critical = false;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
 };
@@ -203,7 +221,12 @@ public:
 
         // 有几率产生暴击
         if (Bonus() > MISS_RATE)
+        {
+            _critical = true;
             coefficient += 1;
+        }
+        else
+            _critical = false;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
 };
@@ -231,7 +254,12 @@ public:
 
         // 有几率产生暴击
         if (Bonus() > MISS_RATE)
+        {
+            _critical = true;
             coefficient += 1;
+        }
+        else
+            _critical = false;
         return static_cast<int>(_attribute.attackPoint * coefficient);
     }
 };
