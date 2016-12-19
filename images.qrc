@@ -47,5 +47,8 @@
         <file>images/dynamic/charmander_left.gif</file>
         <file>images/dynamic/pikachu_left.gif</file>
         <file>images/dynamic/squirtle_left.gif</file>
+        <file alias="boom">images/boom.png</file>
+        <file alias="begin1">images/begin1.png</file>
+        <file alias="begin2">images/begin2.png</file>
     </qresource>
 </RCC>

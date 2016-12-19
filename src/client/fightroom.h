@@ -21,7 +21,7 @@ class FightRoom : public QWidget
 
 public:
     explicit FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
-                       QWidget *parent = 0);
+                       bool isLose, QWidget *parent = 0);
     ~FightRoom();
     void Fight();
     void FightRoom::closeEvent(QCloseEvent *event);
@@ -50,6 +50,7 @@ private:
     std::pair<Pokemon *, QLabel *> _againster;
 
     Connor_Socket::Client *_client;
+    bool _isLose;
     QSignalMapper *_signalMapper;
 
     bool _quit;

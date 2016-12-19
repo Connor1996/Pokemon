@@ -22,7 +22,7 @@ signals:
 public slots:
     void Back();
     void SetBag();
-    void FightBegin();
+    void FightBegin(bool isLose);
     bool eventFilter(QObject *watched, QEvent *event);
 
 private:

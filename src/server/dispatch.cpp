@@ -442,52 +442,72 @@ json Dispatcher::GameLoseHandle(json &requestInfo)
 {
     json responseInfo;
 
-    ORMapper<UserBag> infoMapper(DATABASE_NAME);
-    UserBag helper;
-    QueryMessager<UserBag> infoMessager(helper);
+    ORMapper<UserInfo> userMapper(DATABASE_NAME);
+    UserInfo helper;
+    QueryMessager<UserInfo> userMessager(helper);
 
-    infoMapper.Query(infoMessager.Where(
-                         Field(helper.username) == _username));
+    userMapper.Query(userMessager.Where(Field(helper.username) == _username));
+    auto vec = userMessager.GetVector()[0];
+    UserInfo userInfo = {vec[0] , vec[1], std::stoi(vec[2]), std::stoi(vec[3]),
+                         std::stoi(vec[4]), std::stoi(vec[5])};
+    userInfo.lose += 1;
+    if (userMapper.Update(userInfo))
+        responseInfo["define"] = ACCEPT;
+    else
+        responseInfo["define"] = SERVER_ERROR;
 
-    if (infoMessager.IsNone())
-        throw std::runtime_error("Unknown username");
+    if (requestInfo["isLose"].get<bool>() == false)
+        return std::move(responseInfo);
     else
     {
-        auto vec = infoMessager.GetVector();
-        std::unordered_set<int> set;
-        json itemsInfo;
+        ORMapper<UserBag> infoMapper(DATABASE_NAME);
+        UserBag helper;
+        QueryMessager<UserBag> infoMessager(helper);
 
-        auto random = [&](int num) {
-            auto ret = rand() % (num + 1);
+        infoMapper.Query(infoMessager.Where(
+                             Field(helper.username) == _username));
 
-            while (set.insert(ret).second != true)
-                ret = rand() % (num + 1);
-            return ret;
-        };
-
-        for (int i = 0; i < 3 && i < vec.size(); i++)
+        if (infoMessager.IsNone())
+            throw std::runtime_error("Unknown username");
+        else
         {
-            auto pos = random(vec.size() - 1);
-            auto item = vec.at(pos);
+            auto vec = infoMessager.GetVector();
+            std::unordered_set<int> set;
+            json itemsInfo;
 
-            json itemInfo = {
-                {"id", item[0]},
-                {"name", item[1]},
-                {"level", item[2]},
-                {"exp", item[3]},
-                {"type", item[4]},
-                {"attackPoint", item[5]},
-                {"defensePoint", item[6]},
-                {"healthPoint", item[7]},
-                {"attackFrequence", item[8]},
-                {"property", item[9]},
+            auto random = [&](int num) {
+                auto ret = rand() % (num + 1);
+
+                while (set.insert(ret).second != true)
+                    ret = rand() % (num + 1);
+                return ret;
             };
-            itemsInfo.push_back(itemInfo.dump());
+
+            for (int i = 0; i < 3 && i < vec.size(); i++)
+            {
+                auto pos = random(vec.size() - 1);
+                auto item = vec.at(pos);
+
+                json itemInfo = {
+                    {"id", item[0]},
+                    {"name", item[1]},
+                    {"level", item[2]},
+                    {"exp", item[3]},
+                    {"type", item[4]},
+                    {"attackPoint", item[5]},
+                    {"defensePoint", item[6]},
+                    {"healthPoint", item[7]},
+                    {"attackFrequence", item[8]},
+                    {"property", item[9]},
+                };
+                itemsInfo.push_back(itemInfo.dump());
+            }
+            responseInfo["info"] = itemsInfo;
         }
-        responseInfo["info"] = itemsInfo;
+        return std::move(responseInfo);
     }
 
-    return std::move(responseInfo);
+
 }
 
 json Dispatcher::LosePokemonHandle(json &requestInfo)
@@ -530,7 +550,6 @@ json Dispatcher::LosePokemonHandle(json &requestInfo)
         }
         else
             userInfo.sum -= 1;
-        userInfo.lose += 1;
 
         userMapper.Update(userInfo);
     }

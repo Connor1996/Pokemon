@@ -61,7 +61,12 @@ void FightWidget::InitUi()
 void FightWidget::InitConnect()
 {
     connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
-    connect(ui->fightButton, SIGNAL(clicked()), this, SLOT(FightBegin()));
+    connect(ui->fightButton, &QPushButton::clicked, [=](){
+        this->FightBegin(false);
+    });
+    connect(ui->fightButton_2, &QPushButton::clicked, [=](){
+        this->FightBegin(true);
+    });
 }
 
 bool FightWidget::eventFilter(QObject *watched, QEvent *event)
@@ -183,7 +188,7 @@ void FightWidget::SetBag()
 
 }
 
-void FightWidget::FightBegin()
+void FightWidget::FightBegin(bool isLose)
 {
     if (_select == nullptr || ui->listWidget->currentItem() == nullptr)
     {
@@ -196,7 +201,7 @@ void FightWidget::FightBegin()
     Pokemon *againster = PokemonFactory::CreateComputer(
                 ui->listWidget->currentItem()->text().toStdString(), _client);
 
-    FightRoom *fightRoom = new FightRoom(fighter, againster, _client);
+    FightRoom *fightRoom = new FightRoom(fighter, againster, _client, isLose);
     connect(fightRoom, SIGNAL(isClosed()), this, SLOT(show()));
     connect(fightRoom, SIGNAL(isClosed()), this, SLOT(SetBag()));
 

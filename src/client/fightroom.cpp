@@ -18,9 +18,11 @@
 using json = nlohmann::json;
 
 FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
-                     QWidget *parent) :
-    QWidget(parent), _fighter(std::make_pair(fighter, new QLabel(this))),
-    _againster(std::make_pair(againster, new QLabel(this))), _client(client),
+                     bool isLose, QWidget *parent) :
+    QWidget(parent),
+    _fighter(std::make_pair(fighter, new QLabel(this))),
+    _againster(std::make_pair(againster, new QLabel(this))),
+    _client(client), _isLose(isLose),
     ui(new Ui::FightRoom), _quit(false), _signalMapper(new QSignalMapper)
 {
     ui->setupUi(this);
@@ -111,9 +113,13 @@ void FightRoom::setAnimation(QLabel *attacker, QLabel *suffer)
 void FightRoom::setText()
 {
     ui->label->setText("");
-    ui->label->setGeometry(340, 440, 81, 31);
+    ui->label->setStyleSheet("font: 75 14pt \"Arial Black\";"
+                             "color: rgb(255, 23, 26);");
+    ui->label->setGeometry(340, 400, 120, 120);
     ui->label_2->setText("");
-    ui->label_2->setGeometry(890, 440, 81, 31);
+    ui->label_2->setStyleSheet("font: 75 14pt \"Arial Black\";"
+                             "color: rgb(255, 23, 26);");
+    ui->label_2->setGeometry(890, 400, 120, 120);
 }
 
 void FightRoom::GameComplete(Pokemon* winner)
@@ -155,8 +161,17 @@ void FightRoom::GameComplete(Pokemon* winner)
     {
         json sendInfo = {
             {"define", GAME_LOSE},
+            {"isLose", _isLose}
         };
         json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+
+        // 升级赛的情况
+        if (_isLose == false)
+        {
+            QMessageBox::information(this, "INFO", QString::fromLocal8Bit("挑战失败"));
+            this->close();
+            return;
+        }
 
         int count = 0;
         for (const auto& item: receiveInfo["info"])
@@ -219,13 +234,13 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
         int num = ui->fighterBar->value() - (int)_fighter.first->GetHp();
         //std::cout << num << std::endl;         
         if (num == 0)
-            ui->label->setText(QString::fromLocal8Bit("闪避"));
+            ui->label->setText(QString::fromLocal8Bit("MISS"));
         else
         {
             if (_againster.first->IsCritical())
-                ui->label->setText(QString::fromStdString("BANG-" + std::to_string(num)));
-            else
-                ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
+                ui->label->setStyleSheet("border-image: url(:/boom); font: 75 14pt \"Arial Black\";"
+                                         "color: rgb(255, 23, 26);");
+            ui->label->setText(QString::fromStdString("-" + std::to_string(num)));
         }
         animation1->setEndValue(QPoint(ui->label->x(), ui->label->y() - 10));
     }
@@ -235,13 +250,13 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
         int num = ui->againsterBar->value() - (int)_againster.first->GetHp();
         //std::cout << num << std::endl;
         if (num == 0)
-            ui->label_2->setText(QString::fromLocal8Bit("闪避"));
+            ui->label_2->setText(QString::fromLocal8Bit("MISS"));
         else
         {
             if (_fighter.first->IsCritical())
-                ui->label_2->setText(QString::fromStdString("BANG-" + std::to_string(num)));
-            else
-                ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
+                ui->label_2->setStyleSheet("border-image: url(:/boom); font: 75 14pt \"Arial Black\";"
+                                         "color: rgb(255, 23, 26);");
+            ui->label_2->setText(QString::fromStdString("-" + std::to_string(num)));
         }
         animation1->setEndValue(QPoint(ui->label_2->x(), ui->label_2->y() - 10));
     }

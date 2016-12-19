@@ -217,36 +217,45 @@ QProgressBar {
    <property name="geometry">
     <rect>
      <x>340</x>
-     <y>440</y>
-     <width>81</width>
-     <height>31</height>
+     <y>400</y>
+     <width>91</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 75 14pt &quot;微软雅黑&quot;;
+    <string notr="true">font: 75 14pt &quot;Arial Black&quot;;
 
 color: rgb(255, 23, 26);</string>
    </property>
+   <property name="locale">
+    <locale language="Church" country="Russia"/>
+   </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>890</x>
-     <y>440</y>
-     <width>81</width>
-     <height>31</height>
+     <x>860</x>
+     <y>400</y>
+     <width>91</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 75 14pt &quot;微软雅黑&quot;;
+    <string notr="true">font: 75 14pt &quot;Arial Blackk&quot;;
 
 color: rgb(255, 23, 26);</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QWidget" name="chooseWidget" native="true">
@@ -295,7 +304,7 @@ color: rgb(255, 23, 26);</string>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="chooseLayout" stretch=""/>
+     <layout class="QHBoxLayout" name="chooseLayout"/>
     </item>
    </layout>
   </widget>
