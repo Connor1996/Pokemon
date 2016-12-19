@@ -54,6 +54,9 @@ std::string Dispatcher::Dispatch(json requestInfo)
     case LOSE_POKEMON:
         responseInfo = LosePokemonHandle(requestInfo);
         break;
+    case GET_ONE_POKEMON:
+        responseInfo["name"] = DispatchPokemon(_username);
+        break;
     default:
         responseInfo["define"] = SERVER_ERROR;
         std::cout << "[ERROR] Bad request" << std::endl;
@@ -543,13 +546,12 @@ json Dispatcher::LosePokemonHandle(json &requestInfo)
         {
             userInfo.advanceSum += 1;
         }
+        userInfo.sum -= 1;
         // 用户如果已经没有小精灵，则再随机分配一个初始小精灵
         if (bagMessager.IsNone())
         {
             DispatchPokemon(_username);
         }
-        else
-            userInfo.sum -= 1;
 
         userMapper.Update(userInfo);
     }
@@ -559,12 +561,12 @@ json Dispatcher::LosePokemonHandle(json &requestInfo)
     return responseInfo;
 }
 
-void Dispatcher::DispatchPokemon(std::string username)
+std::string Dispatcher::DispatchPokemon(std::string username)
 {
     auto random = [](int num) {
         return rand() % (num + 1);
     };
-
+    std::string name;
 
     ORMapper<PokemonInfo> infoMapper(DATABASE_NAME);
     PokemonInfo helper;
@@ -588,12 +590,29 @@ void Dispatcher::DispatchPokemon(std::string username)
                             std::stoi(vec[3]), std::stoi(vec[4]),
                             std::stoi(vec[5]), std::stoi(vec[6]),
                             vec[7], username};
+        name = vec[1];
         if (!userMapper.Insert(userBag))
         {
             throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
         }
+        else
+        {
+            ORMapper<UserInfo> userMapper(DATABASE_NAME);
+            UserInfo helper;
+            QueryMessager<UserInfo> userMessager(helper);
+
+            userMapper.Query(userMessager.Where(Field(helper.username) == _username));
+            auto vec = userMessager.GetVector()[0];
+            UserInfo userInfo = {vec[0] , vec[1], std::stoi(vec[2]), std::stoi(vec[3]),
+                                 std::stoi(vec[4]), std::stoi(vec[5])};
+            userInfo.sum += 1;
+            userMapper.Update(userInfo);
+        }
     }
+
+    return name;
 }
+
 
 void Dispatcher::Logout()
 {

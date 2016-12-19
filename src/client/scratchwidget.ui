@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1047</width>
-    <height>491</height>
+    <width>1229</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +27,25 @@
    </property>
    <property name="styleSheet">
     <string notr="true">border-image: url(:/return);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pokemonBall">
+   <property name="geometry">
+    <rect>
+     <x>730</x>
+     <y>180</y>
+     <width>391</width>
+     <height>391</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/pokemonball);</string>
    </property>
    <property name="text">
     <string/>

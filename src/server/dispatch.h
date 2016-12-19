@@ -31,7 +31,7 @@ public:
     json GameLoseHandle(json &);
     json LosePokemonHandle(json &);
 
-    void DispatchPokemon(std::string username);
+    std::string DispatchPokemon(std::string username);
     void Logout();
 private:
     int _state;

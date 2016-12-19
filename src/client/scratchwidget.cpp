@@ -1,6 +1,13 @@
 ﻿#include "scratchwidget.h"
 #include "ui_scratchwidget.h"
 
+#include <QPropertyAnimation>
+#include <QMessageBox>
+
+#include "include/json.hpp"
+#include "../define.h"
+using json = nlohmann::json;
+
 ScratchWidget::ScratchWidget(Connor_Socket::Client *client, QWidget *parent) :
     QWidget(parent), _client(client),
     ui(new Ui::ScratchWidget)
@@ -8,6 +15,8 @@ ScratchWidget::ScratchWidget(Connor_Socket::Client *client, QWidget *parent) :
     ui->setupUi(this);
     InitUi();
     InitConnect();
+
+    srand(time(NULL));
 }
 
 void ScratchWidget::InitUi()
@@ -22,11 +31,65 @@ void ScratchWidget::InitUi()
     setPalette(palette);
 
     ui->returnButton->resize(48, 48);
+    ui->pokemonBall->installEventFilter(this);
 }
 
 void ScratchWidget::InitConnect()
 {
     connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
+    connect(ui->pokemonBall, &QPushButton::clicked, [=](){
+        auto random = []()
+        {
+            //随机生成0-1的小数.
+            return static_cast<double>(rand() % (1000 + 1)) / (1000 + 1);
+        };
+
+        if (random() < 0.01)
+        {
+            json sendInfo = {
+                {"define", GET_ONE_POKEMON},
+            };
+            json receiveInfo = json::parse(_client->Send(sendInfo.dump()));
+            auto str ="抓取成功，获得" + receiveInfo["name"].get<std::string>();
+            QMessageBox::information(this, "INFO", QString::fromLocal8Bit(str.c_str()));
+        }
+        else
+            QMessageBox::information(this, "INFO", QString::fromLocal8Bit("抓取失败"));
+    });
+}
+
+bool ScratchWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == ui->pokemonBall)
+    {
+        if (event->type() == QEvent::HoverEnter)
+        {
+            QPropertyAnimation *animation = new QPropertyAnimation(watched, "pos");
+
+            auto dx = ui->pokemonBall->x();
+            auto dy = ui->pokemonBall->y();
+
+            animation->setDuration(200);
+            animation->setLoopCount(3);
+            animation->setKeyValueAt(0, QPoint(dx - 3, dy - 3));
+            animation->setKeyValueAt(0.1, QPoint(dx + 6, dy + 6));
+            animation->setKeyValueAt(0.2, QPoint(dx - 6, dy + 6));
+            animation->setKeyValueAt(0.3, QPoint(dx + 6, dy - 6));
+            animation->setKeyValueAt(0.4, QPoint(dx - 6, dy - 6));
+            animation->setKeyValueAt(0.5, QPoint(dx + 6, dy + 6));
+            animation->setKeyValueAt(0.6, QPoint(dx - 6, dy + 6));
+            animation->setKeyValueAt(0.7, QPoint(dx + 6, dy - 6));
+            animation->setKeyValueAt(0.8, QPoint(dx - 6, dy - 6));
+            animation->setKeyValueAt(0.9, QPoint(dx + 6, dy + 6));
+            animation->setKeyValueAt(1, QPoint(dx, dy));
+            animation->start();
+            return true;
+        }
+
+        return false;
+    }
+    return false;
+
 }
 
 void ScratchWidget::Back()

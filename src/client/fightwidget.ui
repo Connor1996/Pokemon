@@ -200,17 +200,17 @@ QScrollBar::sub-line:vertiacal {
   <widget class="QPushButton" name="fightButton">
    <property name="geometry">
     <rect>
-     <x>800</x>
-     <y>480</y>
-     <width>151</width>
-     <height>151</height>
+     <x>850</x>
+     <y>530</y>
+     <width>101</width>
+     <height>101</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">border-image: url(:/begin1);</string>
    </property>
    <property name="text">
-    <string>对战</string>
+    <string>升级赛</string>
    </property>
    <property name="flat">
     <bool>true</bool>
@@ -219,17 +219,17 @@ QScrollBar::sub-line:vertiacal {
   <widget class="QPushButton" name="fightButton_2">
    <property name="geometry">
     <rect>
-     <x>980</x>
-     <y>480</y>
-     <width>151</width>
-     <height>151</height>
+     <x>990</x>
+     <y>530</y>
+     <width>101</width>
+     <height>101</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">border-image: url(:/begin2);</string>
    </property>
    <property name="text">
-    <string>对战</string>
+    <string>决斗赛</string>
    </property>
    <property name="flat">
     <bool>true</bool>

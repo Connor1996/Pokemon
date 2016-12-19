@@ -247,7 +247,7 @@ color: rgb(255, 23, 26);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 75 14pt &quot;Arial Blackk&quot;;
+    <string notr="true">font: 75 14pt &quot;Arial Black&quot;;
 
 color: rgb(255, 23, 26);</string>
    </property>

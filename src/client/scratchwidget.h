@@ -21,10 +21,13 @@ signals:
 
 public slots:
     void Back();
+    bool eventFilter(QObject *watched, QEvent *event);
 
 private:
     void InitUi();
     void InitConnect();
+
+
 
     Ui::ScratchWidget *ui;
     Connor_Socket::Client *_client;

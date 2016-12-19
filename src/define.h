@@ -15,6 +15,7 @@
 #define GAME_WIN            10
 #define GAME_LOSE           11
 #define LOSE_POKEMON        12
+#define GET_ONE_POKEMON     13
 
 /*--------------------返回状态------------------------*/
 
