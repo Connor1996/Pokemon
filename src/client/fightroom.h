@@ -28,16 +28,20 @@ public:
 
 signals:
     void attack(QLabel *, QLabel *);
+    void attack_SP(std::pair<Pokemon *, QLabel *> *, std::pair<Pokemon *, QLabel *> *);
     void over(Pokemon *);
     void hurt(QLabel *attacker, QLabel *suffer);
     void isClosed();
     void clearText();
+    void hideLabel();
 
 private slots:
     void setAnimation(QLabel *, QLabel *);
+    void setAnimation_SP(std::pair<Pokemon *, QLabel *> *, std::pair<Pokemon *, QLabel *> *);
     void GameComplete(Pokemon *);
     void UpdateHp(QLabel *attacker, QLabel *suffer);
     void setText();
+    void setLabel();
     void Choose(int);
 
 private:

@@ -73,7 +73,15 @@ void FightRoom::InitUi()
 
 void FightRoom::InitConnect()
 {
+    // 触发普通攻击动画
     connect(this, SIGNAL(attack(QLabel *, QLabel *)), this, SLOT(setAnimation(QLabel *, QLabel *)));
+
+    // 触发特殊攻击动画
+    connect(this, SIGNAL(attack_SP(std::pair<Pokemon *, QLabel *> *, std::pair<Pokemon *, QLabel *> *)),
+            this, SLOT(setAnimation_SP(std::pair<Pokemon *, QLabel *> *, std::pair<Pokemon *, QLabel *> *)));
+
+    //
+    connect(this, SIGNAL(hideLabel()), this, SLOT(setLabel()));
     connect(this, SIGNAL(over(Pokemon *)), this, SLOT(GameComplete(Pokemon *)));
     connect(this, SIGNAL(hurt(QLabel *, QLabel *)), this, SLOT(UpdateHp(QLabel *, QLabel *)));
     connect(this, SIGNAL(clearText()), this, SLOT(setText()));
@@ -110,6 +118,39 @@ void FightRoom::setAnimation(QLabel *attacker, QLabel *suffer)
     actions->start();
 }
 
+void FightRoom::setAnimation_SP(std::pair<Pokemon *, QLabel *> *attacker,
+                                std::pair<Pokemon *, QLabel *> *suffer)
+{
+    // 攻击方火球出击
+    auto setAnimation = [&](QLabel *label){
+        QPropertyAnimation *animation = new QPropertyAnimation(label, "pos");
+        animation->setDuration(1000);
+        animation->setEndValue(QPoint(suffer->second->x() + 40, suffer->second->y() + 110));
+        animation->start();
+    };
+
+    if (attacker->second == _fighter.second)
+    {
+        std::cout << GET_CLASS_TYPE(*attacker->first) << std::endl;
+        ui->fireLeft->setStyleSheet("border-image: url(://images/" +
+                                    QString::fromStdString(GET_CLASS_TYPE(*attacker->first))
+                                    + "_left.png)");
+        ui->fireLeft->setGeometry(attacker->second->x() + 40,
+                                  attacker->second->y() + 110, 60, 30);
+        setAnimation(ui->fireLeft);
+    }
+    else
+    {
+        ui->fireRight->setStyleSheet("border-image: url(://images/" +
+                                      QString::fromStdString(GET_CLASS_TYPE(*attacker->first))
+                                      + ".png)");
+        ui->fireRight->setGeometry(attacker->second->x() + 40,
+                                   attacker->second->y() + 110, 60, 30);
+        setAnimation(ui->fireRight);
+    }
+
+}
+
 void FightRoom::setText()
 {
     ui->label->setText("");
@@ -119,7 +160,13 @@ void FightRoom::setText()
     ui->label_2->setText("");
     ui->label_2->setStyleSheet("font: 75 14pt \"Arial Black\";"
                              "color: rgb(255, 23, 26);");
-    ui->label_2->setGeometry(890, 400, 120, 120);
+    ui->label_2->setGeometry(850, 400, 120, 120);
+}
+
+void FightRoom::setLabel()
+{
+    ui->fireLeft->setStyleSheet("");
+    ui->fireRight->setStyleSheet("");
 }
 
 void FightRoom::GameComplete(Pokemon* winner)
@@ -286,15 +333,10 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     actions->start(QAbstractAnimation::DeleteWhenStopped);
 
     if (attacker == _fighter.second)
-    {
         ui->againsterBar->setValue(_againster.first->GetHp());
-        ui->againsterBar->repaint();
-    }
     else
-    {
         ui->fighterBar->setValue(_fighter.first->GetHp());
-        ui->fighterBar->repaint();
-    }
+
 }
 
 // op1为玩家，op2为电脑
@@ -316,8 +358,16 @@ void FightRoom::Fight()
         auto damage = op1->first->Attack(op2->first);
         auto isDead = op2->first->Hurt(damage);
 
-        emit attack(op1->second, op2->second);
+        // 攻击动画
+        if (op1->first->IsCritical())
+            emit attack_SP(op1, op2);
+        else
+            emit attack(op1->second, op2->second);
         std::this_thread::sleep_for(std::chrono::seconds(1));
+        //
+        if (op1->first->IsCritical())
+            emit hideLabel();
+        // 受伤动画
         emit hurt(op1->second, op2->second);
         std::this_thread::sleep_for(std::chrono::seconds(1));
         emit clearText();

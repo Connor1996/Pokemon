@@ -15,21 +15,10 @@
         <file>images/video-wallpaper-images-pokemon-game-52286.jpg</file>
         <file alias="offline">images/offline.png</file>
         <file alias="online">images/online.png</file>
-        <file>images/dynamic/beedrill.gif</file>
         <file>images/dynamic/bulbasaur.gif</file>
-        <file>images/dynamic/bulbasaur-2.gif</file>
-        <file>images/dynamic/bulbasaur-3.gif</file>
         <file>images/dynamic/charmander.gif</file>
-        <file>images/dynamic/charmander-2.gif</file>
-        <file>images/dynamic/charmander-3.gif</file>
         <file>images/dynamic/pikachu.gif</file>
-        <file>images/dynamic/pikachu-2.gif</file>
-        <file>images/dynamic/pikachu-3.gif</file>
-        <file>images/dynamic/pikachu-4.gif</file>
-        <file>images/dynamic/pikachu-5.gif</file>
         <file>images/dynamic/squirtle.gif</file>
-        <file>images/dynamic/squirtle-2.gif</file>
-        <file>images/dynamic/squirtle-3.gif</file>
         <file>images/static/bulbasaur.png</file>
         <file>images/static/caterpie.png</file>
         <file>images/static/charmander.png</file>
@@ -51,5 +40,15 @@
         <file alias="begin1">images/begin1.png</file>
         <file alias="begin2">images/begin2.png</file>
         <file alias="pokemonball">images/14290864983121.png</file>
+        <file>images/Electricity.png</file>
+        <file>images/Fire.png</file>
+        <file>images/Fire_left.png</file>
+        <file>images/Grass.png</file>
+        <file>images/Grass_left.png</file>
+        <file>images/Ice.png</file>
+        <file>images/Ice_left.png</file>
+        <file>images/Water.png</file>
+        <file>images/Water_left.png</file>
+        <file>images/Electricity_left.png</file>
     </qresource>
 </RCC>

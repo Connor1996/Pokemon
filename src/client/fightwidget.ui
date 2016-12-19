@@ -206,8 +206,15 @@ QScrollBar::sub-line:vertiacal {
      <height>101</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>黑体</family>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/begin1);</string>
+    <string notr="true">border-image: url(:/begin1);
+color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>升级赛</string>
@@ -225,8 +232,15 @@ QScrollBar::sub-line:vertiacal {
      <height>101</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>黑体</family>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/begin2);</string>
+    <string notr="true">border-image: url(:/begin2);
+color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>决斗赛</string>
