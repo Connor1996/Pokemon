@@ -122,7 +122,7 @@ json Dispatcher::SignupHandle(json &requestInfo)
         {
             // 构建新的用户信息
             UserInfo userinfo = { requestInfo["username"].get<std::string>(),
-                        requestInfo["password"].get<std::string>(), 0, 0, 3, 0};
+                        requestInfo["password"].get<std::string>(), 0, 0, 0, 0};
             auto result = mapper.Insert(userinfo);
             if (result)
             {
@@ -547,13 +547,14 @@ json Dispatcher::LosePokemonHandle(json &requestInfo)
             userInfo.advanceSum += 1;
         }
         userInfo.sum -= 1;
+        userMapper.Update(userInfo);
         // 用户如果已经没有小精灵，则再随机分配一个初始小精灵
-        if (bagMessager.IsNone())
+        if (userInfo.sum == 0)
         {
             DispatchPokemon(_username);
         }
 
-        userMapper.Update(userInfo);
+
     }
     else
         responseInfo["define"] = SERVER_ERROR;
@@ -601,7 +602,10 @@ std::string Dispatcher::DispatchPokemon(std::string username)
             UserInfo helper;
             QueryMessager<UserInfo> userMessager(helper);
 
-            userMapper.Query(userMessager.Where(Field(helper.username) == _username));
+            userMapper.Query(userMessager.Where(Field(helper.username) == username));
+            if (userMessager.IsNone())
+                throw std::runtime_error("can not find user info");
+
             auto vec = userMessager.GetVector()[0];
             UserInfo userInfo = {vec[0] , vec[1], std::stoi(vec[2]), std::stoi(vec[3]),
                                  std::stoi(vec[4]), std::stoi(vec[5])};

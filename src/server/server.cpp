@@ -115,6 +115,7 @@ bool Server::Online(std::string username, SOCKET connection)
 
 void Server::Offline(std::string username)
 {
+    std::cout << "--------------------" << username << "offline" << std::endl;
     _sockets.erase(username);
 }
 
