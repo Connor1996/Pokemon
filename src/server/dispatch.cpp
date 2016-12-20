@@ -89,7 +89,7 @@ json Dispatcher::LoginHandle(json &requestInfo)
             // 将username加入在线列表
             _username = requestInfo["username"].get<std::string>();
             if (_parent->Online(_username, _connection))
-                responseInfo["define"] = LOG_IN_SUCCESS;
+                responseInfo["define"] = _state = LOG_IN_SUCCESS;
             else
                 responseInfo["define"] = LOG_IN_FAIL_AO;
         }

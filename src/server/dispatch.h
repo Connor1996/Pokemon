@@ -33,6 +33,8 @@ public:
 
     std::string DispatchPokemon(std::string username);
     void Logout();
+
+    int getState() { return _state; }
 private:
     int _state;
 

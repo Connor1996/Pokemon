@@ -1,6 +1,7 @@
 ﻿#include "server.h"
 
 #include "dispatch.h"
+#include "../define.h"
 #include "include/json.hpp"
 
 using namespace Connor_Socket;
@@ -60,7 +61,8 @@ Server::Server() : _count(0)
                     {
                         // 保证cout完整执行而不被其他线程打断
                         mtx.lock();
-                        dispatcher.Logout();
+                        if (dispatcher.getState() == LOG_IN_SUCCESS)
+                            dispatcher.Logout();
                         cout << "[INFO] Someone offline, now " << --_count << " connections in total" << endl;
                         mtx.unlock();
 
@@ -115,7 +117,6 @@ bool Server::Online(std::string username, SOCKET connection)
 
 void Server::Offline(std::string username)
 {
-    std::cout << "--------------------" << username << "offline" << std::endl;
     _sockets.erase(username);
 }
 
