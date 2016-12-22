@@ -12,14 +12,27 @@ namespace Connor_Socket {
 class Server : Socket
 {
 public:
+    // 构造函数，打开监听接口等待请求
     Server();
 
     ~Server();
 
+    // 查询用户是否在线
+    // @param:
+    //      username 需要查询的用户名
+    //      connection 与该用户名绑定的socket
+    // @return:
+    //      是否在线
     bool Online(std::string username, SOCKET connection);
 
+    // 将某用户从在线列表移除
+    // @param:
+    //      username 需要移除的用户名
     void Offline(std::string username);
 
+    // 获得在线用户列表
+    // @return:
+    //      装载有所有在线用户名的list
     std::list<std::string> GetOnlineList();
 protected:
     // 监听客户端访问的socket

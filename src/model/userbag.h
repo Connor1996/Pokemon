@@ -9,8 +9,10 @@
 
 struct UserBag
 {
+    // 该小精灵在数据库中的独特id号
     ORMLite::Nullable<int> id;
-    //小精灵属性
+
+    // 小精灵各种属性
     std::string name;
     int level;
     int exp;
@@ -22,6 +24,7 @@ struct UserBag
     int attackFrequence;
     std::string property;
 
+    // 持有该小精灵的用户名
     std::string username;
 
 #ifdef __SERVER__

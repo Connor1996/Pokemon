@@ -20,9 +20,7 @@
         <file>images/dynamic/pikachu.gif</file>
         <file>images/dynamic/squirtle.gif</file>
         <file>images/static/bulbasaur.png</file>
-        <file>images/static/caterpie.png</file>
         <file>images/static/charmander.png</file>
-        <file>images/static/pidgey.png</file>
         <file>images/static/pikachu.png</file>
         <file>images/static/squirtle.png</file>
         <file>images/static/weedle.png</file>
@@ -50,5 +48,31 @@
         <file>images/Water.png</file>
         <file>images/Water_left.png</file>
         <file>images/Electricity_left.png</file>
+        <file>images/static/charizard.png</file>
+        <file>images/static/dodrio.png</file>
+        <file>images/static/golbat.png</file>
+        <file>images/static/lapras.png</file>
+        <file>images/static/psyduck.png</file>
+        <file>images/static/sentret.png</file>
+        <file>images/static/talonflame.png</file>
+        <file>images/dynamic/charizard.gif</file>
+        <file>images/dynamic/charizard_left.gif</file>
+        <file>images/dynamic/dodrio.gif</file>
+        <file>images/dynamic/dodrio_left.gif</file>
+        <file>images/dynamic/golbat.gif</file>
+        <file>images/dynamic/golbat_left.gif</file>
+        <file>images/dynamic/jigglypuff.gif</file>
+        <file>images/dynamic/jigglypuff_left.gif</file>
+        <file>images/dynamic/lapras.gif</file>
+        <file>images/dynamic/lapras_left.gif</file>
+        <file>images/dynamic/psyduck.gif</file>
+        <file>images/dynamic/psyduck_left.gif</file>
+        <file>images/dynamic/sentret.gif</file>
+        <file>images/dynamic/sentret_left.gif</file>
+        <file>images/dynamic/talonflame.gif</file>
+        <file>images/dynamic/talonflame_left.gif</file>
+        <file>images/dynamic/weedle.gif</file>
+        <file>images/dynamic/weedle_left.gif</file>
+        <file>images/static/jigglypuff.png</file>
     </qresource>
 </RCC>

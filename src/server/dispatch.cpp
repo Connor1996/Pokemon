@@ -14,7 +14,7 @@
 using namespace ORMLite;
 
 // 数据库中小精灵的种类数
-#define N 4
+#define N 13
 
 std::string Dispatcher::Dispatch(json requestInfo)
 {

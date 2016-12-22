@@ -4,11 +4,11 @@ A turn-based game developed in QT
 
 ## Requirement
 
--   **C++ 14** Support
+-   **C++ 11** Support
 
     -   MSVC >= 14 (2015)
-    -   gcc >= 5
--   **SQLite 3** (include in *src*)
+    -   GCC >= 5
+-   **SQLite 3** (include in *./include*)
 -   **QT5**
 
 

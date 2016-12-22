@@ -13,7 +13,7 @@ REGISTER(Ice);
 bool Pokemon::Hurt(int damage)
 {
     // 闪避
-    if (Bonus() > 0.8)
+    if (Bonus() < MISS_RATE)
         return false;
 
     auto score = (0.85 + Bonus() / 4) * (damage - _attribute.defensePoint);

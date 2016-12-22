@@ -2,7 +2,7 @@
 #define GAMELOBBY_H
 
 #include <QWidget>
-#include <QStackedLayout>s
+#include <QStackedLayout>
 #include "client.h"
 
 namespace Ui {

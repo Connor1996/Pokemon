@@ -8,7 +8,7 @@
 
 struct PokemonInfo
 {
-    //小精灵属性
+    //小精灵各种属性
     int id;
     std::string name;
 

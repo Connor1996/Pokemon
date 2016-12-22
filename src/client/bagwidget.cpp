@@ -62,9 +62,9 @@ void BagWidget::SetBag()
         ui->rateLabel->setText(QString::fromLocal8Bit(str.c_str()));
 
         auto getFileName = [](int num) {
-            if (num < 20)
+            if (num < 5)
                 return ":/bronze";
-            else if (num < 50)
+            else if (num < 10)
                 return ":/silver";
             else
                 return ":/golden";
@@ -73,9 +73,13 @@ void BagWidget::SetBag()
         ui->sumLabel->setPixmap(
                     QPixmap(getFileName(receiveInfo["sum_ach"].get<int>()))
                 .scaled(20, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        ui->sumLabel->setToolTip(QString::fromStdString(
+                                     std::to_string(receiveInfo["sum_ach"].get<int>())));
         ui->adsumLabel->setPixmap(
                     QPixmap(getFileName(receiveInfo["advance_ach"].get<int>()))
                 .scaled(20, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        ui->adsumLabel->setToolTip(QString::fromStdString(
+                                       std::to_string(receiveInfo["advance_ach"].get<int>())));
     };
 
     auto username = _client->GetUserName();
