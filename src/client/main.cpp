@@ -7,23 +7,11 @@
 
 int main(int argc, char *argv[])
 {
-   // QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-    int ret;
+    QApplication a(argc, argv);
+    Widget w;
+    w.show();
 
-    try{
-        QApplication a(argc, argv);
-        Widget w;
-        w.show();
-
-        ret = a.exec();
-    }
-    catch (std::exception e)
-    {
-        std::cout << e.what() << std::endl;
-    }
-
-    return ret;
-
+    return a.exec();
 }
 
 

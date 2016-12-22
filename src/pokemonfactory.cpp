@@ -12,6 +12,7 @@ Pokemon* PokemonFactory::CreateComputer(std::string name, Client* client)
 {
     transform(name.begin(), name.end(), name.begin(), ::tolower);
 
+    // 获得小精灵详细信息
     json sendInfo = {
         {"define", GET_POKEMON_INFO},
         {"name", name}
@@ -20,6 +21,7 @@ Pokemon* PokemonFactory::CreateComputer(std::string name, Client* client)
     if (receiveInfo["define"].get<int>() == SERVER_ERROR)
         throw std::runtime_error("Failed at create computer pokemon");
 
+    // 根据服务器传回的信息构建精灵
     json info = json::parse(receiveInfo["info"].get<std::string>());
     Attribute attr = {
         Type(std::stoi(info["type"].get<std::string>())),
@@ -41,11 +43,11 @@ Pokemon* PokemonFactory::CreateComputer(std::string name, Client* client)
 
 Pokemon* PokemonFactory::CreateUser(std::string str)
 {
-    // 先反序列化属性字符串
     std::stringstream ss(str);
     std::string line;
     json info;
 
+    // 反序列化属性字符串
     while(std::getline(ss, line))
     {
         auto pos = line.find(" : ");

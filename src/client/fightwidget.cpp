@@ -13,7 +13,9 @@
 using json = nlohmann::json;
 
 FightWidget::FightWidget(Connor_Socket::Client *client, QWidget *parent) :
-    _parent(parent), _client(client), _select(nullptr),
+    _parent(parent),
+    _client(client),
+    _select(nullptr), // 默认为不选中任何小精灵
     ui(new Ui::FightWidget)
 {
     ui->setupUi(this);
@@ -42,6 +44,7 @@ void FightWidget::InitUi()
 
     if (receiveInfo["define"].get<int>() == QUERY_SUCCESS)
     {
+        // 设置显示对战精灵的列表
         for(const auto& item : receiveInfo["info"])
         {
             QListWidgetItem *listItem = new QListWidgetItem(ui->listWidget);
@@ -60,10 +63,13 @@ void FightWidget::InitUi()
 
 void FightWidget::InitConnect()
 {
-    connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
+    // 返回按钮点击触发back信号，使得退回主界面
+    connect(ui->returnButton, &QPushButton::clicked, [this](){ emit back();});
+    // 升级赛
     connect(ui->fightButton, &QPushButton::clicked, [=](){
         this->FightBegin(false);
     });
+    // 决斗赛
     connect(ui->fightButton_2, &QPushButton::clicked, [=](){
         this->FightBegin(true);
     });
@@ -71,23 +77,28 @@ void FightWidget::InitConnect()
 
 bool FightWidget::eventFilter(QObject *watched, QEvent *event)
 { 
+    // 只针对QLabel对象
     if (watched->inherits("QLabel"))
     {
         if (event->type() == QEvent::MouseButtonPress)
         {
+            // 没有选择，则设置选中目标被选中
             if (_select == nullptr)
             {
                 _select = watched;
                 reinterpret_cast<QLabel*>(watched)->setStyleSheet("background: rgba(0,0,0, 20%);"
                                                               "border-radius: 5px");
             }
+            // 之前有选择
             else
             {
+                // 之前的选择和现在的选择一样，则取消选中
                 if (watched == _select)
                 {
                     _select = nullptr;
                     reinterpret_cast<QLabel*>(watched)->setStyleSheet("");
                 }
+                // 更新选中目标
                 else
                 {
                     reinterpret_cast<QLabel*>(_select)->setStyleSheet("");
@@ -111,6 +122,7 @@ void FightWidget::SetBag()
     _select = nullptr;
     removeEventFilter(this);
 
+    // 获得用户背包内容
     auto username = _client->GetUserName();
     json sendInfo = {
         {"define", GET_USER_BAG},
@@ -135,6 +147,7 @@ void FightWidget::SetBag()
     QGridLayout *gridLayout = new QGridLayout(containWidget);
     containWidget->setLayout(gridLayout);
 
+    // 构建显示用户背包内容的gridlayout
     auto row = 1, col = 1;
     for (const auto& item: receiveInfo["info"])
     {
@@ -190,17 +203,20 @@ void FightWidget::SetBag()
 
 void FightWidget::FightBegin(bool isLose)
 {
+    // 判断是否选择对战精灵
     if (_select == nullptr || ui->listWidget->currentItem() == nullptr)
     {
         QMessageBox::information(this, "ERROR", QString::fromLocal8Bit("请选择对战的小精灵"));
         return;
     }
 
+    // 构建精灵对象
     Pokemon *fighter = PokemonFactory::CreateUser(
                 reinterpret_cast<QLabel *>(_select)->toolTip().toStdString());
     Pokemon *againster = PokemonFactory::CreateComputer(
                 ui->listWidget->currentItem()->text().toStdString(), _client);
 
+    // 创建FightRoom
     FightRoom *fightRoom = new FightRoom(fighter, againster, _client, isLose);
     connect(fightRoom, SIGNAL(isClosed()), this, SLOT(show()));
     connect(fightRoom, SIGNAL(isClosed()), this, SLOT(SetBag()));
@@ -208,11 +224,6 @@ void FightWidget::FightBegin(bool isLose)
     this->hide();
     fightRoom->show();
 
-}
-
-void FightWidget::Back()
-{
-    emit back();
 }
 
 FightWidget::~FightWidget()

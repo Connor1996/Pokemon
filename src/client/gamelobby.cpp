@@ -52,6 +52,7 @@ void GameLobby::mousePressEvent(QMouseEvent *event)
     auto x = event->x();
     auto y = event->y();
 
+    // 判断鼠标所在区域，产生响应信号
     if (isPointInPolygon(pointsForUserList, std::move(QPointF(x, y))))
         emit clicked(1);
     else if (isPointInPolygon(pointsForScratch, std::move(QPointF(x, y))))
@@ -78,13 +79,14 @@ void GameLobby::InitUi()
 
 void GameLobby::InitConnect()
 {
+    // 关闭按钮点击触发登出信号
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(LogOut()));
-    //connect(this, SIGNAL(clicked(int)), this, SLOT(ClickOn(int)));
 }
 
 
 void GameLobby::LogOut()
 {
+    // 释放所有资源
     this->close();
     emit closeAll();
 }

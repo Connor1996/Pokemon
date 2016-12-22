@@ -24,8 +24,7 @@ TEMPLATE = app
 DEFINES += WIN32_LEAN_AND_MEAN  #ÅÅ³ýwindows.hÓëwinsock.hµÄ³å
 SOURCES += \
     src/pokemon.cpp \
-    include/sqlite3.c \
-    src/reflector.cpp
+    include/sqlite3.c
 
 
 

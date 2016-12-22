@@ -33,14 +33,17 @@ Server::Server() : _count(0)
         throw std::runtime_error("Failed at listen");
     }
     std::cout << "Wait for connection..." << std::endl;
-    // 不断等待客户端请求的到来
 
-    std::mutex mtx; //各个连接客户端线程输出信息锁
+    //各个连接客户端线程输出信息锁
+    std::mutex mtx;
+    // 不断等待客户端请求的到来
     while (true)
     {
         SOCKADDR_IN clientAddr;
         int addrlen = sizeof(clientAddr);
+        // 监听到客户端的请求，新建立一个socket保持通信
         SOCKET newConnection = accept(_listeningSocket, (SOCKADDR *)&clientAddr, &addrlen);
+        // 将新建的socket放入线程单独运行
         _socketThreads.emplace_back(std::thread([this, &mtx] (SOCKET &&connection)
         {
             char recvBuf[DEFAULT_BUFLEN];
@@ -61,11 +64,13 @@ Server::Server() : _count(0)
                     {
                         // 保证cout完整执行而不被其他线程打断
                         mtx.lock();
+                        // 若是在线状态，下线处理
                         if (dispatcher.getState() == LOG_IN_SUCCESS)
                             dispatcher.Logout();
                         cout << "[INFO] Someone offline, now " << --_count << " connections in total" << endl;
                         mtx.unlock();
 
+                        // 断开连接
                         shutdown(connection, SD_BOTH);
                         closesocket(connection);
                         break;
@@ -75,6 +80,7 @@ Server::Server() : _count(0)
                     std::string responseStr;
                     try
                     {
+                        // 调用Dispatcher分发到相应处理逻辑
                         responseStr = dispatcher.Dispatch(std::move(json::parse(recvBuf)));
                     }
                     catch (std::exception e)
@@ -117,6 +123,7 @@ bool Server::Online(std::string username, SOCKET connection)
 
 void Server::Offline(std::string username)
 {
+    // 将用户名从在线列表移除
     _sockets.erase(username);
 }
 

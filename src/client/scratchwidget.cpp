@@ -9,13 +9,15 @@
 using json = nlohmann::json;
 
 ScratchWidget::ScratchWidget(Connor_Socket::Client *client, QWidget *parent) :
-    QWidget(parent), _client(client),
+    QWidget(parent),
+    _client(client),
     ui(new Ui::ScratchWidget)
 {
     ui->setupUi(this);
     InitUi();
     InitConnect();
 
+    // 初始化随机种子
     srand(time(NULL));
 }
 
@@ -36,7 +38,9 @@ void ScratchWidget::InitUi()
 
 void ScratchWidget::InitConnect()
 {
-    connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
+    // 返回按钮点击触发back信号，使得退回主界面
+    connect(ui->returnButton, &QPushButton::clicked, [this](){ emit back();});
+    // 点击触发抽奖
     connect(ui->pokemonBall, &QPushButton::clicked, [=](){
         auto random = []()
         {
@@ -60,8 +64,10 @@ void ScratchWidget::InitConnect()
 
 bool ScratchWidget::eventFilter(QObject *watched, QEvent *event)
 {
+    // 对精灵球的监控
     if (watched == ui->pokemonBall)
     {
+        // 如果鼠标移到精灵球上
         if (event->type() == QEvent::HoverEnter)
         {
             QPropertyAnimation *animation = new QPropertyAnimation(watched, "pos");
@@ -69,6 +75,7 @@ bool ScratchWidget::eventFilter(QObject *watched, QEvent *event)
             auto dx = ui->pokemonBall->x();
             auto dy = ui->pokemonBall->y();
 
+            // 设置震动动画
             animation->setDuration(200);
             animation->setLoopCount(3);
             animation->setKeyValueAt(0, QPoint(dx - 3, dy - 3));
@@ -90,11 +97,6 @@ bool ScratchWidget::eventFilter(QObject *watched, QEvent *event)
     }
     return false;
 
-}
-
-void ScratchWidget::Back()
-{
-    emit back();
 }
 
 ScratchWidget::~ScratchWidget()

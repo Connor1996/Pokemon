@@ -10,7 +10,8 @@
 using json = nlohmann::json;
 
 BagWidget::BagWidget(Connor_Socket::Client *client, QWidget *parent) :
-    QWidget(parent), _client(client),
+    QWidget(parent),
+    _client(client),
     ui(new Ui::BagWidget)
 {
     ui->setupUi(this);
@@ -20,6 +21,7 @@ BagWidget::BagWidget(Connor_Socket::Client *client, QWidget *parent) :
 
 void BagWidget::InitUi()
 {
+    // 设置界面大小
     setFixedSize(1280, 720);
 
     // 设置背景
@@ -29,18 +31,25 @@ void BagWidget::InitUi()
     palette.setBrush(QPalette::Window, QBrush(pixmap.scaled(width(), height())));
     setPalette(palette);
 
+    // 设置返回按钮大小
     ui->returnButton->resize(48, 48);
 }
 
 void BagWidget::InitConnect()
 {
-    connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
+    // 返回按钮点击触发back信号，使得退回主界面
+    connect(ui->returnButton, &QPushButton::clicked, [this](){ emit back();});
 }
 
 
 void BagWidget::SetBag()
 {
+    // 在GUI上设置用户信息
+    // @param:
+    //      username 用户名
+    //      rate 用户胜率
     auto setInfo = [this](std::string username, double rate) {
+        // 构建获得用户成就请求信息
         json sendInfo = {
             {"define", GET_USER_ACH},
             {"username", username}
@@ -53,14 +62,19 @@ void BagWidget::SetBag()
             return;
         }
 
+        // 设置用户名显示
         auto str = "用户名: " + username;
         ui->usernameLabel->setText(QString::fromLocal8Bit(str.c_str()));
 
+        // 设置胜率显示
         std::stringstream rateStream;
         rateStream << std::setiosflags(std::ios::fixed) << std::setprecision(1) << rate;
         str = "胜率: "+ rateStream.str() + "%";
         ui->rateLabel->setText(QString::fromLocal8Bit(str.c_str()));
 
+        // 获得相应勋章的资源文件名
+        // @param:
+        //      相应成就的数量
         auto getFileName = [](int num) {
             if (num < 5)
                 return ":/bronze";
@@ -70,6 +84,7 @@ void BagWidget::SetBag()
                 return ":/golden";
         };
 
+        // 设置成就勋章显示
         ui->sumLabel->setPixmap(
                     QPixmap(getFileName(receiveInfo["sum_ach"].get<int>()))
                 .scaled(20, 24, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -82,6 +97,7 @@ void BagWidget::SetBag()
                                        std::to_string(receiveInfo["advance_ach"].get<int>())));
     };
 
+    // 构建查看用户背包请求信息
     auto username = _client->GetUserName();
     json sendInfo = {
         {"define", GET_USER_BAG},
@@ -109,6 +125,7 @@ void BagWidget::SetBag()
     QGridLayout *gridLayout = new QGridLayout(containWidget);
     containWidget->setLayout(gridLayout);
 
+    // 将背包里的每个小精灵加载到gridlayout中
     auto row = 1, col = 1;
     for (const auto& item: receiveInfo["info"])
     {
@@ -144,6 +161,7 @@ void BagWidget::SetBag()
             col = 1;
         }
     }
+
     // 用空layout填充第一行的空位置
     if (row == 1 && col != 1)
         for (int i = col; i <= 3; i++)
@@ -158,11 +176,6 @@ void BagWidget::SetBag()
     gridLayout->setAlignment(Qt::AlignTop);
     ui->bagListArea->setWidget(containWidget);
 
-}
-
-void BagWidget::Back()
-{
-    emit back();
 }
 
 BagWidget::~BagWidget()

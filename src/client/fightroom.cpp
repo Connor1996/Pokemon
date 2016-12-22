@@ -20,16 +20,19 @@ using json = nlohmann::json;
 FightRoom::FightRoom(Pokemon *fighter, Pokemon *againster, Client *client,
                      bool isLose, QWidget *parent) :
     QWidget(parent),
+    ui(new Ui::FightRoom),
+    _client(client),
     _fighter(std::make_pair(fighter, new QLabel(this))),
     _againster(std::make_pair(againster, new QLabel(this))),
-    _client(client), _isLose(isLose),
-    ui(new Ui::FightRoom), _quit(false), _signalMapper(new QSignalMapper)
+    _isLose(isLose),
+    _quit(false), // 是否退出默认为false
+    _signalMapper(new QSignalMapper)
 {
     ui->setupUi(this);
     InitUi();
     InitConnect();
 
-
+    // 启动新线程控制对战流程
     std::thread th(std::bind(&FightRoom::Fight, this));
     th.detach();
 }
@@ -47,10 +50,9 @@ void FightRoom::InitUi()
     setPalette(palette);
 
     ui->chooseWidget->hide();
-    //ui->returnButton->resize(48, 48);
 
+    // 设置两个小精灵贴图
     QLabel *op1 = _fighter.second;
-    // 设置两个小精灵动图
     op1->setMovie(new QMovie(QString::fromStdString("://images/dynamic/"
                                                     + _fighter.first->GetName() + "_left.gif")));
     op1->movie()->start();
@@ -80,7 +82,6 @@ void FightRoom::InitConnect()
     connect(this, SIGNAL(attack_SP(std::pair<Pokemon *, QLabel *> *, std::pair<Pokemon *, QLabel *> *)),
             this, SLOT(setAnimation_SP(std::pair<Pokemon *, QLabel *> *, std::pair<Pokemon *, QLabel *> *)));
 
-    //
     connect(this, SIGNAL(hideLabel()), this, SLOT(setLabel()));
     connect(this, SIGNAL(over(Pokemon *)), this, SLOT(GameComplete(Pokemon *)));
     connect(this, SIGNAL(hurt(QLabel *, QLabel *)), this, SLOT(UpdateHp(QLabel *, QLabel *)));
@@ -90,6 +91,7 @@ void FightRoom::InitConnect()
 
 void FightRoom::closeEvent(QCloseEvent *event)
 {
+    // 关闭时间时将_quit变量设置为true，以终止对战控制线程
     emit isClosed();
     _quit = true;
     event->accept();
@@ -129,6 +131,7 @@ void FightRoom::setAnimation_SP(std::pair<Pokemon *, QLabel *> *attacker,
         animation->start();
     };
 
+    // 攻击方为用户
     if (attacker->second == _fighter.second)
     {
         std::cout << GET_CLASS_TYPE(*attacker->first) << std::endl;
@@ -139,6 +142,7 @@ void FightRoom::setAnimation_SP(std::pair<Pokemon *, QLabel *> *attacker,
                                   attacker->second->y() + 110, 60, 30);
         setAnimation(ui->fireLeft);
     }
+    // 攻击方为电脑
     else
     {
         ui->fireRight->setStyleSheet("border-image: url(://images/" +
@@ -176,6 +180,7 @@ void FightRoom::GameComplete(Pokemon* winner)
     {
         auto isUpgrade = _fighter.first->Upgrade(_againster.first->GetExp());
 
+        // 将更新信息后的用户小精灵发送回服务器
         json sendInfo = {
             {"define", GAME_WIN},
             {"get", _againster.first->GetName()},
@@ -220,6 +225,7 @@ void FightRoom::GameComplete(Pokemon* winner)
             return;
         }
 
+        // 构建三个丢弃小精灵的显示窗口
         int count = 0;
         for (const auto& item: receiveInfo["info"])
         {
@@ -259,6 +265,7 @@ void FightRoom::GameComplete(Pokemon* winner)
 
 void FightRoom::Choose(int id)
 {
+    // 将用户要丢弃的小精灵id发送回服务器
     json sendInfo = {
         {"define", LOSE_POKEMON},
         {"id", id}
@@ -275,11 +282,11 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
     QParallelAnimationGroup *actions = new QParallelAnimationGroup;
     QPropertyAnimation *animation1;
 
+    // 被攻击方为用户
     if (suffer == _fighter.second)
     {
         animation1 = new QPropertyAnimation(ui->label, "pos");
-        int num = ui->fighterBar->value() - (int)_fighter.first->GetHp();
-        //std::cout << num << std::endl;         
+        int num = ui->fighterBar->value() - (int)_fighter.first->GetHp();         
         if (num == 0)
             ui->label->setText(QString::fromLocal8Bit("MISS"));
         else
@@ -291,11 +298,11 @@ void FightRoom::UpdateHp(QLabel *attacker, QLabel *suffer)
         }
         animation1->setEndValue(QPoint(ui->label->x(), ui->label->y() - 10));
     }
+    // 被攻击方为电脑
     else
     {
         animation1 = new QPropertyAnimation(ui->label_2, "pos");
         int num = ui->againsterBar->value() - (int)_againster.first->GetHp();
-        //std::cout << num << std::endl;
         if (num == 0)
             ui->label_2->setText(QString::fromLocal8Bit("MISS"));
         else
@@ -364,7 +371,7 @@ void FightRoom::Fight()
         else
             emit attack(op1->second, op2->second);
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        //
+        // 是否为暴击
         if (op1->first->IsCritical())
             emit hideLabel();
         // 受伤动画

@@ -21,7 +21,7 @@ void StackWidget::InitUi()
     setFixedSize(1280, 720);
     setWindowFlags(Qt::FramelessWindowHint);
 
-    // 设置关闭按钮
+    // 加载stacklayout的各个分视图
     _stackLayout = new QStackedLayout(this);
     _stackLayout->addWidget(_gameLobby);
     _stackLayout->addWidget(_userListWidget);
@@ -33,6 +33,7 @@ void StackWidget::InitUi()
 
 void StackWidget::InitConnect()
 {
+    // 连接各个分视图的信号
     connect(_gameLobby, SIGNAL(clicked(int)), this, SLOT(SetCurrentIndex(int)));
     connect(_userListWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
     connect(_bagWidget, SIGNAL(back()), this, SLOT(BackToLobby()));
@@ -44,6 +45,7 @@ void StackWidget::InitConnect()
     connect(this, SIGNAL(refreshBag()), _bagWidget, SLOT(SetBag()));
     connect(this, SIGNAL(refreshFight()), _fightWidget, SLOT(SetBag()));
 
+    // 关闭所有视图
     connect(_gameLobby, SIGNAL(closeAll()), this, SLOT(close()));
 }
 
@@ -60,6 +62,7 @@ StackWidget::~StackWidget()
 
 void StackWidget::SetCurrentIndex(int index)
 {
+    // 根据index，切换各个视图
     if (index == 1)
         emit refreshUserList();
     else if (index == 3)
@@ -72,5 +75,6 @@ void StackWidget::SetCurrentIndex(int index)
 
 void StackWidget::BackToLobby()
 {
+    // 设置当前视图为主界面
     _stackLayout->setCurrentIndex(0);
 }

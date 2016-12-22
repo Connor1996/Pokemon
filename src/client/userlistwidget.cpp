@@ -42,12 +42,13 @@ void UserListWidget::InitUi()
 
 void UserListWidget::InitConnect()
 {
-    connect(ui->returnButton, SIGNAL(clicked()), this, SLOT(Back()));
+    // 返回按钮点击触发back信号，使得退回主界面
+    connect(ui->returnButton, &QPushButton::clicked, [this](){ emit back();});
 }
 
 void UserListWidget::SetUserList()
 {
-    // 获得在线用户
+    // 获得在线用户列表
     json sendInfo = {
         {"define", GET_ONLINE_LIST}
     };
@@ -73,7 +74,7 @@ void UserListWidget::SetUserList()
 
     _signalMapper = new QSignalMapper(containWidget);
 
-
+    // 构建在线列表
     for(const auto& item : receiveInfo["info"])
     {
         std::string str = item.get<std::string>();
@@ -91,6 +92,7 @@ void UserListWidget::SetUserList()
         QPushButton *bagButton = new QPushButton();
         bagButton->setFlat(true);
         bagButton->setIcon(QPixmap(":ball"));
+        // 注册到mapper
         _signalMapper->setMapping(bagButton, QString::fromStdString(str));
         connect(bagButton, SIGNAL(clicked()), _signalMapper, SLOT(map()));
 
@@ -119,6 +121,7 @@ void UserListWidget::SetUserList()
         return;
     }
 
+    // 构建离线列表
     for(const auto& item : receiveInfo["info"])
     {
         std::string str = item.get<std::string>();
@@ -134,10 +137,9 @@ void UserListWidget::SetUserList()
 
         QPushButton *bagButton = new QPushButton();
         bagButton->setIcon(QPixmap(":ball"));
-        //bagButton->setStyleSheet("border-image: url(:/ball)");
         bagButton->setFlat(true);
-        //bagButton->resize(36, 72);
 
+        // 注册到信号mapper
         _signalMapper->setMapping(bagButton, QString::fromStdString(str));
         connect(bagButton, SIGNAL(clicked()), _signalMapper, SLOT(map()));
 
@@ -160,6 +162,7 @@ void UserListWidget::SetUserList()
 
 void UserListWidget::ShowBag(QString username)
 {
+    // 向服务器发送获取用户背包内容请求
     json sendInfo = {
         {"define", GET_USER_BAG},
         {"username", username.toStdString()}
@@ -184,6 +187,7 @@ void UserListWidget::ShowBag(QString username)
     containWidget->setLayout(gridLayout);
     gridLayout->setAlignment(Qt::AlignTop);
 
+    // 构建用户背包显示的gridlayout
     auto row = 1, col = 1;
     for (const auto& item: receiveInfo["info"])
     {
@@ -231,7 +235,6 @@ void UserListWidget::ShowBag(QString username)
             gridLayout->addLayout(rowlayout, 1, i);
         }
 
-    //gridLayout->setAlignment(Qt::AlignLeft);
     ui->bagListArea->setWidget(containWidget);
 
     // 显示胜率
@@ -240,9 +243,4 @@ void UserListWidget::ShowBag(QString username)
          << receiveInfo["rate"].get<double>();
     auto str = "胜率: "+ rate.str() + "%";
     ui->rateLabel->setText(QString::fromLocal8Bit(str.c_str()));
-}
-
-void UserListWidget::Back()
-{
-    emit back();
 }

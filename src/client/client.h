@@ -49,10 +49,8 @@ public:
 protected:
     // 与服务器通信的socket
     SOCKET _connectSocket;
-
     // 服务器的地址信息
     SOCKADDR_IN _serverAddr;
-
     // 用户名
     string _username;
 };

@@ -29,8 +29,8 @@ Client::Client(string name)
         throw std::runtime_error("Second parrameter does not contain valid ipaddress");
     }
 
-    //发送时限
-    int nNetTimeout = 1000; //1秒
+    //设置发送时限
+    int nNetTimeout = 1000;
     setsockopt(_connectSocket, SOL_SOCKET, SO_SNDTIMEO, (char *)&nNetTimeout, sizeof(int));
 
     cout << "Initial success" << endl;
@@ -52,8 +52,10 @@ std::string Client::Connect(std::string requestInfo)
     auto trys = 2;
     auto success = false;
 
+    // 多次尝试
     while(trys--)
     {
+        //与服务器建立连接
         if (connect(_connectSocket, reinterpret_cast<SOCKADDR *>(&_serverAddr),
                     sizeof(_serverAddr))== -1)
         {
@@ -71,6 +73,7 @@ std::string Client::Connect(std::string requestInfo)
         throw std::runtime_error("Unable to connect to server, Please try later");
     }
 
+    // 连接成功建立后，发送请求
     return std::move(Send(requestInfo));
 }
 
@@ -83,12 +86,15 @@ std::string Client::Send(std::string requestInfo)
     char sendBuf[DEFAULT_BUFLEN];
     int sendBufLen = DEFAULT_BUFLEN;
     strcpy(sendBuf, requestInfo.c_str());
+
+    // 向服务器发送数据
     if (send(_connectSocket, sendBuf, sendBufLen, 0) == SOCKET_ERROR)
     {
         closesocket(_connectSocket);
         throw std::runtime_error("Failed at send message");
     }
     cout << "[INFO] send complete" << endl;
+    // 等待接受服务器的返回信息
     if (recv(_connectSocket, recvBuf, recvBufLen, 0) <= 0)
     {
         closesocket(_connectSocket);
@@ -99,5 +105,3 @@ std::string Client::Send(std::string requestInfo)
 
     return std::move(std::string(recvBuf));
 }
-
-

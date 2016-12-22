@@ -21,7 +21,7 @@ Widget::Widget(QWidget *parent) :
     setWindowFlags(Qt::WindowCloseButtonHint); //只要关闭按钮
 
     setFixedSize(1024, 605);
-
+    // 设置背景
     setAutoFillBackground(true);
     QPalette palette;
     QPixmap pixmap(":/background");
@@ -30,27 +30,17 @@ Widget::Widget(QWidget *parent) :
     setPalette(palette);
 }
 
-void Widget::paintEvent(QPaintEvent *)
-{
-//    QPainter painter(this);
-//    QBrush brush;
-//    brush.setTextureImage(QImage(":background")); //背景图片
-//    painter.setBrush(brush);
-//    painter.setPen(Qt::black);  //边框色
-//    painter.drawRoundedRect(this->rect(), 5, 5); //圆角5像素
-}
-
 void Widget::InitConnect()
 {
+    // 触发登陆
     connect(ui->loginButton, SIGNAL(clicked()), this, SLOT(Login()));
+    // 触发注册
     connect(ui->signupButtion, SIGNAL(clicked()), this, SLOT(Signup()));
 }
 
 Widget::~Widget()
 {
     delete ui;
-//    if (_client != NULL)
-//        delete _client;
 }
 
 
@@ -61,6 +51,7 @@ void Widget::Login()
 
     try
     {
+        // 发送登陆请求
        _client = new Client(username);
        json sendInfo = {
            {"define", LOG_IN},
@@ -69,6 +60,7 @@ void Widget::Login()
        };
        json receiveInfo = json::parse(_client->Connect(sendInfo.dump()));
 
+       // 检查是否登陆成功
        if (receiveInfo["define"].get<int>() == LOG_IN_FAIL_WP)
        {
            _client->Close();
@@ -83,6 +75,7 @@ void Widget::Login()
        }
        else if (receiveInfo["define"].get<int>() == LOG_IN_SUCCESS)
        {
+           // 进入主界面
            this->close();
            StackWidget *stack = new StackWidget(_client);
            try
@@ -93,9 +86,6 @@ void Widget::Login()
            {
                QMessageBox::information(this, "Error", QString::fromLocal8Bit("与服务器断开连接"));
            }
-
-           //lobby->exec();
-           //this->show();
        }
        else if (receiveInfo["define"].get<int>() == SERVER_ERROR)
        {
@@ -105,7 +95,9 @@ void Widget::Login()
        {
            throw std::runtime_error("Wrong return value for request");
        }
-    } catch (std::exception e){
+    }
+    catch (std::exception e)
+    {
         _client->Close();
         delete _client;
         QMessageBox::information(this, "Error", QString(e.what()));
@@ -121,6 +113,7 @@ void Widget::Signup()
     Client tempConnection;
     try
     {
+        // 发送注册请求
         json sendInfo = {
             {"define", SIGN_UP},
             {"username", username},
@@ -128,6 +121,7 @@ void Widget::Signup()
         };
         json receiveInfo = json::parse(tempConnection.Connect(sendInfo.dump()));
 
+        // 检查是否注册成功
         if (receiveInfo["define"].get<int>() == SIGN_UP_FAIL)
         {
             tempConnection.Close();

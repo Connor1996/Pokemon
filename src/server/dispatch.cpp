@@ -19,7 +19,7 @@ using namespace ORMLite;
 std::string Dispatcher::Dispatch(json requestInfo)
 {
     json responseInfo;
-    //std::cout << "[INFO] dispatch" << std::endl;
+    // 根据请求信息内容，转到相应的处理逻辑
     switch (requestInfo["define"].get<int>()) {
     case LOG_IN:
         responseInfo = LoginHandle(requestInfo);
@@ -75,19 +75,21 @@ json Dispatcher::LoginHandle(json &requestInfo)
 
     std::cout << "[INFO] Login request comes" << std::endl;
 
+    // 查询数据库是否有该用户名同时为该密码的条目
     auto result = mapper.Query(messager
                  .Where(Field(helper.username) == requestInfo["username"].get<std::string>()
                         && Field(helper.password) == requestInfo["password"].get<std::string>()));
-    //std::cout << "[INFO] Query finish" << std::endl;
 
     if (result)
     {
+        // 如果没有说明，说明用户名或密码错误
         if (messager.IsNone())
             responseInfo["define"] = LOG_IN_FAIL_WP;
         else
         {
             // 将username加入在线列表
             _username = requestInfo["username"].get<std::string>();
+            // 检查是否已经在线
             if (_parent->Online(_username, _connection))
                 responseInfo["define"] = _state = LOG_IN_SUCCESS;
             else
@@ -112,12 +114,13 @@ json Dispatcher::SignupHandle(json &requestInfo)
 
     std::cout << "[INFO] Signup request comes" << std::endl;
 
+    // 查询数据库中是否有同用户名的条目
     auto result = mapper.Query(messager
                  .Where(Field(helper.username) == requestInfo["username"].get<std::string>()));
-    //std::cout << "[INFO] Query finish" << std::endl;
 
     if (result)
     {
+        // 如果没有，说明可以注册
         if (messager.IsNone())
         {
             // 构建新的用户信息
@@ -141,6 +144,7 @@ json Dispatcher::SignupHandle(json &requestInfo)
             else
                 responseInfo["define"] = SIGN_UP_FAIL;
         }
+        // 如果有，则注册失败
         else
             responseInfo["define"] = SIGN_UP_FAIL;
     }
@@ -157,7 +161,9 @@ json Dispatcher::OnlineListHandle(json &requestInfo)
 {
     json responseInfo;
 
-    try{
+    try
+    {
+        // 从server获取在线列表
         responseInfo["info"] = json(_parent->GetOnlineList());
         responseInfo["define"] = QUERY_SUCCESS;
     }
@@ -181,15 +187,18 @@ json Dispatcher::OfflineListHandle(json &requestInfo)
     std::list<std::string> userList;
     std::list<std::string> offlineList;
 
+    // 查询获得所有用户
     auto result = mapper.Query(messager);
     if (result)
     {
         for (const auto& vec: messager.GetVector())
             userList.emplace_back(vec[0]);
 
+        // 获得在线用户列表
         std::list<std::string> onlineList(_parent->GetOnlineList());
         userList.sort();
         onlineList.sort();
+        // 集合求差即为离线列表
         std::set_difference(userList.begin(), userList.end(),
                          onlineList.begin(), onlineList.end(),
                               std::back_inserter(offlineList));
@@ -221,6 +230,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
     {
         responseInfo["define"] = QUERY_SUCCESS;
         json itemsInfo;
+        // 构建每个小精灵信息
         for (const auto& vec: messager.GetVector())
         {
             json itemInfo = {
@@ -235,6 +245,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
                 {"attackFrequence", vec[8]},
                 {"property", vec[9]},
             };
+            // 将每个小精灵信息放入总集合中
             itemsInfo.push_back(itemInfo.dump());
         }
         responseInfo["info"] = itemsInfo;
@@ -243,7 +254,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
         UserInfo helper;
         QueryMessager<UserInfo> messager(helper);
 
-        // 查询用户胜率
+        // 查询用户胜利局数和失败局数
         auto result = mapper.Query(messager
                                    .Where(Field(helper.username)
                                           == requestInfo["username"].get<std::string>()));
@@ -252,6 +263,7 @@ json Dispatcher::UserBagHandle(json &requestInfo)
             auto win = std::stoi(messager.GetVector()[0][2]);
             auto lose = std::stoi(messager.GetVector()[0][3]);
 
+            // 计算胜率
             responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 100.0) / (win + lose);
         }
         else
@@ -285,6 +297,7 @@ json Dispatcher::UserAchievementHandle(json &requestInfo)
         auto win = std::stoi(messager.GetVector()[0][2]);
         auto lose = std::stoi(messager.GetVector()[0][3]);
 
+        // 计算相应成就
         responseInfo["define"] = QUERY_SUCCESS;
         responseInfo["rate"] = (win + lose == 0) ? 100 : (win * 100.0) / (win + lose);
         responseInfo["sum_ach"] = std::stoi(messager.GetVector()[0][4]);
@@ -305,12 +318,14 @@ json Dispatcher::PokemonListHandle(json &requestInfo)
     PokemonList helper;
     QueryMessager<PokemonList> messager(helper);
 
-    // 查询对战精灵名字
+    // 查询数据库获得所有对战精灵
     auto result = mapper.Query(messager);
     json responseInfo;
     if (result)
     {
         responseInfo["define"] = QUERY_SUCCESS;
+
+        // 将每个精灵的名字放入list中
         std::list<std::string> pokemonList;
         for (const auto& vec: messager.GetVector())
         {
@@ -340,6 +355,7 @@ json Dispatcher::PokemonInfoHandle(json &requestInfo)
     json responseInfo;
     if (result)
     {
+        // 构建对战小精灵信息
         auto vec = messager.GetVector()[0];
         responseInfo["define"] = QUERY_SUCCESS;
         json itemInfo = {
@@ -371,6 +387,7 @@ json Dispatcher::GameWinHandle(json &requestInfo)
     PokemonInfo helper;
     QueryMessager<PokemonInfo> infoMessager(helper);
 
+    // 查询用户对战的小精灵信息
     infoMapper.Query(infoMessager.Where(Field(helper.name)
                                         == requestInfo["get"].get<std::string>()));
     if (infoMessager.IsNone())
@@ -380,18 +397,37 @@ json Dispatcher::GameWinHandle(json &requestInfo)
         auto vec = infoMessager.GetVector()[0];
         ORMapper<UserBag> bagMapper(DATABASE_NAME);
         // Bad code style, wait for ormlite to support for GetObjects()
-        UserBag userBag = {nullptr , vec[1],
-                            1, 0, std::stoi(vec[2]), std::stoi(vec[3]), std::stoi(vec[4]),
-                            std::stoi(vec[5]), std::stoi(vec[6]), vec[7], _username};
+        // 构建背包条目
+        UserBag userBag = {
+            nullptr,            // id
+            vec[1],             // name
+            1,                  // level
+            0,                  // exp
+            std::stoi(vec[2]),  // type
+            std::stoi(vec[3]),  // attackPoint
+            std::stoi(vec[4]),  // defensePoint
+            std::stoi(vec[5]),  // healthPoint
+            std::stoi(vec[6]),  // attackFrequence
+            vec[7],             // property
+            _username           // username
+        };
 
         ORMapper<UserInfo> userMapper(DATABASE_NAME);
         UserInfo helper;
         QueryMessager<UserInfo> userMessager(helper);
+
         // 获得用户信息
         userMapper.Query(userMessager.Where(Field(helper.username) == _username));
         vec = userMessager.GetVector()[0];
-        UserInfo userInfo = {vec[0] , vec[1], std::stoi(vec[2]), std::stoi(vec[3]),
-                             std::stoi(vec[4]), std::stoi(vec[5])};
+        // 构建用户信息
+        UserInfo userInfo = {
+            vec[0],             // username
+            vec[1],             // password
+            std::stoi(vec[2]),  // win
+            std::stoi(vec[3]),  // lose
+            std::stoi(vec[4]),  // sum
+            std::stoi(vec[5])   // advance_sum
+        };
 
         // 放入新获得的小精灵
         if (!bagMapper.Insert(userBag))
@@ -409,6 +445,7 @@ json Dispatcher::GameWinHandle(json &requestInfo)
         }
         if (requestInfo["level"].get<int>() == 15)
             userInfo.advanceSum += 1;
+        // 根据构建的更新用户信息，更新数据库相应信息
         if (!userMapper.Update(userInfo))
         {
             responseInfo["define"] = SERVER_ERROR;
@@ -430,6 +467,7 @@ json Dispatcher::GameWinHandle(json &requestInfo)
             requestInfo["property"].get<std::string>(),
             _username
         };
+        // 更新数据库中的用户背包
         if (!bagMapper.Update(updateItem))
         {
             responseInfo["define"] = SERVER_ERROR;
@@ -449,24 +487,37 @@ json Dispatcher::GameLoseHandle(json &requestInfo)
     UserInfo helper;
     QueryMessager<UserInfo> userMessager(helper);
 
+    // 查询数据库相应的用户信息
     userMapper.Query(userMessager.Where(Field(helper.username) == _username));
     auto vec = userMessager.GetVector()[0];
-    UserInfo userInfo = {vec[0] , vec[1], std::stoi(vec[2]), std::stoi(vec[3]),
-                         std::stoi(vec[4]), std::stoi(vec[5])};
+    // 构建用户信息
+    UserInfo userInfo = {
+        vec[0],             // username
+        vec[1],             // password
+        std::stoi(vec[2]),  // win
+        std::stoi(vec[3]),  // lose
+        std::stoi(vec[4]),  // sum
+        std::stoi(vec[5])   // advance_sum
+    };
+    // 更新用户信息
     userInfo.lose += 1;
+    // 更新数据库里相应的信息
     if (userMapper.Update(userInfo))
         responseInfo["define"] = ACCEPT;
     else
         responseInfo["define"] = SERVER_ERROR;
 
+    // 判断是否损失小精灵
     if (requestInfo["isLose"].get<bool>() == false)
         return std::move(responseInfo);
     else
     {
+        // 损失小精灵，需要先返回三个随机小精灵供用户选择
         ORMapper<UserBag> infoMapper(DATABASE_NAME);
         UserBag helper;
         QueryMessager<UserBag> infoMessager(helper);
 
+        // 查询用户信息
         infoMapper.Query(infoMessager.Where(
                              Field(helper.username) == _username));
 
@@ -475,9 +526,11 @@ json Dispatcher::GameLoseHandle(json &requestInfo)
         else
         {
             auto vec = infoMessager.GetVector();
+            // 用于确定随机数是否重复
             std::unordered_set<int> set;
             json itemsInfo;
 
+            // 产生不重复的随机数
             auto random = [&](int num) {
                 auto ret = rand() % (num + 1);
 
@@ -486,6 +539,7 @@ json Dispatcher::GameLoseHandle(json &requestInfo)
                 return ret;
             };
 
+            // 构建三个小精灵信息
             for (int i = 0; i < 3 && i < vec.size(); i++)
             {
                 auto pos = random(vec.size() - 1);
@@ -537,24 +591,33 @@ json Dispatcher::LosePokemonHandle(json &requestInfo)
         UserInfo helper;
         QueryMessager<UserInfo> userMessager(helper);
 
+        // 查询用户信息
         userMapper.Query(userMessager.Where(Field(helper.username) == _username));
         auto vec = userMessager.GetVector()[0];
-        UserInfo userInfo = {vec[0] , vec[1], std::stoi(vec[2]), std::stoi(vec[3]),
-                             std::stoi(vec[4]), std::stoi(vec[5])};
+        // 构建用户信息
+        UserInfo userInfo = {
+            vec[0],             // username
+            vec[1],             // password
+            std::stoi(vec[2]),  // win
+            std::stoi(vec[3]),  // lose
+            std::stoi(vec[4]),  // sum
+            std::stoi(vec[5])   // advance_sum
+        };
 
+        // 更新用户信心
         if (std::stoi(level) == 15)
         {
             userInfo.advanceSum += 1;
         }
         userInfo.sum -= 1;
+        // 同步用户信息到数据库
         userMapper.Update(userInfo);
+
         // 用户如果已经没有小精灵，则再随机分配一个初始小精灵
         if (userInfo.sum == 0)
         {
             DispatchPokemon(_username);
         }
-
-
     }
     else
         responseInfo["define"] = SERVER_ERROR;
@@ -573,7 +636,7 @@ std::string Dispatcher::DispatchPokemon(std::string username)
     PokemonInfo helper;
     QueryMessager<PokemonInfo> infoMessager(helper);
 
-
+    // 获得一条随机查询的初始小精灵信息
     if (!infoMapper.Query(infoMessager.Where(Field(helper.id) == random(N))))
     {
         throw std::runtime_error("Failed at query pokemoninfo: "
@@ -587,11 +650,22 @@ std::string Dispatcher::DispatchPokemon(std::string username)
         auto vec = infoMessager.GetVector()[0];
         ORMapper<UserBag> userMapper(DATABASE_NAME);
         // Bad code style, wait for ormlite to support for GetObjects()
-        UserBag userBag = { nullptr, vec[1], 1, 0, std::stoi(vec[2]),
-                            std::stoi(vec[3]), std::stoi(vec[4]),
-                            std::stoi(vec[5]), std::stoi(vec[6]),
-                            vec[7], username};
+        // 构建背包条目信息
+        UserBag userBag = {
+            nullptr,            // id
+            vec[1],             // name
+            1,                  // level
+            0,                  // exp
+            std::stoi(vec[2]),  // type
+            std::stoi(vec[3]),  // attackPoint
+            std::stoi(vec[4]),  // defensePoint
+            std::stoi(vec[5]),  // healthPoint
+            std::stoi(vec[6]),  // attackFrequence
+            vec[7],             // property
+            username            // username
+        };
         name = vec[1];
+        // 新条目插入进背包
         if (!userMapper.Insert(userBag))
         {
             throw std::runtime_error("Failed at insert userbag: " + userMapper.GetErrorMessage());
@@ -602,14 +676,23 @@ std::string Dispatcher::DispatchPokemon(std::string username)
             UserInfo helper;
             QueryMessager<UserInfo> userMessager(helper);
 
+            // 查询用户信息
             userMapper.Query(userMessager.Where(Field(helper.username) == username));
             if (userMessager.IsNone())
                 throw std::runtime_error("can not find user info");
-
+            // 构建用户信息
             auto vec = userMessager.GetVector()[0];
-            UserInfo userInfo = {vec[0] , vec[1], std::stoi(vec[2]), std::stoi(vec[3]),
-                                 std::stoi(vec[4]), std::stoi(vec[5])};
+            UserInfo userInfo = {
+                vec[0],             // username
+                vec[1],             // password
+                std::stoi(vec[2]),  // win
+                std::stoi(vec[3]),  // lose
+                std::stoi(vec[4]),  // sum
+                std::stoi(vec[5])   // advance_sum
+            };
+            // 更新用户小精灵总数
             userInfo.sum += 1;
+            // 同步到数据库
             userMapper.Update(userInfo);
         }
     }

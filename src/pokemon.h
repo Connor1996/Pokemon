@@ -51,15 +51,19 @@ typedef struct struct_Attribute
 const int LEVEL_EXP_LIST[15] = {0, 100, 250, 500, 800, 1200, 1800, 2500,
                                 3300, 4500, 6000, 7000, 8000, 9000, 10000};
 
+// 对战时小精灵实体
 class Pokemon
 {
 public:
-    //
     Pokemon(std::string name, int level, int exp,
             Attribute attribute, int id)
-        : _name(name), _level(level), _exp(exp),
-          _attribute(attribute), _hp(attribute.healthPoint),
-          _id(id), _critical(false)
+        : _name(name),
+          _level(level),
+          _exp(exp),
+          _attribute(attribute),
+          _hp(attribute.healthPoint),
+          _id(id),
+          _critical(false) // 初始化暴击为false
     {
         // 初始化随机种子
         srand(time(NULL));
