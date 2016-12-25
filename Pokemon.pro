@@ -33,7 +33,6 @@ HEADERS  +=  \
     src/pokemon.h \
     include/sqlite3.h \
     src/reflector.h \
-    src/model.h \
     src/socket.h \
     src/model/userinfo.h \
     include/json.hpp \

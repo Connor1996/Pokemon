@@ -15,8 +15,9 @@ namespace Ui {
 class FightRoom;
 }
 
-// 实时对战界面
-class FightRoom : public QWidget
+// 实时对战界面，包括小精灵打斗动画和血量显示以及实时计算
+class
+        FightRoom : public QWidget
 {
     Q_OBJECT
 

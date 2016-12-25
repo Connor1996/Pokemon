@@ -11,7 +11,7 @@ public:
     // 委托到带名字的构造函数，传参为UNKOWN
     Client() : Client("UNKNOWN") { }
 
-    // 带名字的构造函数
+    // 带名字的构造函数，表明与该socket绑定的用户名
     // @param:
     //      name 用户名
     Client(string name);
@@ -34,11 +34,7 @@ public:
     std::string Send(std::string requestInfo);
 
 
-    // 建立与服务器的连接
-    // @param:
-    //      requestInfo json序列化后请求信息
-    // @return:
-    //      json序列化后的返回信息
+    // 关闭与服务器的连接
     void Close();
 
     // 获取该client绑定的用户名

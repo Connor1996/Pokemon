@@ -16,7 +16,8 @@
 using json = nlohmann::json;
 
 GameLobby::GameLobby(Connor_Socket::Client *client, QWidget *parent) :
-    QWidget(parent), _client(client),
+    QWidget(parent),
+    _client(client),
     ui(new Ui::GameLobby)
 {
     ui->setupUi(this);

@@ -7,6 +7,7 @@ namespace Ui {
 class BagWidget;
 }
 
+// 用户背包界面
 class BagWidget : public QWidget
 {
     Q_OBJECT

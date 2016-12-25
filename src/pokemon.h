@@ -126,9 +126,13 @@ protected:
     bool _critical;
 
     // 小精灵升级时各属性的成长
-    virtual void Grow(int *);
+    // @param:
+    //      master 小精灵主属性
+    virtual void Grow(int *master);
 
-    // 在攻击、防御、升级时有一定的随机提升，此函数产生随机的比例系数
+    // 在攻击、防御、升级时有一定的随机性
+    // @return:
+    //		产生随机的比例系数(0~1)
     virtual double Bonus();
 
 };
