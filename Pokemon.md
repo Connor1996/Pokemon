@@ -1,6 +1,6 @@
 # Pokemon
 
-
+宠物小精灵人机对战游戏
 
 ## 依赖环境
 
@@ -12,7 +12,40 @@
 
 
 
+
 ## 特性
+
+-  使用C++11编写
+
+
+-  实现了简单反射，可以通过GetClassByName通过字符串获得相应类的对象
+
+
+-  使用反射工厂来创建Pokemon对象，配合多态大大简化代码并提供扩展性
+
+
+-  通过宏注入获得类元数据，实现ORM（对象关系模型）封装SQLite数据库操作，运用访问者模式来自动生成SQL语句
+
+
+-  使用JSON提高协议的可扩展性
+
+
+-  良好的人机交互界面，支持多用户同时在线
+
+
+-  健全的错误恢复处理
+
+
+
+## 框架设计
+
+![](./architecture.png)
+
+
+
+## 协议设计
+
+##### 游戏通讯协议基于json，以达到良好的扩展性
 
 ```json
 登陆:
@@ -34,23 +67,26 @@
 获取用户背包内容:
 {"define" : GET_USER_BAG, "username" : username}
 {"define" : QUERY_SUCCESS, 
- "info" : [{"id", id,
-            "name", name,
-            "level", level,
-            "exp", exp,
-            "type", type,
-            "atttackPoint", ap,
-            "defensePoint", dp,
-            "healthPoint", hp,
-            "attackFrequence", af,
-            "property", property 
+ "info" : [{"id" : id,
+            "name" : name,
+            "level" : level,
+            "exp" : exp,
+            "type" : type,
+            "atttackPoint" : ap,
+            "defensePoint" : dp,
+            "healthPoint" : hp,
+            "attackFrequence" : af,
+            "property" : property 
            }]}
 {"define" : SERVER_ERROR}
 
 获取用户成就:
 {"define" : GET_USER_ACH}
-{"define" : QUERY_SUCCESS, "rate", rate, 
- "sum_ach" : sum , "advance_ach" : advance_sum}
+{"define" : QUERY_SUCCESS, 
+ "rate" : rate, 
+ "sum_ach" : sum , 
+ "advance_ach" : advance_sum
+}
 {"define" : SERVER_ERROR}
 
 获取对战精灵列表:
@@ -62,13 +98,13 @@
 {"define" : GET_POKEMON_INFO}
 {"define" : QUERY_SUCCESS, 
  "info" : {"name" : name,
-          "type", type,
-          "attackPoint", ap,
-          "defensePoint", dp,
-          "healthPoint", hp,
-          "attackFrequence", af,
-          "property", property,
-          "exp", exp}
+          "type" : type,
+          "attackPoint" : ap,
+          "defensePoint" : dp,
+          "healthPoint" : hp,
+          "attackFrequence" : af,
+          "property" : property,
+          "exp" : exp}
 }
 {"define" : SERVER_ERROR}
 
@@ -92,23 +128,23 @@
 {"define" : GAME_LOSE, "isLose" : true/false}
 if isLose == true:
 	{"define" : ACCEPT, 
-     "info" : [{"id", id,
-                "name", name,
-                "level", level,
-                "exp", exp,
-                "type", type,
-                "atttackPoint", ap,
-                "defensePoint", dp,
-                "healthPoint", hp,
-                "attackFrequence", af,
-                "property", property 
+     "info" : [{"id" : id,
+                "name" : name,
+                "level" : level,
+                "exp" : exp,
+                "type" : type,
+                "atttackPoint" : ap,
+                "defensePoint" : dp,
+                "healthPoint" : hp,
+                "attackFrequence" : af,
+                "property" : property 
                }]
     }
 else 
 	{"define" : ACCEPT/SERVER_ERROR}
 
 反馈损失小精灵:
-{"define" : LOSE_POKEMON, "id", id}
+{"define" : LOSE_POKEMON, "id" : id}
 {"define" : ACCEPT/SERVER_ERROR}
 
 随机获得一个新小精灵:
