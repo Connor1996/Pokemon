@@ -76,10 +76,11 @@ void Widget::Login()
        else if (receiveInfo["define"].get<int>() == LOG_IN_SUCCESS)
        {
            // 进入主界面
-           this->close();
-           StackWidget *stack = new StackWidget(_client);
+
            try
            {
+               this->close();
+               StackWidget *stack = new StackWidget(_client);
                 stack->show();
            }
            catch (std::exception e)

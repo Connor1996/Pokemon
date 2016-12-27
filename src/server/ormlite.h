@@ -9,6 +9,7 @@
 #include <exception>
 #include <thread>
 
+// 注入宏，存储元信息
 #define ORMAP(_CLASS_NAME_, ...)                                \
 private:                                                        \
 friend class ORMLite::ORMapper<_CLASS_NAME_>;                   \
@@ -23,6 +24,7 @@ constexpr static const char* _FIELDSNAME = #__VA_ARGS__
 
 namespace ORMLite{
 
+// Nullable类型模版，允许变量值为nullptr
 template <typename T>
 class Nullable
 {
@@ -77,7 +79,7 @@ public:
     { return m_value; }
 };
 
-// == varialbe
+    // == varialbe
     template <typename T2>
     inline bool operator== (const Nullable<T2> &op1,
                             const Nullable<T2> &op2)
@@ -117,6 +119,7 @@ public:
 
 namespace ORMLite_Impl {
 
+// 管理与SQLite3的连接
 class SQLConnector
 {
 public:
@@ -145,6 +148,7 @@ public:
         char *errMsg = 0;
         int result;
 
+        // 回调函数包装器
         auto callbackWrapper = [] (void* fn, int column,
                 char** columnText, char** columnName) -> int
         {
@@ -184,13 +188,15 @@ private:
     }
 };
 
+// Field表达式转换成pair
 struct Expr
 {
     std::vector<std::pair<const void *, std::string>> expr;
 
 
     template <typename T>
-    Expr (const ORMLite::Nullable<T>& property, const std::string& op, const ORMLite::Nullable<T>& value)
+    Expr (const ORMLite::Nullable<T>& property, const std::string& op,
+          const ORMLite::Nullable<T>& value)
         : expr{ std::make_pair(&property, op + std::to_string(value.Value())) }
     { }
 
@@ -275,6 +281,7 @@ struct Field_Expr
 
 };
 
+// 类型访问者
 class TypeVisitor
 {
 public:
@@ -314,6 +321,7 @@ protected:
     }
 };
 
+// 读取访问者
 class ReaderVisitor
 {
 public:
@@ -360,6 +368,7 @@ protected:
 
 };
 
+// 写数据访问者
 class WriterVisitor
 {
 public:
@@ -394,6 +403,7 @@ protected:
     }
 };
 
+// 变量下标访问者
 class IndexVisitor
 {
 public:
@@ -442,6 +452,7 @@ namespace ORMLite {
 template <typename T>
 class ORMapper;
 
+// 查询时用到的类，保存有查询信息
 template <typename T>
 class QueryMessager
 {
@@ -506,6 +517,7 @@ public:
         _result.clear();
     }
 
+    // 获取相应字段的下标
     std::string GetField(const std::string& key, const void* property)
     {
         ORMLite_Impl::IndexVisitor visitor(property);
@@ -790,12 +802,6 @@ private:
 
 };
 
-
-//template <typename T>
-//inline ORMLite_Impl::Field_Expr<T> Field(Nullable<T>& property)
-//{
-//    return ORMLite_Impl::Field_Expr<T>(property.Value());
-//}
 
 template <typename T>
 inline ORMLite_Impl::Field_Expr<T> Field(T& property)
