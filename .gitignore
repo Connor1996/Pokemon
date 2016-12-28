@@ -87,3 +87,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.docx
+~$kemon文档.docx
+*.doc
+Pokemon文档.docx
