@@ -83,8 +83,8 @@ Client{
         src/client/scratchwidget.h
 
     FORMS    += \
-        widget.ui \
-        gamelobby.ui \
+        src/client/widget.ui \
+        src/client/gamelobby.ui \
         src/client/userlistwidget.ui \
         src/client/stackwidget.ui \
         src/client/bagwidget.ui \
