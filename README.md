@@ -42,53 +42,53 @@
 
 ##### 登陆及注册
 
-![](login.png)
+![](doc/login.png)
 
 
 
 ##### 游戏主界面
 
-![](lobby.png)
+![](doc/lobby.png)
 
 
 
 ##### 用户列表
 
-![](userlist.png)
+![](doc/userlist.png)
 
 
 
 ##### 抓取
 
-![](scratch.png)
+![](doc/scratch.png)
 
 
 
 ##### 背包
 
-![](bag.png)
+![](doc/bag.png)
 
 
 
 ##### 对战
 
-![](fight.png)
+![](doc/fight.png)
 
 
 
 ##### 实时对战（动画）
 
-![](fightroom.png)
+![](doc/fightroom.png)
 
 
 
 ##### 战斗结束
 
-![](choose.png)
+![](doc/choose.png)
 
 ## 框架设计
 
-![](./architecture.png)
+![](doc/architecture.png)
 
 
 
